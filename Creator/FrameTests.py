@@ -1,0 +1,66 @@
+import unittest
+from Routine import Routine
+from RoutineFrame import RoutineFrame
+from ActionFrame import ActionFrame
+import tkinter
+
+class TestRoutine(unittest.TestCase):
+    def test_init(self):
+        root = tkinter.Tk()
+        routine = Routine()
+        routineFrame = RoutineFrame(parent=root, routine=routine)
+        self.assertEqual(len(routine.branches), 1)
+        self.assertEqual(len(routineFrame.getBranches()), 1)
+        self.assertEqual(routine.branches[0], routineFrame.getBranches()[0])
+        root.destroy()
+
+    def test_add_action(self): 
+        root = tkinter.Tk()
+        routine = Routine()
+        routine.createDefaultBranch()
+        routineFrame = RoutineFrame(parent=root, routine=routine)
+        self.assertEqual(len(routine.branches), 1)
+        self.assertEqual(len(routineFrame.getBranches()), 1)
+        self.assertEqual(routine.branches[0], routineFrame.getBranches()[0])
+        root.destroy()
+
+    def test_add_frame(self):
+        root = tkinter.Tk()
+        routine = Routine()
+        routineFrame = RoutineFrame(parent=root, routine=routine)
+        newBranch = routineFrame.addActionBranch()
+        self.assertEqual(len(routine.branches), 2)
+        self.assertEqual(len(routineFrame.getBranches()), 2)
+        self.assertEqual(routine.branches[1], routineFrame.getBranches()[1])
+        self.assertEqual(str(newBranch.getAction()), str(routineFrame.getBranches()[1]))
+        self.assertIn(newBranch.getAction(), routineFrame.getBranches())
+        self.assertEqual(newBranch.getAction(), routineFrame.getBranches()[1])
+        root.destroy()
+    
+    def test_remove_action(self):
+        root = tkinter.Tk()
+        routine = Routine()
+        routine.createDefaultBranch()
+        routineFrame = RoutineFrame(parent=root, routine=routine)
+        self.assertEqual(len(routine.branches), 1)
+        self.assertEqual(len(routineFrame.getBranches()), 1)
+
+    def test_remove_frame(self):
+        root = tkinter.Tk()
+        routine = Routine()
+        routineFrame = RoutineFrame(parent=root, routine=routine)
+        newBranch = routineFrame.addActionBranch()
+        self.assertEqual(len(routine.branches), 2)
+        self.assertEqual(str(routine.branches[1]), str(newBranch.getAction()))
+        self.assertEqual(str(routineFrame.getBranches()[1]), str(newBranch.getAction()))
+        self.assertEqual(len(routineFrame.getBranches()), 2)
+
+        #self.assertEqual(routineFrame.getActions()[1], newBranch.getAction())
+        self.assertEqual(newBranch.getAction(), routine.branches[1])
+        routineFrame.removeActionBranch(newBranch)
+        self.assertEqual(len(routine.branches), 1)
+        self.assertEqual(len(routineFrame.getBranches()), 1)
+        root.destroy()
+
+if __name__ == '__main__':
+    unittest.main()

@@ -1,0 +1,22 @@
+{
+  "name": "website-interact",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test:py": "python -m unittest discover Creator",
+    "test:js": "cross-env NODE_OPTIONS=--experimental-vm-modules jest --roots Interpreter",
+    "test": "npm run test:py && npm run test:js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "puppeteer-core": "^24.17.0"
+  },
+  "devDependencies": {
+    "cross-env": "^10.1.0",
+    "jest": "^30.2.0"
+  }
+}
