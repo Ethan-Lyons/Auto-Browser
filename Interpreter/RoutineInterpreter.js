@@ -1,14 +1,11 @@
-//const fs = require('fs');
 import fs from 'fs';
-//const WebHelpers = require('./WebHelpers');
 import * as WebHelpers from './WebHelpers/WebHelpers.js';  
-//const puppeteer = require('puppeteer-core'); // npm install puppeteer-core
 import puppeteer from 'puppeteer-core';
-//const { assert } = require('console');
 import assert from 'assert';
 
 import { fileURLToPath } from 'url';
 import path from 'path';
+import { get } from 'http';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -19,62 +16,36 @@ const FIND_GROUP = "FIND_GROUP";    // Args: selector, saveAs
 const CLICK = "CLICK";  // Args: selector
 const NEW_TAB = "NEW_TAB";
 
-
 async function main() {
-  let browser;
-  try {
-    const routine = await getRoutine();
-
-    browser = await WebHelpers.connectToBrowser();
-    for (let step of routine.steps) {
-      await handleStep(browser, step);
-    }
-  } catch (err) {
-    console.error('Error during routine execution:\n', err);
-    process.exit(1);
-  } finally {
-    await WebHelpers.disconnect(browser);
-  }
+  routine = await getRoutine();
+  await runBrowser(routine);
 }
 
 async function getRoutine() {
-  const routinePath = path.join(__dirname, "../", "Creator", "Routines", "newTabTest.json");   // FOR TESTING
-  console.log("Starting Routine from \"" + routinePath + "\"...");
-
-  const routine = JSON.parse(fs.readFileSync(routinePath, 'utf8'));
+  const routinePath = await getPath();
+  const routine = await WebHelpers.loadRoutineFromFile(routinePath);
   return routine;
 }
 
-async function handleStep(browser, step) {
-  let selectedStep;
-  console.log("Step: " + step.name + " " + step.type);
+async function getPath() {
+  const termArgs = process.argv.slice(2); // isolate the command line args
+  if (termArgs.length === 0) {
+    throw new Error('No routine argument provided.');
+  }
 
-  if (step.type == "ActionGroup") {
-    selectedStep = step.selected;
-    await handleStep(browser, selectedStep);
-  }
-  else if (step.type == "Action") {
-    await executeAction(browser, step);
-  }
-  else if (step.type == "Argument") {
-    //ignore
-  }
+  return termArgs[0];
 }
 
-/**
- * Execute an action from a step.
- * @param {puppeteer.Browser} browser The browser to execute the action on.
- * @param {Object} currentStep The step to execute.
- */
-async function executeAction(browser, currentStep) {
+async function runBrowser(routine) {
+  browser = await WebHelpers.connectToBrowser();
   try {
-    console.log("Running action: " + currentStep.name + " " + currentStep.type);
-    assert(currentStep.type == "Action", "Current step is not an action");
-    
-    WebHelpers.handleStep(browser, currentStep);
+    for (let step of routine.steps) {
+      await WebHelpers.handleStep(browser, step);
+    }
   } catch (err) {
-    console.error('Error during execution of action: ' + currentStep.name + '\n', err);
-    process.exit(1);
+    throw new Error('Error during routine execution in runBrowser:\n' + err);
+  } finally {
+    await WebHelpers.disconnect(browser);
   }
 }
 

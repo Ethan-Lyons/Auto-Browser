@@ -13,7 +13,7 @@ class TestRoutine(unittest.TestCase):
         initialDir = os.path.join(os.path.dirname(__file__), "Routines")
         filePath = os.path.join(initialDir, "testRoutine.json")
         routine = Routine(inputOutput=InputOutput)
-        routine.createDefaultBranch()
+        routine.createDefaultAG()
         routine.saveRoutine(filePath)
         assert os.path.exists(filePath)
         os.remove(filePath)
@@ -27,7 +27,7 @@ class TestRoutine(unittest.TestCase):
         initialDir = os.path.join(os.path.dirname(__file__), "Routines")
         filePath = os.path.join(initialDir, "testRoutine.json")
         originalRoutine = Routine(inputOutput=InputOutput)
-        originalRoutine.addBranch(testGroup)
+        originalRoutine.addStep(testGroup)
         originalRoutine.saveRoutine(filePath)
 
         blankRoutine = Routine(inputOutput=InputOutput)
@@ -35,7 +35,7 @@ class TestRoutine(unittest.TestCase):
         
         self.assertEqual(str(originalRoutine), str(blankRoutine))
 
-        originalRoutine.createDefaultBranch()
+        originalRoutine.createDefaultAG()
         self.assertNotEqual(str(originalRoutine), str(blankRoutine))
 
         os.remove(filePath)

@@ -1,5 +1,5 @@
-export async function getTabs(page) {
-    const tabs = await page.tabs();
+export async function getTabs(browser) {
+    const tabs = await browser.pages();
     return tabs;
 }
 
@@ -7,8 +7,7 @@ export async function closeTab(browser, tab) {
     try {
         await browser.closeTab(tab);       // Find real function
     } catch (err) {
-        console.error('Navigation (closeTab) error:\n', err);
-        process.exit(1);
+        throw new Error('Navigation (closeTab) error:\n' + err);
     }
 }
 
@@ -17,8 +16,7 @@ async function openTabIndex(browser, index) {
         tabs = browser.pages();
         await browser.bringToFront(tabs[index]);
     } catch (err) {
-        console.error('Navigation (openTabIndex) error:\n', err);
-        process.exit(1);
+        throw new Error('Navigation (openTabIndex) error:\n' + err);
     }
 }
 
@@ -50,16 +48,14 @@ export async function navToTab(browser, action) {
         }
         
     } catch (err) {
-        console.error('Navigation (navToTab) error:\n', err);
-        process.exit(1);
+        throw new Error('Navigation (navToTab) error:\n' + err);
     }
 }
 
 export async function newTab(browser) {
     try {
-        await browser.newPage();       // Find real function
+        await browser.newPage();
     } catch (err) {
-        console.error('Navigation (newTab) error:\n', err);
-        process.exit(1);
+        throw new Error('Navigation (newTab) error:\n' + err);
     }
 }

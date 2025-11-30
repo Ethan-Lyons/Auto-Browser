@@ -7,32 +7,32 @@ from Action import Argument
 class TestRoutine(unittest.TestCase):
     def test_init(self):
         routine = Routine()
-        self.assertEqual(routine.branches, [])
+        self.assertEqual(routine.steps, [])
 
     def test_add_action(self):
         routine = Routine()
-        newAction = routine.createDefaultBranch()
-        self.assertEqual(len(routine.branches), 1)
-        self.assertEqual(routine.branches[0], newAction)
+        newAction = routine.createDefaultAG()
+        self.assertEqual(len(routine.steps), 1)
+        self.assertEqual(routine.steps[0], newAction)
 
     def test_remove_action(self):
         routine = Routine()
-        newAction = routine.createDefaultBranch()
+        newAction = routine.createDefaultAG()
         routine.removeAction(newAction)
-        self.assertEqual(len(routine.branches), 0)
+        self.assertEqual(len(routine.steps), 0)
 
     def test_get_actions(self):
         routine = Routine()
-        action1 = routine.createDefaultBranch()
-        action2 = routine.createDefaultBranch()
-        self.assertEqual(routine.getBranches(), [action1, action2])
+        action1 = routine.createDefaultAG()
+        action2 = routine.createDefaultAG()
+        self.assertEqual(routine.getSteps(), [action1, action2])
 
     def test_move_action(self):
         routine = Routine()
-        action1 = routine.createDefaultBranch()
-        action2 = routine.createDefaultBranch()
+        action1 = routine.createDefaultAG()
+        action2 = routine.createDefaultAG()
         routine.moveAction(0, 1)
-        self.assertEqual(routine.getBranches(), [action2, action1])
+        self.assertEqual(routine.getSteps(), [action2, action1])
     
     def test_argument_copy(self):
         argument = Argument("test")

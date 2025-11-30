@@ -110,7 +110,7 @@ def actionsToDict(entry):
     elif isinstance(entry, Routine):    # Routine
         return {
             "type": "Routine",
-            "steps": [actionsToDict(a) for a in entry.getBranches()]
+            "steps": [actionsToDict(a) for a in entry.getSteps()]
         }
     else:   # Unknown type
         raise TypeError(f"Unsupported type for actionToDict: {type(entry)}")
@@ -150,7 +150,7 @@ def dictToActions(actionDict):
     elif actionDict["type"] == "Routine":   # Routine
         newRoutine = Routine()
         for step in actionDict["steps"]:
-            newRoutine.addBranch(dictToActions(step))
+            newRoutine.addStep(dictToActions(step))
         return newRoutine
     
     else:   # Unknown type

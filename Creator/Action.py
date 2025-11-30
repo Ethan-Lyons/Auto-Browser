@@ -17,6 +17,13 @@ class Action:
     def getArgs(self):
         """Returns the arguments of the action"""
         return self.args
+    def findArg(self, argName):
+        """Finds and returns an argument in the action by name string. Returns None if no argument found"""
+        for arg in self.args:
+            #ignore case
+            if str(arg).lower() == argName.lower():
+                return arg
+        return None
     def getDescription(self):
         """Returns the description of the action"""
         return self.description
