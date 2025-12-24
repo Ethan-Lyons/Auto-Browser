@@ -1,6 +1,9 @@
 import { getActivePage } from './WebHelpers.js';
-export async function getCurrentUrl(browser) {
-    const page = await getActivePage(browser);
-    const currentUrl = await page.url();
-    return currentUrl;
+export async function getUrl(page) {
+    const url = await page.url();
+    return url;
+}
+export async function getActiveUrl(context) {
+    const page = await getActivePage(context);
+    return await getUrl(page);
 }

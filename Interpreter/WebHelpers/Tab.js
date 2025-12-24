@@ -1,3 +1,5 @@
+//import { setActivePage } from "./WebHelpers";
+
 export async function getTabs(browser) {
     const tabs = await browser.pages();
     return tabs;
@@ -5,26 +7,28 @@ export async function getTabs(browser) {
 
 export async function closeTab(browser, tab) {
     try {
-        await browser.closeTab(tab);       // Find real function
+        await browser.closeTab(tab);
     } catch (err) {
         throw new Error('Navigation (closeTab) error:\n' + err);
     }
 }
 
-async function openTabIndex(browser, index) {
+async function openTabIndex(context, index) {
     try {
-        tabs = browser.pages();
-        await browser.bringToFront(tabs[index]);
+        tabs = context.pages();
+        await context.bringToFront(tabs[index]);
+        setActivePage(context, tabs[index]);
     } catch (err) {
         throw new Error('Navigation (openTabIndex) error:\n' + err);
     }
 }
 
-export async function navToTab(browser, action) {
+// TODO: redo this whole thing, make sure active page is set correctly
+export async function navToTab(browser, navAction) {
     try {
-        tab = action.tab;
+        tab = navAction.tab;
         if (typeof tab == int) {
-            await browser.navigateToTab(action);       // Find real function
+            await browser.navigateToTab(navAction);       // Find real function
         }
         else if (typeof tab == str) {
             activeIndex = await getActiveIndex(browser);
@@ -43,9 +47,11 @@ export async function navToTab(browser, action) {
             }
             else if (tab == "first") {
                 index = 0;
+                
             }
             openTabIndex(browser, index);
         }
+        setActivePage(context, tabs[index]);
         
     } catch (err) {
         throw new Error('Navigation (navToTab) error:\n' + err);
@@ -54,7 +60,8 @@ export async function navToTab(browser, action) {
 
 export async function newTab(browser) {
     try {
-        await browser.newPage();
+        page = await browser.newPage();
+        setActivePage(context, page);
     } catch (err) {
         throw new Error('Navigation (newTab) error:\n' + err);
     }

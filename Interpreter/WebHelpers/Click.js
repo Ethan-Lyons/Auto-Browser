@@ -20,11 +20,10 @@ export async function waitForNavClick(page, element) {
         process.exit(1);
     }
 }
-export async function click(browser, selectedArg) {
-    assert(browser && browser.isConnected(), "Browser is not connected");
+export async function click(context, selectedArg) {
     try {
-        const page = await getActivePage(browser);
-        const foundElement = await find(browser, selectedArg);
+        const page = await getActivePage(context);
+        const foundElement = await find(context, selectedArg);
         await waitForNavClick(page, foundElement);
     } catch (err) {
         console.error('Navigation (click) error:\n', err);

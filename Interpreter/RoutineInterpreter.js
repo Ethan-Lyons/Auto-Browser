@@ -1,7 +1,7 @@
 import fs from 'fs';
 import * as WebHelpers from './WebHelpers/WebHelpers.js';  
 import puppeteer from 'puppeteer-core';
-import assert from 'assert';
+//import assert from 'assert';
 
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -16,14 +16,19 @@ const FIND_GROUP = "FIND_GROUP";    // Args: selector, saveAs
 const CLICK = "CLICK";  // Args: selector
 const NEW_TAB = "NEW_TAB";
 
+/**
+ * Main function to run a browser based on a routine.
+ * @returns {Promise<void>}
+ */
 async function main() {
+  let routine;
   routine = await getRoutine();
   await runBrowser(routine);
 }
 
 async function getRoutine() {
   const routinePath = await getPath();
-  const routine = await WebHelpers.loadRoutineFromFile(routinePath);
+  const routine = await WebHelpers.loadRoutineFromJSON(routinePath);
   return routine;
 }
 
@@ -37,15 +42,17 @@ async function getPath() {
 }
 
 async function runBrowser(routine) {
-  browser = await WebHelpers.connectToBrowser();
+  //browser = await WebHelpers.browserConnect();
+  let context;
+  context = await WebHelpers.connectToContext();
   try {
     for (let step of routine.steps) {
-      await WebHelpers.handleStep(browser, step);
+      await WebHelpers.handleStep(context, step);
     }
   } catch (err) {
     throw new Error('Error during routine execution in runBrowser:\n' + err);
   } finally {
-    await WebHelpers.disconnect(browser);
+    await WebHelpers.browserDisconnectContext(context);
   }
 }
 

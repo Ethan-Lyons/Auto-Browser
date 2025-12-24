@@ -4,26 +4,33 @@ import puppeteer from 'puppeteer-core';
 import assert from 'assert';
 
 
-export async function find(browser, selectedArg) {//findStep) {
+/**
+ * Finds an element based on the given selector.
+ * @param {puppeteer.BrowserContext} context The browser context instance to use.
+ * @param {Object} selectedArg An object containing the information for the find action. This object should have a name property
+ *      with a value of "xpath", "id", or "link" to indicate the type of find action to take.
+ * @returns {Promise<puppeteer.ElementHandle>} A promise that resolves with the element found.
+ * @throws Will throw an error if the element cannot be found.
+ */
+export async function find(context, selectedArg) {//findStep) {
     // TODO: finish type support
-    // Find step structure:
-    // {  }
-    assert(browser && browser.isConnected(), "Browser is not connected");
     try {
+        let page;
         console.log("Running find for: " + selectedArg.name + " - " + selectedArg.value);
         //console.log("Running find: " + findStep.name + " " + findStep.type + " " + findStep.args);
         //selectorGroup = findStep.args[0];
         //selectedArg = selectorGroup.selected;
         //const page = await getActivePage(browser);
+        page = await getActivePage(context);
 
         if (selectedArg.name == "xpath") {
             const target = selectedArg.value;
-            const element = await findByXPath(browser, target);
+            const element = await findByXPath(page, target);
             return element;
         }
         else if (selectedArg.name == "id") {
             const target = selectedArg.value;
-            const element = await findByID(browser, target);
+            const element = await findByID(page, target);
             return element;
         }
         else if (selectedArg.name == "link") {
@@ -32,13 +39,13 @@ export async function find(browser, selectedArg) {//findStep) {
                 if (linkType.name == "is") {
                     console.log("Link is: " + linkType.value);
                     const target = linkType.value;
-                    const element = await findByLinkAddress(browser, target, true);
+                    const element = await findByLinkAddress(page, target, true);
                     return element;
                 }
                 else if (linkType.name == "contains") {
                     console.log("Link contains: " + linkType.value);
                     const target = linkType.value;
-                    const element = await findByLinkAddress(browser, target, false);
+                    const element = await findByLinkAddress(page, target, false);
                     return element;
                 }
             }
@@ -48,9 +55,9 @@ export async function find(browser, selectedArg) {//findStep) {
     }
 }
 
-export async function findByLinkAddress(browser, linkAddress, strict=false) {
+export async function findByLinkAddress(page, linkAddress, strict=false) {
     try {
-        const page = await getActivePage(browser);
+        //const page = await getActivePage(page);
         if (strict) {
             const fullXpath = '::-p-xpath(' + `//a[@href="${linkAddress}"]` + ')';
             const element = await page.waitForSelector(fullXpath);

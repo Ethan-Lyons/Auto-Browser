@@ -1,49 +1,80 @@
 import * as WebHelpers from '../WebHelpers/WebHelpers.js'; 
 import { test, expect } from '@jest/globals';
-import * as RoutineInterpreter from '../WebHelpers/RoutineInterpreter.js';
+//import * as RoutineInterpreter from '../WebHelpers/RoutineInterpreter.js';
 import { url } from 'inspector';
 
 //import RoutineInterpreter from '../WebHelpers/RoutineInterpreter.js'; // causes error
 //import assert from 'assert';
+
+let browser;
+let context;
+let page;
+
+beforeAll(async () => {
+    try {
+        await WebHelpers.browserConnect();
+    } catch (err) {
+        console.error('Error connecting to Puppeteer:\n', err);
+        process.exit(1);
+    }
+});
+
+beforeEach(async () => {
+    context = await WebHelpers.createNewContext(browser);
+});
+
+afterEach(async () => {
+    await context.close();
+});
+
+afterAll(async () => {
+    await browser.disconnect();
+});
+
 
 test("sanity check", () => {
   expect(true).toBe(true);
 });
 
 test('connectToBrowser', async () => {
-    browser = await WebHelpers.connectToBrowser();
-    await WebHelpers.disconnect(browser);
+    
 });
 
-test('disconnect', async () => {
+/*test('disconnect', async () => {
     browser = await WebHelpers.connectToBrowser();
     await WebHelpers.disconnect(browser);
-});
+});*/
 
 test('urlNav', async () => {
     testRoutinePath = '../TestData/testNav.json'
-    browser = await WebHelpers.connectToBrowser();
-    routine = await WebHelpers.loadRoutineFromFile(testRoutinePath);
+        //browser = await WebHelpers.connectToBrowser();
+    routine = await WebHelpers.loadRoutineFromJSON(testRoutinePath);
     urlActionGroup = routine.steps[0];
     urlAction = actionGroup.selected;
-    //urlArg = urlAction.args[0];
-    //url = urlArg.value;
 
     await WebHelpers.urlNav(browser, urlAction);
-    await WebHelpers.disconnect(browser);
+    await WebHelpers.browserDisconnect(browser);
 });
 
 test('getCurrentUrl', async () => {
-    browser = await WebHelpers.connectToBrowser();
-    url = await WebHelpers.getCurrentUrl(browser);
-    await WebHelpers.disconnect(browser);
+    browser = await WebHelpers.browserConnect();
+    curUrl = await WebHelpers.getUrl(browser);
+    await WebHelpers.browserDisconnect(browser);
 });
 
 test('tabNumber', async () => {
-    browser = await WebHelpers.connectToBrowser();
+    browser = await WebHelpers.browserConnect();
     tabs = await WebHelpers.getTabs(browser);
     expect(tabs.length).toBe(1);
-    await WebHelpers.disconnect(browser);
+    await WebHelpers.browserDisconnect(browser);
+});
+
+test('tabAdd', async () => {
+    browser = await WebHelpers.browserConnect();
+    await WebHelpers.newTab(browser);
+    tabs = await WebHelpers.getTabs(browser);
+    expect(tabs.length).toBe(2);
+    await WebHelpers.browserDisconnect(browser);
 });
 
 //tab # test
