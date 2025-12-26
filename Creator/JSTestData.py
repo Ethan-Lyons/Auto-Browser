@@ -16,17 +16,37 @@ def testNav():
     routine = Routine(inputOutput=InputOutput)
     userAG = routine.createDefaultAG()
 
-    navA = userAG.findAction("URL_NAV")
+    navA = userAG.find("URL_NAV")
     userAG.setSelected(navA)
-    urlArg = navA.findArg("url")
-    #navArgs[0].setValue("https://www.google.com")
+    urlArg = navA.find("url")
     urlArg.setValue("https://www.google.com")
 
     _saveRoutine(routine, "testNav")
 
+def testClick():
+    routine = Routine(inputOutput=InputOutput)
+    userAG1 = routine.createDefaultAG()
+    userAG2 = routine.createDefaultAG()
+
+    navA = userAG1.find("URL_NAV")
+    userAG1.setSelected(navA)
+    urlArg = navA.find("url")
+    urlArg.setValue("https://www.google.com")   # base navigation
+
+    clickA = userAG2.find("CLICK")
+    selector = clickA.find("selector")
+    xpath = selector.find("xpath")  # finding click action parts
+
+    userAG2.setSelected(clickA)
+    selector.setSelected(xpath)
+    xpath.setValue("/html/body/div[1]/div[6]/div/div[1]/div[3]/a[1]")   # setting click action parts
+
+    _saveRoutine(routine, "testClick")
+
 def generateTestData():
     testBlank()
     testNav()
+    testClick()
 
 generateTestData()
 

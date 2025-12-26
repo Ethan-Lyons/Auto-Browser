@@ -9,7 +9,7 @@ export * from './Routine.js'
 
 // go forward, go back, refresh, hover, screenshot, title, url
 
-const activePages = new WeakMap();  // Map from each browser context to its active page
+const contextToPage = new WeakMap();  // Map from each browser context to its active page
 let browserEventHooked = false;
 
 /**
@@ -17,7 +17,7 @@ let browserEventHooked = false;
  * @returns {Promise<puppeteer.Browser>} A promise that resolves with a Puppeteer browser instance.
  * @throws Will throw an error if the connection to the browser cannot be established.
  */
-async function browserConnect() {
+export async function browserConnect() {
     try {
         console.log("Establishing connection to Puppeteer...");
 
@@ -68,11 +68,11 @@ export async function connectToContext() {
             browser.on('targetcreated', async target => {
                 if (target.type() !== 'page') return;
 
-                const page = await target.page();
-                if (!page) return;
+                const newPage = await target.page();
+                if (!newPage) return;
 
-                const pageContext = page.browserContext();
-                activePages.set(pageContext, page);
+                const pageContext = newPage.browserContext();
+                contextToPage.set(pageContext, newPage);
             });
 
             browserEventHooked = true;
@@ -103,11 +103,16 @@ export async function closeContext(context) {
 
 
 export function setActivePage(context, page) {
-    activePages.set(context, page);
+    contextToPage.set(context, page);
 }
+
 export async function getActivePage(context) {
-    const page = activePages.get(context);
-    if (page && !page.isClosed()) { // check if page is still open
+    const page = contextToPage.get(context);
+    if (context.pages().length == 0) { // check if context is empty
+        console.log("Warning (getActivePage): No pages in context.");
+        return null;
+    }
+    else if (page && !page.isClosed()) { // check if page is still open
         return page;
     }
     const pages = await context.pages();
@@ -124,6 +129,9 @@ export async function getActivePage(context) {
 export async function urlNav(context, currentStep) {
     let urlArg, url, page;
     try {
+        if (currentStep.name != "URL_NAV") {
+            throw new Error('Invalid step type (urlNav):\n' + err);
+        }
         urlArg = currentStep.args[0];
         url = urlArg.value;
 

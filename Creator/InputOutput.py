@@ -104,7 +104,7 @@ def actionsToDict(entry):
             "type": "ActionGroup",
             "name": str(entry),
             "selected": actionsToDict(entry.getSelected()),
-            "allArgs": [actionsToDict(a) for a in entry.getActions()],      # Saves input for all unused actions
+            "allArgs": [actionsToDict(a) for a in entry.getArgs()],      # Saves input for all unused actions
             "description": entry.getDescription()
         }
     elif isinstance(entry, Routine):    # Routine
@@ -143,7 +143,7 @@ def dictToActions(actionDict):
                                args=[dictToActions(a) for a in actionDict["allArgs"]],
                                description=actionDict["description"])
         
-        selectedAction = newGroup.findAction(actionDict["selected"]["name"])    # Find the selected action
+        selectedAction = newGroup.find(actionDict["selected"]["name"])    # Find the selected action
         newGroup.setSelected(selectedAction)
         return newGroup
     

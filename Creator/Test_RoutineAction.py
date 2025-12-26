@@ -66,22 +66,22 @@ class TestRoutine(unittest.TestCase):
         actionGroup2 = actionGroup.copy()
 
         self.assertEqual(str(actionGroup), str(actionGroup2))
-        self.assertEqual(len(actionGroup.getActions()), len(actionGroup2.getActions()))
+        self.assertEqual(len(actionGroup.getArgs()), len(actionGroup2.getArgs()))
         self.assertEqual(actionGroup.getDescription(), actionGroup2.getDescription())
 
         self.assertNotEqual(id(actionGroup), id(actionGroup2))
-        self.assertNotEqual(actionGroup.getActions(), actionGroup2.getActions())
-        self.assertNotEqual(id(actionGroup.getActions()), id(actionGroup2.getActions()))
-        self.assertNotEqual(id(actionGroup.getActions()[0]), id(actionGroup2.getActions()[0]))
+        self.assertNotEqual(actionGroup.getArgs(), actionGroup2.getArgs())
+        self.assertNotEqual(id(actionGroup.getArgs()), id(actionGroup2.getArgs()))
+        self.assertNotEqual(id(actionGroup.getArgs()[0]), id(actionGroup2.getArgs()[0]))
 
 
     def test_find_action_in_group(self):
         testName = "ActionName"
         testAction = Action(name=testName, args=[Argument("testArg")], description="Action Description")
         actionGroup = ActionGroup(name="GroupName", args=[testAction], description="Group Description")
-        self.assertEqual(actionGroup.findAction("WrongName"), None)
-        self.assertEqual(str(actionGroup.findAction(testName)), str(testAction))
-        self.assertEqual(actionGroup.findAction(testName), testAction)
+        self.assertEqual(actionGroup.find("WrongName"), None)
+        self.assertEqual(str(actionGroup.find(testName)), str(testAction))
+        self.assertEqual(actionGroup.find(testName), testAction)
 
     def test_set_value_in_action_group(self):
         testName = "ActionName"
@@ -90,12 +90,12 @@ class TestRoutine(unittest.TestCase):
         subGroup1 = ActionGroup(name="Group1", args=[testAction])
         subGroup2 = ActionGroup(name="Group2", args=[testAction])
         subGroup3 = subGroup1.copy()
-        self.assertEqual(subGroup1.getActions()[0], subGroup2.getActions()[0])
-        self.assertNotEqual(subGroup1.getActions()[0], subGroup3.getActions()[0])
-        subGroup1.getActions()[0].getArgs()[0].setValue("testValue")
-        self.assertEqual(str(subGroup1.getActions()[0].getArgs()[0].getValue()), "testValue")
-        self.assertNotEqual(str(subGroup1.getActions()[0].getArgs()[0].getValue()), 
-                            str(subGroup3.getActions()[0].getArgs()[0].getValue()))
+        self.assertEqual(subGroup1.getArgs()[0], subGroup2.getArgs()[0])
+        self.assertNotEqual(subGroup1.getArgs()[0], subGroup3.getArgs()[0])
+        subGroup1.getArgs()[0].getArgs()[0].setValue("testValue")
+        self.assertEqual(str(subGroup1.getArgs()[0].getArgs()[0].getValue()), "testValue")
+        self.assertNotEqual(str(subGroup1.getArgs()[0].getArgs()[0].getValue()), 
+                            str(subGroup3.getArgs()[0].getArgs()[0].getValue()))
     
     def test_set_value(self):
         argument = Argument("xpath")
@@ -106,13 +106,13 @@ class TestRoutine(unittest.TestCase):
 
         userCopy = userGroup.copy()
 
-        setSelector = userCopy.getActions()[0].getArgs()[0]
-        setArg = setSelector.getActions()[0]
-        unsetSelector = userCopy.getActions()[1].getArgs()[0]
-        unsetArg = unsetSelector.getActions()[0]
+        setSelector = userCopy.getArgs()[0].getArgs()[0]
+        setArg = setSelector.getArgs()[0]
+        unsetSelector = userCopy.getArgs()[1].getArgs()[0]
+        unsetArg = unsetSelector.getArgs()[0]
 
         self.assertNotEqual(setSelector, unsetSelector)
-        setSelector.getActions()[0].setValue("testValue")
+        setSelector.getArgs()[0].setValue("testValue")
         self.assertNotEqual(str(setArg.getValue()), str(unsetArg.getValue()))
 
 if __name__ == '__main__':

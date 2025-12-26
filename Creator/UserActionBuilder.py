@@ -25,7 +25,7 @@ class UserActionBuilder:
         lIs = ActionBuilder.createArgument("is")
         lContains = ActionBuilder.createArgument("contains")
         links = ActionBuilder.createActionGroup("link", [lIs, lContains])
-        selector = ActionBuilder.createActionGroup("selector type", [xPath, css, text, variable, links])
+        selector = ActionBuilder.createActionGroup("selector", [xPath, css, text, variable, links])
 
         url = ActionBuilder.createArgument("url")
         tab = ActionBuilder.createArgument("tab")

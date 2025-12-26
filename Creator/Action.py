@@ -17,10 +17,9 @@ class Action:
     def getArgs(self):
         """Returns the arguments of the action"""
         return self.args
-    def findArg(self, argName):
+    def find(self, argName):
         """Finds and returns an argument in the action by name string. Returns None if no argument found"""
         for arg in self.args:
-            #ignore case
             if str(arg).lower() == argName.lower():
                 return arg
         return None
@@ -32,7 +31,7 @@ class Action:
 class ActionGroup:
     def __init__(self, name, args=[], description=""):
         self.name = name
-        self.actions = args
+        self.args = args
         self.description = description
         self.selected = args[0]
 
@@ -44,9 +43,9 @@ class ActionGroup:
     def getName(self):
         """Returns the name of the action group"""
         return self.name
-    def getActions(self):
-        """Returns the actions in the action group"""
-        return self.actions
+    def getArgs(self):
+        """Returns the args in the action group"""
+        return self.args
     def getDescription(self):
         """Returns the description of the action group"""
         return self.description
@@ -58,10 +57,10 @@ class ActionGroup:
         """Sets the selected action for the action group"""
         self.selected = action
     
-    def findAction(self, actionName):
-        """Finds and returns an action in the action group by name string. Returns None if no action found"""
-        for action in self.actions:
-            if str(action) == actionName:
+    def find(self, actionName):
+        """Finds and returns an arg (action, actionGroup, or argument) in the action group by name string. Returns None if no action found"""
+        for action in self.args:
+            if str(action).lower() == actionName.lower():
                 return action
         return None
 
@@ -120,7 +119,7 @@ def fullCopy(action):
         A deep copy of the given Action, ActionGroup, or Argument.
     """
     if isinstance(action, ActionGroup): # ActionGroup
-        args = [fullCopy(arg) for arg in action.getActions()]
+        args = [fullCopy(arg) for arg in action.getArgs()]
         return ActionGroup(name=action.getName(), args=args, description=action.getDescription())
     
     elif isinstance(action, Action):    # Action

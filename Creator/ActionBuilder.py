@@ -21,7 +21,7 @@ def createActionGroup(name, actions=[], description=""):
 
     Args:
         name (str): The name of the action group
-        actions (list): A list of actions in the action group
+        actions (list): A list of actions for the action group args
         description (str): A description of the action group
 
     Returns:

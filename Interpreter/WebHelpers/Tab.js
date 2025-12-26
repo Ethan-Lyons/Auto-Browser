@@ -1,7 +1,7 @@
-//import { setActivePage } from "./WebHelpers";
+import { setActivePage } from "./WebHelpers.js";
 
-export async function getTabs(browser) {
-    const tabs = await browser.pages();
+export async function getTabs(context) {
+    const tabs = await context.pages();
     return tabs;
 }
 
@@ -58,9 +58,9 @@ export async function navToTab(browser, navAction) {
     }
 }
 
-export async function newTab(browser) {
+export async function newTab(context) {
     try {
-        page = await browser.newPage();
+        page = await context.newPage();
         setActivePage(context, page);
     } catch (err) {
         throw new Error('Navigation (newTab) error:\n' + err);

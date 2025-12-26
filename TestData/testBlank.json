@@ -50,7 +50,7 @@
                     "args": [
                         {
                             "type": "ActionGroup",
-                            "name": "selector type",
+                            "name": "selector",
                             "selected": {
                                 "type": "Argument",
                                 "name": "xpath",
@@ -125,7 +125,7 @@
                     "args": [
                         {
                             "type": "ActionGroup",
-                            "name": "selector type",
+                            "name": "selector",
                             "selected": {
                                 "type": "Argument",
                                 "name": "xpath",
@@ -200,7 +200,7 @@
                     "args": [
                         {
                             "type": "ActionGroup",
-                            "name": "selector type",
+                            "name": "selector",
                             "selected": {
                                 "type": "Argument",
                                 "name": "xpath",
