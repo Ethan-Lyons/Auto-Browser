@@ -1,15 +1,15 @@
-from Action import Action
-from Action import ActionGroup
-from Action import Argument
-import ActionBuilder
+from Steps import Action
+from Steps import ActionGroup
+from Steps import Argument
+import ActionFactory as ActionFactory
 
 class UserActionBuilder:
 
     def __init__(self):
         self.userActions = []
-        self.userActionGroup = self.buildUserActions()
+        self.userActionGroup = None
 
-    def buildUserActions(self):
+    def _buildUserActions(self):
         """
         Defines the user actions for the Action Builder.These are the base actions
         that are available to the user.
@@ -17,35 +17,37 @@ class UserActionBuilder:
         Returns:
             ActionGroup: The ActionGroup of user actions
         """
-        variable = ActionBuilder.createArgument("variable")
-        text = ActionBuilder.createArgument("text")
+        variable = ActionFactory.createArgument("variable")
+        text = ActionFactory.createArgument("text")
         #text = self.createArgument("text")
-        xPath = ActionBuilder.createArgument("xpath")
-        css = ActionBuilder.createArgument("css")
-        lIs = ActionBuilder.createArgument("is")
-        lContains = ActionBuilder.createArgument("contains")
-        links = ActionBuilder.createActionGroup("link", [lIs, lContains])
-        selector = ActionBuilder.createActionGroup("selector", [xPath, css, text, variable, links])
+        xPath = ActionFactory.createArgument("xpath")
+        css = ActionFactory.createArgument("css")
+        lIs = ActionFactory.createArgument("is")
+        lContains = ActionFactory.createArgument("contains")
+        links = ActionFactory.createActionGroup("link", [lIs, lContains])
+        selector = ActionFactory.createActionGroup("selector", [xPath, css, text, variable, links])
 
-        url = ActionBuilder.createArgument("url")
-        tab = ActionBuilder.createArgument("tab")
-        saveAs = ActionBuilder.createArgument("save as")
+        url = ActionFactory.createArgument("url")
+        tab = ActionFactory.createArgument("tab")
+        saveAs = ActionFactory.createArgument("save as")
 
-        urlNavType = ActionBuilder.createAction("URL_NAV", [url], "Go to URL")
-        tabNavType = ActionBuilder.createAction("TAB_NAV", [tab], "Navigate to an existing tab")
-        newTabType = ActionBuilder.createAction("NEW_TAB", [], "Open a new tab")
-        findType = ActionBuilder.createAction("FIND", [selector, saveAs], "Find and store")
-        findGroupType = ActionBuilder.createAction("FIND_GROUP", [selector, saveAs], "Find and store group")
-        clickType = ActionBuilder.createAction("CLICK", [selector], "Click")
+        urlNavType = ActionFactory.createAction("URL_NAV", [url], "Go to URL")
+        tabNavType = ActionFactory.createAction("TAB_NAV", [tab], "Navigate to an existing tab")
+        newTabType = ActionFactory.createAction("NEW_TAB", [], "Open a new tab")
+        findType = ActionFactory.createAction("FIND", [selector, saveAs], "Find and store")
+        findGroupType = ActionFactory.createAction("FIND_GROUP", [selector, saveAs], "Find and store group")
+        clickType = ActionFactory.createAction("CLICK", [selector], "Click")
 
         userActions = [urlNavType, tabNavType, findType, findGroupType, clickType, newTabType]
-        userActionGroup = ActionBuilder.createActionGroup("USER_ACTIONS", userActions)
+        userActionGroup = ActionFactory.createActionGroup("USER_ACTIONS", userActions)
         return userActionGroup
         #userActionsGroup = self.createActionGroup("USER_ACTIONS", [urlNavType,tabNavType,findType,findGroupType,clickType, newTabType])
         #return userActionsGroup
     
     def getUserActionGroup(self):
         """Returns the user actions group"""
+        if self.userActionGroup is None:
+            self.userActionGroup = self._buildUserActions()
         return self.userActionGroup
 
     

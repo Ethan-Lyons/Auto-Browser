@@ -1,4 +1,4 @@
-from Action import Action
+from Steps import Action
 class ActionBuilderManager:
     VAR = "variable"
     SELECTOR_TYPES = ["xpath", "css", "text", VAR]

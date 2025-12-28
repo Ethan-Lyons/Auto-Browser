@@ -1,8 +1,8 @@
 import InputOutput
 from Routine import Routine
 from UserActionBuilder import UserActionBuilder
-from Action import Action
-from Action import ActionGroup
+from Steps import Action
+from Steps import ActionGroup
 
 def _saveRoutine(routine, name):
     routine.saveRoutine(filePath="./TestData/" + name + ".json")

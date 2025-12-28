@@ -83,8 +83,16 @@ class Argument(str):
         return obj
     
     def __init__(self, name, value=None, description=None):
+        self.name = name
         self.value = value
         self.description = description
+    
+    def __str__(self):
+        return self.name
+    
+    def getName(self):
+        """Returns the name of the argument"""
+        return self.name
 
     def setDescription(self, description):
         """Sets the description of the argument"""

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:py": "python -m unittest discover Creator",
+    "test:py": "pytest Creator",
     "test:js": "python ./Creator/JSTestData.py && cross-env NODE_OPTIONS=--experimental-vm-modules jest --roots Interpreter",
     "test": "npm run test:py && npm run test:js"
   },

@@ -1,6 +1,6 @@
-from Action import Action
-from Action import ActionGroup
-from Action import Argument
+from Steps import Action
+from Steps import ActionGroup
+from Steps import Argument
 
 def createAction(name, args=[], description=""):
     """Creates a new action object and adds it to the list of actions
