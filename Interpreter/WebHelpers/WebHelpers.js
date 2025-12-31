@@ -5,7 +5,7 @@ export * from './Info.js';
 export * from './Click.js';
 export * from './Tab.js';
 export * from './WebHelpers.js';
-export * from './Routine.js'
+export * from './StepsHandler.js'
 
 // go forward, go back, refresh, hover, screenshot, title, url
 
@@ -97,13 +97,20 @@ export async function closeContext(context) {
     try {
         await context.close();
     } catch (err) {
-        throw new Error('Error closing context:\n' + err);
+        throw new Error('Error closing context (closeContext):\n' + err);
     }
 }
 
 
 export function setActivePage(context, page) {
-    contextToPage.set(context, page);
+    try{
+        contextToPage.set(context, page);
+        page.bringToFront();
+    }
+    catch (err) {
+        throw new Error('Error setting active page (setActivePage):\n' + err);
+    }
+    
 }
 
 export async function getActivePage(context) {
@@ -117,6 +124,12 @@ export async function getActivePage(context) {
     }
     const pages = await context.pages();
     return pages[0]; // deterministic fallback
+}
+
+export async function getActiveIndex(context) {
+    const page = await getActivePage(context);
+    const pages = await context.pages();
+    return pages.indexOf(page);
 }
 
 
@@ -148,31 +161,6 @@ export async function urlNav(context, currentStep) {
         throw new Error('Navigation (urlNav) error:\n' + err);
     }
 }
-
-/*export async function getActivePage(browser) {
-    if (global.currentPage) return global.currentPage;
-    const pages = await browser.pages();
-    for (const page of pages) {     // Edge browser must be on screen for this to work
-        const isVisible = await page.evaluate(() => document.visibilityState === 'visible');
-        if (isVisible) {
-            return page;
-        }
-    }
-    console.log("No active page found. Returning first page.");
-    return pages[0]; // fallback
-}
-export async function getActiveIndex(browser) {
-    const pages = await browser.pages();
-    for (let i = 0; i < pages.length; i++) {
-        const page = pages[i];
-        const isVisible = await page.evaluate(() => document.visibilityState === 'visible');
-        if (isVisible) {
-            return i;
-        }
-    }
-    console.log("No active page found. Returning first page.");
-    return 0; // fallback
-}*/
 
 export async function groupGetByAttribute(parents, type, attribute, value, strict = false) {
     try {

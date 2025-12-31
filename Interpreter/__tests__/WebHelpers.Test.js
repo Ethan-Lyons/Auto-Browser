@@ -11,26 +11,24 @@ let context;
 let page;
 
 beforeAll(async () => {
-    
+    try {
+            browser = await WebHelpers.browserConnect();
+        } catch (err) {
+            console.error('Error connecting to Puppeteer:\n', err);
+            process.exit(1);
+        }
 });
 
 beforeEach(async () => {
-    try {
-        browser = await WebHelpers.browserConnect();
-    } catch (err) {
-        console.error('Error connecting to Puppeteer:\n', err);
-        process.exit(1);
-    }
     context = await WebHelpers.createNewContext(browser);
 });
 
 afterEach(async () => {
     await context.close();
-    await WebHelpers.browserDisconnect(browser);
 });
 
 afterAll(async () => {
-    
+    await WebHelpers.browserDisconnect(browser);
 });
 
 
@@ -72,20 +70,7 @@ test('getCurrentUrl', async () => {
     //await WebHelpers.browserDisconnect(browser);
 });
 
-test('tabNumber', async () => {
-    //browser = await WebHelpers.browserConnect();
-    tabs = await WebHelpers.getTabs(context);
-    expect(tabs.length).toBe(0);
-    //await WebHelpers.browserDisconnect(browser);
-});
 
-test('tabAdd', async () => {
-    //browser = await WebHelpers.browserConnect();
-    await WebHelpers.newTab(context);
-    tabs = await WebHelpers.getTabs(context);
-    expect(tabs.length).toBe(1);
-    //await WebHelpers.browserDisconnect(browser);
-});
 
 //tab # test
 

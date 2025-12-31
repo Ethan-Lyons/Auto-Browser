@@ -1,9 +1,22 @@
 import tkinter as tk
 from tkinter import ttk
+import re
 from Steps import Action
 from Steps import ActionGroup
 from Steps import Argument
 from UserActionBuilder import UserActionBuilder
+
+import os
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+jsHandlerPath = os.path.abspath(os.path.join(
+    BASE_DIR,
+    "..",
+    "Interpreter",
+    "WebHelpers",
+    "StepsHandler.js"
+))
 
 class StepsGuide():
     def __init__(self, stepTypes=[]):
@@ -33,13 +46,17 @@ class StepsGuide():
 
     
     def createTree(self, stepTypes, sContainer):
-        tree = ttk.Treeview(sContainer, columns=("type", "description"), show="tree headings")
+        tree = ttk.Treeview(sContainer, columns=("type", "description", "js"), show="tree headings")
         tree.heading("#0", text="Name")
         tree.heading("type", text="Type")
         tree.heading("description", text="Description")
+        tree.heading("js", text="JS Handler?")
+        tree.column("js", anchor="center")
         self.addTreeSteps(stepTypes, tree)
-        for item_id in tree.get_children(""):
-            tree.item(item_id, open=True)
+        treeRoot = tree.get_children("")[0]
+        initialChildIDs = tree.get_children(treeRoot)
+        self.jsUpdate(tree, initialChildIDs)
+
 
         return tree
     
@@ -67,10 +84,30 @@ class StepsGuide():
             raise TypeError(
                 f"addTreeSteps: Unknown step type {currStep} ({type(currStep)})"
             )
+        
+    def jsUpdate(self, tree, entries):
+        jsText = self.getFileContents(jsHandlerPath)
+        for id in entries:
+            curMatch = None
+            name = tree.item(id, "text")
+            curMatch = re.search(name, jsText, re.IGNORECASE)
+            if curMatch:
+                tree.set(id, column="js", value="yes")
+            else:
+                tree.set(id, column="js", value="no")
+
+    def getFileContents(self, filePath):
+        with open(filePath, "r", encoding="utf-8") as file:
+            return file.read()
+            
+
 
 
 
 if __name__ == "__main__":
+    print(os.getcwd())
+    print(BASE_DIR)
+    print(jsHandlerPath)
     uAB = UserActionBuilder()
     uAG = uAB.getUserActionGroup()
     stepsGuide = StepsGuide(stepTypes=uAG)

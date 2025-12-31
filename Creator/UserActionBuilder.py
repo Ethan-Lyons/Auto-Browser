@@ -6,7 +6,7 @@ import ActionFactory as ActionFactory
 class UserActionBuilder:
 
     def __init__(self):
-        self.userActions = []
+        self.userSteps = []
         self.userActionGroup = None
 
     def _buildUserActions(self):
@@ -31,18 +31,21 @@ class UserActionBuilder:
         tab = ActionFactory.createArgument("tab")
         saveAs = ActionFactory.createArgument("save as")
 
-        urlNavType = ActionFactory.createAction("URL_NAV", [url], "Go to URL")
-        tabNavType = ActionFactory.createAction("TAB_NAV", [tab], "Navigate to an existing tab")
-        newTabType = ActionFactory.createAction("NEW_TAB", [], "Open a new tab")
-        findType = ActionFactory.createAction("FIND", [selector, saveAs], "Find and store")
-        findGroupType = ActionFactory.createAction("FIND_GROUP", [selector, saveAs], "Find and store group")
-        clickType = ActionFactory.createAction("CLICK", [selector], "Click")
+        urlNavType = self.createUserAction("URL_NAV", [url], "Go to URL")
+        tabNavType = self.createUserAction("TAB_NAV", [tab], "Navigate to an existing tab")
+        newTabType = self.createUserAction("NEW_TAB", [], "Open a new tab")
+        findType = self.createUserAction("FIND", [selector, saveAs], "Find and store")
+        findGroupType = self.createUserAction("FIND_GROUP", [selector, saveAs], "Find and store group")
+        clickType = self.createUserAction("CLICK", [selector], "Click")
+        fakeAction = self.createUserAction("FAKE_ACTION", [], "Fake Action")
 
-        userActions = [urlNavType, tabNavType, findType, findGroupType, clickType, newTabType]
-        userActionGroup = ActionFactory.createActionGroup("USER_ACTIONS", userActions)
+        userActionGroup = ActionFactory.createActionGroup("USER_ACTIONS", self.userSteps)
         return userActionGroup
-        #userActionsGroup = self.createActionGroup("USER_ACTIONS", [urlNavType,tabNavType,findType,findGroupType,clickType, newTabType])
-        #return userActionsGroup
+    
+    def createUserAction(self, name, args, description):
+        newAction = ActionFactory.createAction(name, args, description)
+        self.userSteps.append(newAction)
+        return newAction
     
     def getUserActionGroup(self):
         """Returns the user actions group"""

@@ -46,6 +46,12 @@
                 },
                 {
                     "type": "Action",
+                    "name": "NEW_TAB",
+                    "args": [],
+                    "description": "Open a new tab"
+                },
+                {
+                    "type": "Action",
                     "name": "FIND",
                     "args": [
                         {
@@ -265,9 +271,9 @@
                 },
                 {
                     "type": "Action",
-                    "name": "NEW_TAB",
+                    "name": "FAKE_ACTION",
                     "args": [],
-                    "description": "Open a new tab"
+                    "description": "Fake Action"
                 }
             ],
             "description": ""
