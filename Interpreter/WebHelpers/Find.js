@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer-core';
 /**
  * Finds an element based on the given selector.
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @param {Object} selectedArg An object containing the information for the find action. This object should have a selector group
+ * @param {Object} findStep An object containing the information for the find action. This object should have a selector action group
  * with a selected type and value.
  * @returns {Promise<puppeteer.ElementHandle>} A promise that resolves with the element found.
  * @throws Will throw an error if the element cannot be found.
@@ -52,8 +52,7 @@ export async function find(context, findStep) {
             console.log("Warning: Unknown find type: " + selectedArg.name);
         }
     } catch (err) {
-        console.error('Find (find) error:\n', err);
-        process.exit(1);
+        throw new Error('Find (find) error:\n' + err);
     }
 }
 
@@ -77,8 +76,7 @@ async function findByLinkAddress(page, linkAddress, strict=false) {
             return element;
         }
     } catch (err) {
-        console.error('Find (findByLinkAddress) error:\n', err);
-        process.exit(1);
+        throw err;
     }
 }
 
@@ -95,8 +93,7 @@ async function findByXPath(page, xPath) {
         return element;
     }
     catch (err) {
-        console.error('Find (findByXPath) error:\n', err);
-        process.exit(1);
+        throw new Error('Find (findByXPath) error:\n' + err);
     }
 }
 
@@ -112,8 +109,7 @@ async function findByID(page, id) {
         const element = await page.waitForSelector(id);
         return element;
     } catch (err) {
-        console.error('Find (findByID) error:\n', err);
-        process.exit(1);
+        throw new Error('Find (findByID) error:\n' + err);
     }
 }
 

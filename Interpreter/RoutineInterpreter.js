@@ -40,8 +40,7 @@ async function getPath() {
 
 async function runBrowser(routine) {
   //browser = await WebHelpers.browserConnect();
-  let context;
-  context = await WebHelpers.connectToContext();
+  const context = await WebHelpers.connectToContext();
   try {
     for (let step of routine.steps) {
       await WebHelpers.handleStep(context, step);

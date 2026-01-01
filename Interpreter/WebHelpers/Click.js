@@ -40,7 +40,6 @@ export async function click(context, clickStep) {
         }
         
     } catch (err) {
-        console.error('Navigation (click) error:\n', err);
-        process.exit(1);
+        throw new Error('Click (click) error:\n' + err);
     }
 }

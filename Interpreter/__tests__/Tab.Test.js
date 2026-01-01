@@ -27,31 +27,35 @@ afterAll(async () => {
 
 
 test('tabNumber', async () => {
-    tabs = WebHelpers.getTabs(context);
+    const tabs = await WebHelpers.getTabs(context);
     expect(tabs.length).toBe(0);
 });
 
 test('tabAdd', async () => {
     await WebHelpers.newTab(context);   // Open 1 tab
-    tabs = WebHelpers.getTabs(context);
+    const tabs = await WebHelpers.getTabs(context);
     expect(tabs.length).toBe(1);
 });
 
 test('tabClose', async () => {
+    let tabs;
     await WebHelpers.newTab(context);   // Open 1 tab
-    tabs = WebHelpers.getTabs(context);
+    tabs = await WebHelpers.getTabs(context);
+
     await WebHelpers.closeTab(tabs[0]); // Close 1 tab
-    tabs = WebHelpers.getTabs(context);
+    tabs = await WebHelpers.getTabs(context);
+
     expect(tabs.length).toBe(0);
 });
 
 test('tabAddClose', async () => {
+    let tabs;
     await WebHelpers.newTab(context);
     await WebHelpers.newTab(context);   // Open 2 tabs
 
-    tabs = WebHelpers.getTabs(context);
+    tabs = await WebHelpers.getTabs(context);
     await WebHelpers.closeTab(tabs[0]);
-    tabs = WebHelpers.getTabs(context);
+    tabs = await WebHelpers.getTabs(context);
     await WebHelpers.closeTab(tabs[0]); // Close 2 tabs
 
     await WebHelpers.newTab(context);   // Open 1 tab
@@ -61,22 +65,24 @@ test('tabAddClose', async () => {
 test('tabNavNew', async () => {
     const testAction = { tab: 'new' };
     await WebHelpers.navToTab(context, testAction);    // Navigate to new tab
+
+    const tabs = await WebHelpers.getTabs(context);
     expect(tabs.length).toBe(1);
 });
 
 test('tabNavNext', async () => {
-    let curr, expected, tabs;
+    let curr, tabs;
     const testAction1 = { tab: 'next' };
 
     await WebHelpers.newTab(context);
     await WebHelpers.newTab(context);   // Open 2 tabs
-    tabs = WebHelpers.getTabs(context);
+    tabs = await WebHelpers.getTabs(context);
 
-    WebHelpers.setActivePage(context, tabs[0]);    // Set first tab as active
+    await WebHelpers.setActivePage(context, tabs[0]);    // Set first tab as active
     await WebHelpers.navToTab(context, testAction1);    // Navigate to next
 
     curr = await WebHelpers.getActivePage(context);
-    expect(curr).toBe(expected);
+    expect(curr).toBe(tabs[1]);
 });
 
 test('tabNavPrev', async () => {
@@ -86,7 +92,7 @@ test('tabNavPrev', async () => {
     await WebHelpers.newTab(context);
     await WebHelpers.newTab(context);   // Open 2 tabs
 
-    tabs = WebHelpers.getTabs(context);
+    tabs = await WebHelpers.getTabs(context);
     await WebHelpers.navToTab(context, testAction1);    // Navigate to previous
 
     curr = await WebHelpers.getActivePage(context);
@@ -101,7 +107,7 @@ test('tabNavNum', async () => {
     await WebHelpers.newTab(context);
     await WebHelpers.newTab(context);   // Open 3 tabs
 
-    tabs = WebHelpers.getTabs(context);
+    tabs = await WebHelpers.getTabs(context);
     await WebHelpers.navToTab(context, testAction); // Navigate to tab 1
 
     curr = await WebHelpers.getActivePage(context);
@@ -116,7 +122,7 @@ test('tabNavFirst', async () => {
     await WebHelpers.newTab(context);   // Open 2 tabs
     await WebHelpers.navToTab(context, testAction); // Navigate to first
 
-    tabs = WebHelpers.getTabs(context);
+    tabs = await WebHelpers.getTabs(context);
     curr = await WebHelpers.getActivePage(context);
     expect(curr).toBe(tabs[0]);
 });
@@ -129,14 +135,14 @@ test('tabNavLast', async () => {
     await WebHelpers.newTab(context);   // Open 2 tabs
     await WebHelpers.navToTab(context, testAction); // Navigate to last
 
-    tabs = WebHelpers.getTabs(context);
+    tabs = await WebHelpers.getTabs(context);
     curr = await WebHelpers.getActivePage(context);
     expect(curr).toBe(tabs[1]);
 });
 
 test('tabNavCombine', async () => {
     let curr, tabs;
-    const testA0 = { tab: 'NEW' };
+    const testA0 = { tab: 'new' };
     const testA1 = { tab: 'f' };
     const testA2 = { tab: '1' };
     const testA3 = { tab: 'N' };
@@ -153,7 +159,7 @@ test('tabNavCombine', async () => {
     await WebHelpers.navToTab(context, testA4); // Switch to last tab (already at last tab)
     await WebHelpers.navToTab(context, testA5); // Switch to previous
 
-    tabs = WebHelpers.getTabs(context);
+    tabs = await WebHelpers.getTabs(context);
     curr = await WebHelpers.getActivePage(context);
     expect(curr).toBe(tabs[1]); // Should be at index 1
 });

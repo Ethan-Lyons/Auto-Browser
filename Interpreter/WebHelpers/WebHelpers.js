@@ -40,6 +40,12 @@ export async function browserConnect() {
     }
 }
 
+/**
+ * Disconnects a Puppeteer browser instance.
+ * @param {puppeteer.Browser} browser The browser instance to disconnect.
+ * @throws Will throw an error if the disconnection fails.
+ * @returns {Promise<void>} A promise that resolves when the disconnection is completed.
+ */
 export async function browserDisconnect(browser) {
     try {
         if (browser.connected) {
@@ -52,6 +58,12 @@ export async function browserDisconnect(browser) {
     }
 }
 
+/**
+ * Disconnects a Puppeteer browser given a context instance.
+ * @param {puppeteer.BrowserContext} context The browser context instance to disconnect.
+ * @throws Will throw an error if the disconnection fails.
+ * @returns {Promise<void>} A promise that resolves when the disconnection is completed.
+ */
 export async function browserDisconnectContext(context) {
     let browser;
     browser = context.browser();
@@ -61,7 +73,7 @@ export async function browserDisconnectContext(context) {
 export async function connectToContext() {
     try {
         const browser = await browserConnect();
-        const context = browser.defaultBrowserContext();
+        const context = await browser.defaultBrowserContext();
 
         // Install browser-level listener once
         if (!browserEventHooked) {
@@ -88,6 +100,7 @@ export async function createNewContext(browser) {
     try {
         const context = await browser.createBrowserContext();
         return context;
+        
     } catch (err) {
         throw new Error('Error creating new context:\n' + err);
     }
@@ -96,34 +109,40 @@ export async function createNewContext(browser) {
 export async function closeContext(context) {
     try {
         await context.close();
+
     } catch (err) {
         throw new Error('Error closing context (closeContext):\n' + err);
     }
 }
 
 
-export function setActivePage(context, page) {
+export async function setActivePage(context, page) {
     try{
         contextToPage.set(context, page);
-        page.bringToFront();
-    }
-    catch (err) {
+        await page.bringToFront();
+
+    } catch (err) {
         throw new Error('Error setting active page (setActivePage):\n' + err);
     }
-    
 }
 
 export async function getActivePage(context) {
-    const page = contextToPage.get(context);
-    if (context.pages().length == 0) { // check if context is empty
-        console.log("Warning (getActivePage): No pages in context.");
-        return null;
+    try {
+        const page = contextToPage.get(context);
+        if (context.pages().length === 0) { // check if context is empty
+            console.log("Warning (getActivePage): No pages in context.");
+            return null;
+        }
+        else if (page && !page.isClosed()) { // check if page is still open
+            return page;
+        }
+        const pages = await context.pages();
+        setActivePage(context, pages[0]);
+        return pages[0]; // deterministic fallback
+
+    } catch (err) {
+        throw new Error('Error getting active page (getActivePage):\n' + err);
     }
-    else if (page && !page.isClosed()) { // check if page is still open
-        return page;
-    }
-    const pages = await context.pages();
-    return pages[0]; // deterministic fallback
 }
 
 export async function getActiveIndex(context) {

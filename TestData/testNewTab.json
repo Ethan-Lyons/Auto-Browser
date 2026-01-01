@@ -6,16 +6,9 @@
             "name": "USER_ACTIONS",
             "selected": {
                 "type": "Action",
-                "name": "URL_NAV",
-                "args": [
-                    {
-                        "type": "Argument",
-                        "name": "url",
-                        "value": null,
-                        "description": ""
-                    }
-                ],
-                "description": "Go to URL"
+                "name": "NEW_TAB",
+                "args": [],
+                "description": "Open a new tab"
             },
             "allArgs": [
                 {

@@ -115,6 +115,82 @@
                                 }
                             ],
                             "description": ""
+                        }
+                    ],
+                    "description": "Find an element"
+                },
+                {
+                    "type": "Action",
+                    "name": "STORE",
+                    "args": [
+                        {
+                            "type": "Action",
+                            "name": "FIND",
+                            "args": [
+                                {
+                                    "type": "ActionGroup",
+                                    "name": "selector",
+                                    "selected": {
+                                        "type": "Argument",
+                                        "name": "xpath",
+                                        "value": null,
+                                        "description": ""
+                                    },
+                                    "allArgs": [
+                                        {
+                                            "type": "Argument",
+                                            "name": "xpath",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "Argument",
+                                            "name": "css",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "Argument",
+                                            "name": "text",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "Argument",
+                                            "name": "variable",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "ActionGroup",
+                                            "name": "link",
+                                            "selected": {
+                                                "type": "Argument",
+                                                "name": "is",
+                                                "value": null,
+                                                "description": ""
+                                            },
+                                            "allArgs": [
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "is",
+                                                    "value": null,
+                                                    "description": ""
+                                                },
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "contains",
+                                                    "value": null,
+                                                    "description": ""
+                                                }
+                                            ],
+                                            "description": ""
+                                        }
+                                    ],
+                                    "description": ""
+                                }
+                            ],
+                            "description": "Find an element"
                         },
                         {
                             "type": "Argument",
@@ -127,147 +203,79 @@
                 },
                 {
                     "type": "Action",
-                    "name": "FIND_GROUP",
-                    "args": [
-                        {
-                            "type": "ActionGroup",
-                            "name": "selector",
-                            "selected": {
-                                "type": "Argument",
-                                "name": "xpath",
-                                "value": null,
-                                "description": ""
-                            },
-                            "allArgs": [
-                                {
-                                    "type": "Argument",
-                                    "name": "xpath",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "Argument",
-                                    "name": "css",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "Argument",
-                                    "name": "text",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "Argument",
-                                    "name": "variable",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "ActionGroup",
-                                    "name": "link",
-                                    "selected": {
-                                        "type": "Argument",
-                                        "name": "is",
-                                        "value": null,
-                                        "description": ""
-                                    },
-                                    "allArgs": [
-                                        {
-                                            "type": "Argument",
-                                            "name": "is",
-                                            "value": null,
-                                            "description": ""
-                                        },
-                                        {
-                                            "type": "Argument",
-                                            "name": "contains",
-                                            "value": null,
-                                            "description": ""
-                                        }
-                                    ],
-                                    "description": ""
-                                }
-                            ],
-                            "description": ""
-                        },
-                        {
-                            "type": "Argument",
-                            "name": "save as",
-                            "value": null,
-                            "description": ""
-                        }
-                    ],
-                    "description": "Find and store group"
-                },
-                {
-                    "type": "Action",
                     "name": "CLICK",
                     "args": [
                         {
-                            "type": "ActionGroup",
-                            "name": "selector",
-                            "selected": {
-                                "type": "Argument",
-                                "name": "xpath",
-                                "value": null,
-                                "description": ""
-                            },
-                            "allArgs": [
-                                {
-                                    "type": "Argument",
-                                    "name": "xpath",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "Argument",
-                                    "name": "css",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "Argument",
-                                    "name": "text",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "Argument",
-                                    "name": "variable",
-                                    "value": null,
-                                    "description": ""
-                                },
+                            "type": "Action",
+                            "name": "FIND",
+                            "args": [
                                 {
                                     "type": "ActionGroup",
-                                    "name": "link",
+                                    "name": "selector",
                                     "selected": {
                                         "type": "Argument",
-                                        "name": "is",
+                                        "name": "xpath",
                                         "value": null,
                                         "description": ""
                                     },
                                     "allArgs": [
                                         {
                                             "type": "Argument",
-                                            "name": "is",
+                                            "name": "xpath",
                                             "value": null,
                                             "description": ""
                                         },
                                         {
                                             "type": "Argument",
-                                            "name": "contains",
+                                            "name": "css",
                                             "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "Argument",
+                                            "name": "text",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "Argument",
+                                            "name": "variable",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "ActionGroup",
+                                            "name": "link",
+                                            "selected": {
+                                                "type": "Argument",
+                                                "name": "is",
+                                                "value": null,
+                                                "description": ""
+                                            },
+                                            "allArgs": [
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "is",
+                                                    "value": null,
+                                                    "description": ""
+                                                },
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "contains",
+                                                    "value": null,
+                                                    "description": ""
+                                                }
+                                            ],
                                             "description": ""
                                         }
                                     ],
                                     "description": ""
                                 }
                             ],
-                            "description": ""
+                            "description": "Find an element"
                         }
                     ],
-                    "description": "Click"
+                    "description": "Click an element"
                 },
                 {
                     "type": "Action",
@@ -286,69 +294,76 @@
                 "name": "CLICK",
                 "args": [
                     {
-                        "type": "ActionGroup",
-                        "name": "selector",
-                        "selected": {
-                            "type": "Argument",
-                            "name": "xpath",
-                            "value": "/html/body/div[1]/div[6]/div/div[1]/div[3]/a[1]",
-                            "description": ""
-                        },
-                        "allArgs": [
-                            {
-                                "type": "Argument",
-                                "name": "xpath",
-                                "value": "/html/body/div[1]/div[6]/div/div[1]/div[3]/a[1]",
-                                "description": ""
-                            },
-                            {
-                                "type": "Argument",
-                                "name": "css",
-                                "value": null,
-                                "description": ""
-                            },
-                            {
-                                "type": "Argument",
-                                "name": "text",
-                                "value": null,
-                                "description": ""
-                            },
-                            {
-                                "type": "Argument",
-                                "name": "variable",
-                                "value": null,
-                                "description": ""
-                            },
+                        "type": "Action",
+                        "name": "FIND",
+                        "args": [
                             {
                                 "type": "ActionGroup",
-                                "name": "link",
+                                "name": "selector",
                                 "selected": {
                                     "type": "Argument",
-                                    "name": "is",
-                                    "value": null,
+                                    "name": "xpath",
+                                    "value": "/html/body/div[1]/div[6]/div/div[1]/div[3]/a[1]",
                                     "description": ""
                                 },
                                 "allArgs": [
                                     {
                                         "type": "Argument",
-                                        "name": "is",
+                                        "name": "xpath",
+                                        "value": "/html/body/div[1]/div[6]/div/div[1]/div[3]/a[1]",
+                                        "description": ""
+                                    },
+                                    {
+                                        "type": "Argument",
+                                        "name": "css",
                                         "value": null,
                                         "description": ""
                                     },
                                     {
                                         "type": "Argument",
-                                        "name": "contains",
+                                        "name": "text",
                                         "value": null,
+                                        "description": ""
+                                    },
+                                    {
+                                        "type": "Argument",
+                                        "name": "variable",
+                                        "value": null,
+                                        "description": ""
+                                    },
+                                    {
+                                        "type": "ActionGroup",
+                                        "name": "link",
+                                        "selected": {
+                                            "type": "Argument",
+                                            "name": "is",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        "allArgs": [
+                                            {
+                                                "type": "Argument",
+                                                "name": "is",
+                                                "value": null,
+                                                "description": ""
+                                            },
+                                            {
+                                                "type": "Argument",
+                                                "name": "contains",
+                                                "value": null,
+                                                "description": ""
+                                            }
+                                        ],
                                         "description": ""
                                     }
                                 ],
                                 "description": ""
                             }
                         ],
-                        "description": ""
+                        "description": "Find an element"
                     }
                 ],
-                "description": "Click"
+                "description": "Click an element"
             },
             "allArgs": [
                 {
@@ -448,6 +463,82 @@
                                 }
                             ],
                             "description": ""
+                        }
+                    ],
+                    "description": "Find an element"
+                },
+                {
+                    "type": "Action",
+                    "name": "STORE",
+                    "args": [
+                        {
+                            "type": "Action",
+                            "name": "FIND",
+                            "args": [
+                                {
+                                    "type": "ActionGroup",
+                                    "name": "selector",
+                                    "selected": {
+                                        "type": "Argument",
+                                        "name": "xpath",
+                                        "value": null,
+                                        "description": ""
+                                    },
+                                    "allArgs": [
+                                        {
+                                            "type": "Argument",
+                                            "name": "xpath",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "Argument",
+                                            "name": "css",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "Argument",
+                                            "name": "text",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "Argument",
+                                            "name": "variable",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "ActionGroup",
+                                            "name": "link",
+                                            "selected": {
+                                                "type": "Argument",
+                                                "name": "is",
+                                                "value": null,
+                                                "description": ""
+                                            },
+                                            "allArgs": [
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "is",
+                                                    "value": null,
+                                                    "description": ""
+                                                },
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "contains",
+                                                    "value": null,
+                                                    "description": ""
+                                                }
+                                            ],
+                                            "description": ""
+                                        }
+                                    ],
+                                    "description": ""
+                                }
+                            ],
+                            "description": "Find an element"
                         },
                         {
                             "type": "Argument",
@@ -460,147 +551,79 @@
                 },
                 {
                     "type": "Action",
-                    "name": "FIND_GROUP",
-                    "args": [
-                        {
-                            "type": "ActionGroup",
-                            "name": "selector",
-                            "selected": {
-                                "type": "Argument",
-                                "name": "xpath",
-                                "value": null,
-                                "description": ""
-                            },
-                            "allArgs": [
-                                {
-                                    "type": "Argument",
-                                    "name": "xpath",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "Argument",
-                                    "name": "css",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "Argument",
-                                    "name": "text",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "Argument",
-                                    "name": "variable",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "ActionGroup",
-                                    "name": "link",
-                                    "selected": {
-                                        "type": "Argument",
-                                        "name": "is",
-                                        "value": null,
-                                        "description": ""
-                                    },
-                                    "allArgs": [
-                                        {
-                                            "type": "Argument",
-                                            "name": "is",
-                                            "value": null,
-                                            "description": ""
-                                        },
-                                        {
-                                            "type": "Argument",
-                                            "name": "contains",
-                                            "value": null,
-                                            "description": ""
-                                        }
-                                    ],
-                                    "description": ""
-                                }
-                            ],
-                            "description": ""
-                        },
-                        {
-                            "type": "Argument",
-                            "name": "save as",
-                            "value": null,
-                            "description": ""
-                        }
-                    ],
-                    "description": "Find and store group"
-                },
-                {
-                    "type": "Action",
                     "name": "CLICK",
                     "args": [
                         {
-                            "type": "ActionGroup",
-                            "name": "selector",
-                            "selected": {
-                                "type": "Argument",
-                                "name": "xpath",
-                                "value": "/html/body/div[1]/div[6]/div/div[1]/div[3]/a[1]",
-                                "description": ""
-                            },
-                            "allArgs": [
-                                {
-                                    "type": "Argument",
-                                    "name": "xpath",
-                                    "value": "/html/body/div[1]/div[6]/div/div[1]/div[3]/a[1]",
-                                    "description": ""
-                                },
-                                {
-                                    "type": "Argument",
-                                    "name": "css",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "Argument",
-                                    "name": "text",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                {
-                                    "type": "Argument",
-                                    "name": "variable",
-                                    "value": null,
-                                    "description": ""
-                                },
+                            "type": "Action",
+                            "name": "FIND",
+                            "args": [
                                 {
                                     "type": "ActionGroup",
-                                    "name": "link",
+                                    "name": "selector",
                                     "selected": {
                                         "type": "Argument",
-                                        "name": "is",
-                                        "value": null,
+                                        "name": "xpath",
+                                        "value": "/html/body/div[1]/div[6]/div/div[1]/div[3]/a[1]",
                                         "description": ""
                                     },
                                     "allArgs": [
                                         {
                                             "type": "Argument",
-                                            "name": "is",
+                                            "name": "xpath",
+                                            "value": "/html/body/div[1]/div[6]/div/div[1]/div[3]/a[1]",
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "Argument",
+                                            "name": "css",
                                             "value": null,
                                             "description": ""
                                         },
                                         {
                                             "type": "Argument",
-                                            "name": "contains",
+                                            "name": "text",
                                             "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "Argument",
+                                            "name": "variable",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "ActionGroup",
+                                            "name": "link",
+                                            "selected": {
+                                                "type": "Argument",
+                                                "name": "is",
+                                                "value": null,
+                                                "description": ""
+                                            },
+                                            "allArgs": [
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "is",
+                                                    "value": null,
+                                                    "description": ""
+                                                },
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "contains",
+                                                    "value": null,
+                                                    "description": ""
+                                                }
+                                            ],
                                             "description": ""
                                         }
                                     ],
                                     "description": ""
                                 }
                             ],
-                            "description": ""
+                            "description": "Find an element"
                         }
                     ],
-                    "description": "Click"
+                    "description": "Click an element"
                 },
                 {
                     "type": "Action",

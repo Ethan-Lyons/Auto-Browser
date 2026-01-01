@@ -3,7 +3,7 @@ import { getActiveIndex, setActivePage } from "./WebHelpers.js";
 /**
  * Get all tabs in the browser context.
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @returns {puppeteer.Page[]} An array of tabs in the browser context.
+ * @returns {Promise<puppeteer.Page[]>} An array of tabs in the browser context.
  */
 export async function getTabs(context) {
     const tabs = await context.pages();
@@ -13,18 +13,17 @@ export async function getTabs(context) {
 /**
  * Open a tab in the browser context.
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @returns {puppeteer.Page} The new tab.
+ * @returns {Promise<puppeteer.Page>} The new tab.
  * @throws {Error} If there is an error opening the tab.
  */
 export async function newTab(context) {
-    let page;
     try {
-        page = await context.newPage();
-        setActivePage(context, page);
-        return page;
-        
-    } catch (err) {
-        throw new Error('Tab (newTab) error:\n' + err);
+        const newPage = await context.newPage();
+        await setActivePage(context, newPage);
+        return newPage;
+
+    } catch (error) {
+        throw new Error(`Error opening new tab: ${error}`);
     }
 }
 
@@ -37,6 +36,9 @@ export async function closeTab(tab) {
     try {
         if (tab != null) {
             await tab.close();
+        }
+        else {
+            throw new Error('Invalid tab for closing (closeTab) :\n' + "Input: " + tab);
         }
 
     } catch (err) {
@@ -53,19 +55,26 @@ export async function closeTab(tab) {
  * @throws {Error} If the tab field is invalid or there is an error navigating to the tab.
  */
 export async function navToTab(context, navAction) {
-    let tabStr, index, tabs;
     try {
-        tabStr = navAction.tab;
-        tabs = getTabs(context);
-        if (tabs.length == 0) { // no tabs
+        const tabStr = navAction.tab;
+        const tabs = await getTabs(context);
+        const newReg = /^(new)\s*$/i;
+
+        // If the tab string is "new", open a new tab
+        if (newReg.test(tabStr)) {
+            await newTab(context);
+            return;
+        }
+        // If there are no tabs, do nothing
+        else if (tabs.length === 0) {
             return;
         }
 
-        index = resolveTabIndex(tabStr, context);
-        if (index == -1) {
+        const index = await resolveTabIndex(tabStr, context);
+        if (index == -1) {  // returns -1 if tabStr is invalid
             throw new Error('Invalid tab for navigation (navToTab):\n' + "Input: " + tabStr);
         }
-        setActivePage(context, tabs[index]);
+        await setActivePage(context, tabs[index]);
         
     } catch (err) {
         throw new Error('Tab (navToTab) error:\n' + err);
@@ -83,30 +92,30 @@ export async function navToTab(context, navAction) {
  * - "first" for the first tab.
  * @param {string|number} tabStr The tab string to resolve.
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @returns {number} The resolved index value.
+ * @returns {Promise<number>} The resolved index value.
  * @throws {Error} If the tab string is invalid or there is an error resolving the tab string.
  */
 async function resolveTabIndex(tabStr, context) {
-    let intValue, index, activeIndex;
+    let intValue, index;
     try{
         // If the tab string is a number, resolve it to ensure it is a valid index
         if (typeof tabStr === "number") {
-            tabStr = resolveTabInt(tabStr, context);
+            tabStr = await resolveTabInt(tabStr, context);
             return tabStr;
         }
         // If the tab string is a string, convert it to an index value
         else if (typeof tabStr == "string") {
-            intValue = resolveStringInt(tabStr);
+            intValue = await resolveStringInt(tabStr);
 
-            // If the tab string is a number string, resolve it to an index value
+            // If the tab string is a number string, resolve it to a valid index value
             if (intValue != null) {
-                index = intValue;
+                index = await resolveTabInt(intValue, context);
                 return index;
             }
             // If the tab string is not a number string, resolve it to an index value relative to the current tab
             else {
-                activeIndex = await getActiveIndex(context);
-                index = resolveTabStrIndex(tabStr, activeIndex, context);
+                const activeIndex = await getActiveIndex(context);
+                index = await resolveTabStrIndex(tabStr, activeIndex, context);
                 return index;
             }
         }
@@ -124,14 +133,13 @@ async function resolveTabIndex(tabStr, context) {
  * Resolve an integer to a valid index value. Index values are in the range [0, tabs.length - 1].
  * @param {number} tabInt The integer to resolve.
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @returns {number} The resolved index value.
+ * @returns {Promise<number>} The resolved index value.
  * @throws {Error} If there is an error resolving the integer.
  */
 async function resolveTabInt(tabInt, context) {
-    let index, tabs;
     try {
-        tabs = getTabs(context);
-        index = Math.min(Math.max(0, tabs.length - 1),Math.max(0, tabInt));
+        const tabs = await getTabs(context);
+        const index = Math.min(Math.max(0, tabs.length - 1),Math.max(0, tabInt));
         return index;
 
     } catch (err) {
@@ -150,33 +158,26 @@ async function resolveTabInt(tabInt, context) {
  * @param {string} tabStr The tab string to resolve.
  * @param {number} activeIndex The index of the current active tab.
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @returns {number} The resolved index value.
+ * @returns {Promise<number>} The resolved index value.
  * @throws {Error} If the tab string is invalid or there is an error resolving the tab string.
  */
 async function resolveTabStrIndex(tabStr, activeIndex, context) {
-    let newReg, pReg, nReg, lReg, fReg;
-    tabStr = tabStr.toLowerCase();
-    newReg = /^(new)\s*$/;
-    nReg = /^(next|n)\s*$/;
-    pReg = /^(previous|prev|p)\s*$/;
-    lReg = /^(last|l)\s*$/;
-    fReg = /^(first|f)\s*$/;
+    const nReg = /^(next|n)\s*$/i;
+    const pReg = /^(previous|prev|p)\s*$/i;
+    const lReg = /^(last|l)\s*$/i;
+    const fReg = /^(first|f)\s*$/i;
 
     try {
-        // If the tab string is "new", open a new tab and return the index of the new tab
-        if (newReg.test(tabStr)) {
-            await newTab(context);
-            const tabs = await getTabs(context);
-            return tabs.length - 1;
-        }
+
+
         // If the tab string is "previous" or "prev", navigate to the previous tab
-        else if (pReg.test(tabStr)) {
-            index = await resolveTabInt(activeIndex - 1, context);
+        if (pReg.test(tabStr)) {
+            const index = await resolveTabInt(activeIndex - 1, context);
             return index;
         }
         // If the tab string is "next", navigate to the next tab
         else if (nReg.test(tabStr)) {
-            index = await resolveTabInt(activeIndex + 1, context);
+            const index = await resolveTabInt(activeIndex + 1, context);
             return index;
         }
         // If the tab string is "last", navigate to the last tab
@@ -194,14 +195,14 @@ async function resolveTabStrIndex(tabStr, activeIndex, context) {
         }
 
     } catch (err) {
-        throw new Error('Tab (resolveTabStrIndex) error:\n' + err);
+        throw new Error('Tab (resolveTabStrIndex) error:\n' + "Input: " + tabStr + "\n" + err);
     }
 }
 
 /**
  * Attempt to convert a string to a number.
  * @param {string|number} value The value to convert.
- * @returns {number|null} The converted number if successful, or null if not.
+ * @returns {Promise<number|null>} The converted number if successful, or null if not.
  * @throws {Error} If there is an error resolving the string.
  */
 async function resolveStringInt(value) {
@@ -213,9 +214,7 @@ async function resolveStringInt(value) {
                 return converted;
             }
             // If the conversion is not successful, return null
-            else {
-                return null;
-            }
+            else { return null; }
         }
         // If the value was already a number, return the value
         else if (Number.isInteger(value)) {return value;}

@@ -34,7 +34,8 @@ def testClick():
     urlArg.setValue("https://www.google.com")   # base navigation
 
     clickA = userAG2.find("CLICK")
-    selector = clickA.find("selector")
+    find = clickA.find("find")
+    selector = find.find("selector")
     xpath = selector.find("xpath")  # finding click action parts
 
     userAG2.setSelected(clickA)
@@ -43,10 +44,20 @@ def testClick():
 
     _saveRoutine(routine, "testClick")
 
+def testNewTab():
+    routine = Routine(inputOutput=InputOutput)
+    userAG = routine.createDefaultAG()
+
+    newTabA = userAG.find("NEW_TAB")
+    userAG.setSelected(newTabA)
+
+    _saveRoutine(routine, "testNewTab")
+
 def generateTestData():
     testBlank()
     testNav()
     testClick()
+    testNewTab()
 
 generateTestData()
 
