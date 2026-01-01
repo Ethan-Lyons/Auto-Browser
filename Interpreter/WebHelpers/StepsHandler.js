@@ -26,38 +26,38 @@ export async function handleStep(context, step) {
  *   - TAB_NAV: Navigates to the given tab.
  *   - NEW_TAB: Opens a new tab.
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @param {Object} currentAction A dictionary entry for a step. This step should have a single action and its corresponding arguments.
+ * @param {Object} currentStep A dictionary entry for a step. This step should have a single action and its corresponding arguments.
  * @throws {Error} Error during execution of action.
  */
-export async function handleAction(context, currentAction) {
+export async function handleAction(context, currentStep) {
     try {
-        if(currentAction.name == "CLICK") {
-          const selectedGroupStep = currentAction.args[0];
-          const selectedType = selectedGroupStep.selected;
-          await WebHelpers.click(context, selectedType);
+        if(currentStep.name == "CLICK") {
+          //const selectedGroupStep = currentAction.args[0];
+          //const selectedType = selectedGroupStep.selected;
+          await WebHelpers.click(context, currentStep);
         }
-        else if (currentAction.name == "FIND") {
-          const selectedGroupStep = currentAction.args[0];
-          const selectedType = selectedGroupStep.selected;
-          await WebHelpers.find(context, selectedType); //currentStep);
+        else if (currentStep.name == "FIND") {
+          //const selectedGroupStep = currentAction.args[0];
+          //const selectedType = selectedGroupStep.selected;
+          await WebHelpers.find(context, currentStep); //currentStep);
         }
-        else if (currentAction.name == "FIND_GROUP") {
-          await WebHelpers.findGroup(context, currentAction);
+        else if (currentStep.name == "FIND_GROUP") {
+          await WebHelpers.findGroup(context, currentStep);
         }
-        else if (currentAction.name == "URL_NAV") {
-          await WebHelpers.urlNav(context, currentAction);
+        else if (currentStep.name == "URL_NAV") {
+          await WebHelpers.urlNav(context, currentStep);
         }
-        else if (currentAction.name == "TAB_NAV") {
-          await WebHelpers.navToTab(context, currentAction);
+        else if (currentStep.name == "TAB_NAV") {
+          await WebHelpers.navToTab(context, currentStep);
         }
-        else if (currentAction.name == "NEW_TAB") {
+        else if (currentStep.name == "NEW_TAB") {
           await WebHelpers.newTab(context);
         }
         else {
-          throw new Error('\"' + currentAction.name + '\" is not defined in WebHelpers.');
+          throw new Error('\"' + currentStep.name + '\" is not defined in WebHelpers.');
         }
       } catch (err) {
-        throw new Error('\nError during execution of action: ' + currentAction.name + '\n' + err);
+        throw new Error('\nError during execution of action: ' + currentStep.name + '\n' + err);
       }
     }
 

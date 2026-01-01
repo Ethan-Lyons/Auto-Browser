@@ -31,12 +31,14 @@ class UserActionBuilder:
         tab = ActionFactory.createArgument("tab")
         saveAs = ActionFactory.createArgument("save as")
 
+
         urlNavType = self.createUserAction("URL_NAV", [url], "Go to URL")
         tabNavType = self.createUserAction("TAB_NAV", [tab], "Navigate to an existing tab")
         newTabType = self.createUserAction("NEW_TAB", [], "Open a new tab")
-        findType = self.createUserAction("FIND", [selector, saveAs], "Find and store")
-        findGroupType = self.createUserAction("FIND_GROUP", [selector, saveAs], "Find and store group")
-        clickType = self.createUserAction("CLICK", [selector], "Click")
+        findType = self.createUserAction("FIND", [selector], "Find an element")
+        storeType = self.createUserAction("STORE", [findType, saveAs], "Find and store")
+        #findGroupType = self.createUserAction("FIND_GROUP", [selector, saveAs], "Find and store group")
+        clickType = self.createUserAction("CLICK", [findType], "Click an element")
         fakeAction = self.createUserAction("FAKE_ACTION", [], "Fake Action")
 
         userActionGroup = ActionFactory.createActionGroup("USER_ACTIONS", self.userSteps)

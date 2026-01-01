@@ -1,5 +1,4 @@
 import { find } from './Find.js';
-import assert from 'assert';
 import { getActivePage } from './WebHelpers.js';
 import puppeteer from 'puppeteer-core';
 
@@ -20,74 +19,28 @@ export async function waitForNavClick(page, element) {
         process.exit(1);
     }
 }
-export async function click(context, selectedArg) {
-    try {
-        const page = await getActivePage(context);
-        const foundElement = await find(context, selectedArg);
-        await waitForNavClick(page, foundElement);
-    } catch (err) {
-        console.error('Navigation (click) error:\n', err);
-        process.exit(1);
-    }
-}
-
-/*export async function click(browser, clickStep) {
-    // TODO: finish type support
-    assert(browser instanceof puppeteer.Browser, "browser is not a Browser instance");
-    try {
-        selectorGroup = clickStep.args[0];
-        selectedArg = selectorGroup.selected;
-        page = await getActivePage(browser);
-
-        if (selectedArg.name == "xpath") {
-            target = selectedArg.value;
-            const element = await findByXPath(browser, target);
-            await waitForNavClick(page, element);
-        }
-        else if (selectedArg.name == "id") {
-            target = selectedArg.value;
-            const element = await findByID(browser, target);
-            await waitForNavClick(page, element);
-        }
-        else if (selectedArg.name == "link") {
-            linkType = selectedArg.selected;
-                if (linkType.name == "is") {
-                    target = linkType.value;
-                    const element = await findByLinkAddress(browser=browser, linkAddress=target, strict=true);
-                    await waitForNavClick(page, element);
-                }
-                else if (linkType.name == "contains") {
-                    target = linkType.value;
-                    const element = await findByLinkAddress(browser=browser, linkAddress=target, strict=false);
-                    await waitForNavClick(page, element);
-                }
-            }
-    } catch (err) {
-        console.error('Navigation (click) error:\n', err);
-        process.exit(1);
-    }
-}*/
 
 /**
- * Clicks an element by its ID.
- * @param {puppeteer.Page} page The page on which to click
- * @param {string} id The ID of the element to click
+ * Clicks on an element matching the given selector.
+ * @param {puppeteer.BrowserContext} context The browser context instance to use.
+ * @param {Object} clickStep An object for a click action.
+ *      This step should be of type action with the name value click and a find action in its args list.
+ * @throws {Error} Error during execution of action.
  */
-export async function clickID(page, id) {
-    element = await findByID(page, id);
-    await waitForNavClick(page, element);
-}
-
-/*async function clickLinkByText(page, text) {
+export async function click(context, clickStep) {
     try {
-        const fullXpath = '::-p-xpath(' + `//a[text()="${text}"]` + ')';
-        const element = await page.waitForSelector(fullXpath);
-        if (element) { 
-            await waitForNavClick(page, element);
+        const page = await getActivePage(context);
+        const findStep = clickStep.args[0];
+        const foundElement = await find(context, findStep);
+        if (foundElement) {
+            await waitForNavClick(page, foundElement);
         }
+        else {
+            console.log("Warning: Element not found: " + clickStep.name + " " + clickStep.selectedArg);
+        }
+        
     } catch (err) {
-        console.log("Text: " + text + "\nfullXpath: " + fullXpath +"\n");
-        console.error('Navigation (clickLinkByText) error:\n', err);
+        console.error('Navigation (click) error:\n', err);
         process.exit(1);
     }
-}*/
+}

@@ -1,11 +1,8 @@
-import fs from 'fs';
-import * as WebHelpers from './WebHelpers/WebHelpers.js';  
-import puppeteer from 'puppeteer-core';
-//import assert from 'assert';
+// Manual execution example:  node RoutineInterpreter.js ../Creator/Routines/test1.json
 
+import * as WebHelpers from './WebHelpers/WebHelpers.js';  
 import { fileURLToPath } from 'url';
 import path from 'path';
-import { get } from 'http';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

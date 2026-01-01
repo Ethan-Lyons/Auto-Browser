@@ -129,7 +129,7 @@ class ActionFrame:
             A frame containing a dropdown menu and a subframe for the currently selected action
         """
         gFrame = tk.Frame(pFrame)
-        actionStrList = [str(a) for a in group.getActions()]
+        actionStrList = [str(a) for a in group.getArgs()]
         initial = str(group.getSelected())
 
         groupDD = self.getDropDown(entryList=actionStrList, pFrame=gFrame,
@@ -157,7 +157,7 @@ class ActionFrame:
             gFrame (Frame): The parent frame associated with the action group
             newStrSelection (str): The string name of the newly selected action in the dropdown menu
         """
-        newSelection = group.findAction(actionName=newStrSelection)
+        newSelection = group.find(actionName=newStrSelection)
         group.setSelected(newSelection)
 
         oldFrame = self.groupFrames[group]   # Destroy old args subframe

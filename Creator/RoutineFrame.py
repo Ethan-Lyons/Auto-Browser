@@ -17,8 +17,8 @@ class RoutineFrame():
         Builds and places the save, load, and add buttons, as well as the
         container for the action frames. Also adds a default branch to the routine object if empty.
         """
-        if len(self.routine.getBranches()) == 0:
-            self.routine.createActionBranch()
+        if len(self.routine.getSteps()) == 0:
+            self.routine.createDefaultAG()
         self.actionsFrameContainer = self._buildAFContainer()   # create frames
 
         self.addButton = tkinter.Button(self.frame, text="+",
@@ -53,7 +53,7 @@ class RoutineFrame():
         """
         actionsFrameContainer = tkinter.Frame(self.frame)
         self.actionFrames = []
-        actionBranchList = self.routine.getBranches()
+        actionBranchList = self.routine.getSteps()
 
         for currentBranch in actionBranchList:  # create each action frame
             newFrame = self._createActionFrame(currentBranch, actionsFrameContainer)
@@ -68,7 +68,7 @@ class RoutineFrame():
         Returns:
             The new ActionFrame object for the created action branch.
         """
-        newBranch = self.routine.createActionBranch()
+        newBranch = self.routine.createDefaultAG()
         newFrame = self._createActionFrame(newBranch, parent=self.actionsFrameContainer)
         self.actionFrames.append(newFrame)
         return newFrame
@@ -127,9 +127,9 @@ class RoutineFrame():
         self.actionFrames.remove(actionFrame)
         actionFrame.destroy()
     
-    def getBranches(self):
-        """Returns the list of action branches in the routine."""
-        return self.routine.getBranches()
+    def getSteps(self):
+        """Returns the list of steps in the routine."""
+        return self.routine.getSteps()
     
     def getActionFrames(self):
         """Returns the list of action frames under the routine frame."""
