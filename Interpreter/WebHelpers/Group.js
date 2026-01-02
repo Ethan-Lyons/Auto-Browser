@@ -37,3 +37,17 @@ async function getGroupByAttribute(page, type, attribute, value, strict=false) {
         }
     }
 }
+
+export async function groupGetByAttribute(parents, type, attribute, value, strict = false) {
+    try {
+        const newList = [];
+        for (let i = 0; i < parents.length; i++) {
+            const currentParent = parents[i];
+            const newItem = await findByAttribute(currentParent, type, attribute, value, strict);
+            newList[i] = newItem;
+        }
+        return newList;    
+    } catch (err) {
+        throw new Error('Navigation (getAllParentsAttribute) error:\n' + err);
+    }
+}

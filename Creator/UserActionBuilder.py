@@ -19,7 +19,6 @@ class UserActionBuilder:
         """
         variable = ActionFactory.createArgument("variable")
         text = ActionFactory.createArgument("text")
-        #text = self.createArgument("text")
         xPath = ActionFactory.createArgument("xpath")
         css = ActionFactory.createArgument("css")
         lIs = ActionFactory.createArgument("is")
@@ -31,14 +30,21 @@ class UserActionBuilder:
         tab = ActionFactory.createArgument("tab")
         saveAs = ActionFactory.createArgument("save as")
 
+        #variable = ActionFactory.createArgument("variable")
+        #create action group for saving to variable or outputs
+        # [findType, text, variable, info]
+        # create info action group with methods for info access (tab number, page url, etc)
+
 
         urlNavType = self.createUserAction("URL_NAV", [url], "Go to URL")
         tabNavType = self.createUserAction("TAB_NAV", [tab], "Navigate to an existing tab")
         newTabType = self.createUserAction("NEW_TAB", [], "Open a new tab")
         findType = self.createUserAction("FIND", [selector], "Find an element")
         storeType = self.createUserAction("STORE", [findType, saveAs], "Find and store")
+        #("STORE", [findType, saveAs]
         #findGroupType = self.createUserAction("FIND_GROUP", [selector, saveAs], "Find and store group")
         clickType = self.createUserAction("CLICK", [findType], "Click an element")
+        
         fakeAction = self.createUserAction("FAKE_ACTION", [], "Fake Action")
 
         userActionGroup = ActionFactory.createActionGroup("USER_ACTIONS", self.userSteps)

@@ -21,13 +21,13 @@ export async function find(context, findStep) {
         if (selectedArg.name == "xpath") {
             const target = selectedArg.value;
             const element = await findByXPath(page, target);
-            await checkValidElement(element, selectedArg);
+            checkValidElement(element, selectedArg);
             return element;
         }
         else if (selectedArg.name == "id") {
             const target = selectedArg.value;
             const element = await findByID(page, target);
-            await checkValidElement(element, selectedArg);
+            checkValidElement(element, selectedArg);
             return element;
         }
         else if (selectedArg.name == "link") {
@@ -37,14 +37,14 @@ export async function find(context, findStep) {
                     //console.log("Link is: " + linkType.value);
                     const target = linkType.value;
                     const element = await findByLinkAddress(page, target, true);
-                    await checkValidElement(element, linkType);
+                    checkValidElement(element, linkType);
                     return element;
                 }
                 else if (linkType.name == "contains") {
                     //console.log("Link contains: " + linkType.value);
                     const target = linkType.value;
                     const element = await findByLinkAddress(page, target, false);
-                    await checkValidElement(element, linkType);
+                    checkValidElement(element, linkType);
                     return element;
                 }
             }
@@ -61,7 +61,7 @@ export async function find(context, findStep) {
  * @param {puppeteer.Page} page The page to search for the element
  * @param {string} linkAddress The link address to search for
  * @param {boolean} [strict=false] Whether to search for an exact link address or a link address that contains the given string
- * @returns {puppeteer.ElementHandle} The element found
+ * @returns {Promise<puppeteer.ElementHandle>} The element found
  */
 async function findByLinkAddress(page, linkAddress, strict=false) {
     try {
@@ -84,7 +84,7 @@ async function findByLinkAddress(page, linkAddress, strict=false) {
  * Helper function to find an element by XPath.
  * @param {puppeteer.Page} page The page to search for the element
  * @param {string} xPath The XPath to search for
- * @returns {puppeteer.ElementHandle} The element found
+ * @returns {Promise<puppeteer.ElementHandle>} The element found
  */
 async function findByXPath(page, xPath) {
     try{
@@ -101,7 +101,7 @@ async function findByXPath(page, xPath) {
  * Helper function to find an element by its ID.
  * @param {puppeteer.Page} page The page to search for the element
  * @param {string} id The ID of the element to search for
- * @returns {puppeteer.ElementHandle} The element found
+ * @returns {Promise<puppeteer.ElementHandle>} The element found
  */
 async function findByID(page, id) {
     try {
@@ -113,7 +113,14 @@ async function findByID(page, id) {
     }
 }
 
-async function checkValidElement(findReturn, target) {
+/**
+ * Checks if an element was found by the find function.
+ * If the element was found, returns true. If not, logs a warning message with the target mode and value, and returns false.
+ * @param {puppeteer.ElementHandle | null} findReturn The return value of the find function
+ * @param {Object} target The target object containing the name and value of the target mode
+ * @returns {boolean} True if the element was found, false otherwise
+ */
+function checkValidElement(findReturn, target) {
     if (findReturn) {
         return true;
     }

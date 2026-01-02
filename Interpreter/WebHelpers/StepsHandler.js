@@ -32,14 +32,10 @@ export async function handleStep(context, step) {
 export async function handleAction(context, currentStep) {
     try {
         if(currentStep.name == "CLICK") {
-          //const selectedGroupStep = currentAction.args[0];
-          //const selectedType = selectedGroupStep.selected;
           await WebHelpers.click(context, currentStep);
         }
         else if (currentStep.name == "FIND") {
-          //const selectedGroupStep = currentAction.args[0];
-          //const selectedType = selectedGroupStep.selected;
-          await WebHelpers.find(context, currentStep); //currentStep);
+          await WebHelpers.find(context, currentStep);
         }
         else if (currentStep.name == "FIND_GROUP") {
           await WebHelpers.findGroup(context, currentStep);
@@ -67,7 +63,7 @@ export async function handleAction(context, currentStep) {
  * @throws {Error} Error during execution of action.
  * @returns {Routine} The loaded routine object.
  */
-export async function loadRoutineFromJSON(filePath) {
+export function loadRoutineFromJSON(filePath) {
   try {
     const fileContent = fs.readFileSync(filePath, 'utf8');
     const routine = JSON.parse(fileContent);

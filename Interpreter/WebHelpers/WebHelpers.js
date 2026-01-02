@@ -1,75 +1,25 @@
 import puppeteer from 'puppeteer-core';
-//import assert from 'assert';
 export * from './Find.js';
 export * from './Info.js';
 export * from './Click.js';
 export * from './Tab.js';
+export * from './Group.js';
+export * from './Browser.js';
+export * from './Page.js';
 export * from './WebHelpers.js';
 export * from './StepsHandler.js'
 
-// go forward, go back, refresh, hover, screenshot, title, url
 
-const contextToPage = new WeakMap();  // Map from each browser context to its active page
+// TODO:  go forward, go back, refresh, hover, screenshot, title, url
+
 let browserEventHooked = false;
+const contextToPage = new WeakMap();  // Map from each browser context to its active page
 
 /**
- * Establishes a Puppeteer connection to an existing  browser instance.
- * @returns {Promise<puppeteer.Browser>} A promise that resolves with a Puppeteer browser instance.
- * @throws Will throw an error if the connection to the browser cannot be established.
+ * Establishes a connection to the Puppeteer browser and returns the default context.
+ * @returns {Promise<puppeteer.BrowserContext>} A promise that resolves with a Puppeteer browser context instance.
+ * @throws Will throw an error if the connection to the browser context cannot be established.
  */
-export async function browserConnect() {
-    try {
-        console.log("Establishing connection to Puppeteer...");
-
-        const browser = await puppeteer.connect({
-            browserURL: 'http://localhost:9222', // Browser must be launched with remote debugging enabled
-            defaultViewport: null,
-            headless: false
-        });
-
-        // Listen for the browser being closed manually
-        browser.on('disconnected', () => {
-            console.log('Browser manually closed.');
-        });
-
-        return browser;
-    } catch (err) {
-        // Common fixes: check that browser is opened with --remote-debugging-port
-        //      close all browser instances in task manager and retry
-        throw new Error('Error Puppeteer could not connect:\n' + err);
-    }
-}
-
-/**
- * Disconnects a Puppeteer browser instance.
- * @param {puppeteer.Browser} browser The browser instance to disconnect.
- * @throws Will throw an error if the disconnection fails.
- * @returns {Promise<void>} A promise that resolves when the disconnection is completed.
- */
-export async function browserDisconnect(browser) {
-    try {
-        if (browser.connected) {
-            await browser.disconnect();
-        }
-        console.log("Browser disconnected.");
-
-    } catch (err) {
-        throw new Error('Error disconnecting from Puppeteer:\n' + err);
-    }
-}
-
-/**
- * Disconnects a Puppeteer browser given a context instance.
- * @param {puppeteer.BrowserContext} context The browser context instance to disconnect.
- * @throws Will throw an error if the disconnection fails.
- * @returns {Promise<void>} A promise that resolves when the disconnection is completed.
- */
-export async function browserDisconnectContext(context) {
-    let browser;
-    browser = context.browser();
-    await browserDisconnect(browser);
-}
-
 export async function connectToContext() {
     try {
         const browser = await browserConnect();
@@ -96,6 +46,12 @@ export async function connectToContext() {
     }
 }
 
+/**
+ * Creates a new browser context instance.
+ * @param {puppeteer.Browser} browser The browser instance to use.
+ * @returns {Promise<puppeteer.BrowserContext>} A promise that resolves with a new browser context instance.
+ * @throws Will throw an error if the context creation fails.
+ */
 export async function createNewContext(browser) {
     try {
         const context = await browser.createBrowserContext();
@@ -106,6 +62,11 @@ export async function createNewContext(browser) {
     }
 }
 
+/**
+ * Closes the given browser context and all of its pages.
+ * @param {puppeteer.BrowserContext} context The browser context instance to close.
+ * @throws {Error} If there is an error closing the context.
+ */
 export async function closeContext(context) {
     try {
         await context.close();
@@ -116,6 +77,12 @@ export async function closeContext(context) {
 }
 
 
+/**
+ * Sets the active page in the given context.
+ * @param {puppeteer.BrowserContext} context The browser context instance to use.
+ * @param {puppeteer.Page} page The page to set as active.
+ * @throws {Error} If there is an error setting the active page.
+ */
 export async function setActivePage(context, page) {
     try{
         contextToPage.set(context, page);
@@ -126,6 +93,15 @@ export async function setActivePage(context, page) {
     }
 }
 
+/**
+ * Retrieves the active page in the browser context.
+ * If there are no pages in the context, return null.
+ * If the current active page is still open, return it.
+ * Otherwise, set the first page in the context as the active page and return it.
+ * @param {puppeteer.BrowserContext} context The browser context instance to use.
+ * @returns {Promise<puppeteer.Page>} The active page in the browser context.
+ * @throws {Error} Error during execution of action.
+ */
 export async function getActivePage(context) {
     try {
         const page = contextToPage.get(context);
@@ -149,48 +125,4 @@ export async function getActiveIndex(context) {
     const page = await getActivePage(context);
     const pages = await context.pages();
     return pages.indexOf(page);
-}
-
-
-/**
- * Navigates to a URL.  Use the await keyword to ensure proper execution.
- * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @param {Object} currentStep An object for a url nav action.
- *      This step should be of type action with the corresponding name value and a url value in its args list.
- */
-export async function urlNav(context, currentStep) {
-    let urlArg, url, page;
-    try {
-        if (currentStep.name != "URL_NAV") {
-            throw new Error('Invalid step type (urlNav):\n' + err);
-        }
-        urlArg = currentStep.args[0];
-        url = urlArg.value;
-
-        if (!/^https?:\/\//i.test(url)) {   // add url prefix if needed
-            url = "https://" + url;
-        }
-        
-        page = await getActivePage(context);
-        await Promise.all([
-            page.waitForNavigation(),
-            page.goto(url)
-        ]);
-    } catch (err) {
-        throw new Error('Navigation (urlNav) error:\n' + err);
-    }
-}
-
-export async function groupGetByAttribute(parents, type, attribute, value, strict = false) {
-    try {
-        const newList = [];
-        for (let i = 0; i < parents.length; i++) {
-            const currentParent = parents[i];
-            const newItem = await findByAttribute(currentParent, type, attribute, value, strict);
-            newList[i] = newItem;
-        }
-        return newList;    
-    } catch (err) {
-        throw new Error('Navigation (getAllParentsAttribute) error:\n' + err);
-    }
 }
