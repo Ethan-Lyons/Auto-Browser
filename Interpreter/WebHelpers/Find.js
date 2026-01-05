@@ -1,4 +1,3 @@
-import { timeout, TimeoutError } from "puppeteer-core";
 import { getActivePage } from "./WebHelpers.js";
 import puppeteer from 'puppeteer-core';
 
@@ -48,6 +47,7 @@ export async function find(context, findStep) {
         else {
             throw new Error ("Error: Unknown find type: " + selectorType.name);
         }
+        
     } catch (err) {
         throw new Error('Find (find) error:\n' + err);
     }
@@ -72,6 +72,7 @@ async function findByLinkAddress(page, linkAddress, strict="false") {
 
         const locator = await page.locator(fullXpath);
         return locator;
+
     } catch (err) {
         throw new Error('Find (findByLinkAddress [strict = ' + strict + ']) error:\n' + err);
     }
@@ -88,6 +89,7 @@ async function findByXPath(page, xPath) {
         const fullXPath = 'xpath/' + xPath;
         const locator = await page.locator(fullXPath);
         return locator;
+
     } catch (err) {
         throw new Error('Find (findByXPath) error:\n' + err);
     }
@@ -108,11 +110,11 @@ async function findByText(page, text) {
 }
 
 async function findByAria(page, aria){
-
     try {
         const fullXPath = '::-p-aria(' + aria + ')';
         const locator = await page.locator(fullXPath);
         return locator;
+
     } catch (err) {
         throw new Error('Find (findByAria) error:\n' + err);
     }

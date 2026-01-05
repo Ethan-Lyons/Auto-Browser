@@ -27,7 +27,6 @@ class ButtonFrame:
                                               onPressFunction=self.moveFunction, row=0, column=1)
         self.ActionButton(buttonName="DOWN", text="↓", parent=moveFrame,
                                             onPressFunction=self.moveFunction, row=0, column=2)
-        
         return moveFrame
     
     def getManageFrame(self):
@@ -40,4 +39,3 @@ class ButtonFrame:
         def __init__(self, buttonName, text, parent, onPressFunction, row=0, column=0):
             self.button = tk.Button(master=parent, text=text, command=lambda:onPressFunction(buttonName))
             self.button.grid(row=row, column=column)
-            #self.button.pack(side=tk.LEFT)

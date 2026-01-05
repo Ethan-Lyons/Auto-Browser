@@ -74,7 +74,7 @@ test('Click Xpath', async () => {
     const xpath = { name: 'xpath', value:  '//a[@href="https://policies.google.com/privacy?hl=en&fg=1"]'};
     const selectorGroup = { name: 'selector', selected: xpath}
     const findAction = { name: 'FIND', args: [selectorGroup] };  // Find action
-    const clickAction = { name: 'CLICK', args: [findAction]}
+    const clickAction = { name: 'CLICK', args: [findAction]}    // Click action
 
     await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);

@@ -7,7 +7,6 @@ class ActionBuilderManager:
     URL = "url"
 
     class ActionBuilder:
-        #change to action builder
         def __init__(self, name, args=[], description=""):
             self.name = name
             self.description = description

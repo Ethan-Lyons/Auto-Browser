@@ -12,6 +12,16 @@ export async function getTabs(context) {
 }
 
 /**
+ * Get the number of tabs in the browser context.
+ * @param {puppeteer.BrowserContext} context The browser context instance to use.
+ * @returns {Promise<number>} The number of tabs in the browser context.
+ */
+export async function getTabCount(context) {
+    const tabs = await context.pages();
+    return tabs.length();
+}
+
+/**
  * Open a tab in the browser context.
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
  * @returns {Promise<puppeteer.Page>} The new tab.
@@ -168,10 +178,7 @@ async function resolveTabStrIndex(tabStr, activeIndex, context) {
     const pReg = /^(previous|prev|p)\s*$/i;
     const lReg = /^(last|l)\s*$/i;
     const fReg = /^(first|f)\s*$/i;
-
     try {
-
-
         // If the tab string is "previous" or "prev", navigate to the previous tab
         if (pReg.test(tabStr)) {
             const index = await resolveTabInt(activeIndex - 1, context);

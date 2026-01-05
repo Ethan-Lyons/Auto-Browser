@@ -3,23 +3,6 @@ import { getActivePage } from './WebHelpers.js';
 import puppeteer from 'puppeteer-core';
 
 /**
- * Helper function to navigate to a page by clicking on an element.
- * Will wait for the page to finish loading and navigate to the new page.
- * @param {puppeteer.Page} page The page to navigate
- * @param {puppeteer.ElementHandle} locator The element locator of the element to click
- */
-export async function waitForNavClick(page, locator) {
-    try {
-        await Promise.allSettled([
-            page.waitForNavigation({ waitUntil: 'networkidle0'}),
-            locator.click(),
-        ]);
-    } catch (err) {
-        throw new Error('Click (waitForNavClick) error:\n' + err);
-    }
-}
-
-/**
  * Clicks on an element matching the given selector.
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
  * @param {Object} clickStep An object for a click action.
@@ -40,5 +23,22 @@ export async function click(context, clickStep) {
         
     } catch (err) {
         throw new Error('Click (click) error:\n' + err);
+    }
+}
+
+/**
+ * Helper function to navigate to a page by clicking on an element.
+ * Will wait for the page to finish loading and navigate to the new page.
+ * @param {puppeteer.Page} page The page to navigate
+ * @param {puppeteer.ElementHandle} locator The element locator of the element to click
+ */
+async function waitForNavClick(page, locator) {
+    try {
+        await Promise.allSettled([
+            page.waitForNavigation({ waitUntil: 'networkidle0'}),
+            locator.click(),
+        ]);
+    } catch (err) {
+        throw new Error('Click (waitForNavClick) error:\n' + err);
     }
 }
