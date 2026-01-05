@@ -21,14 +21,25 @@ class UserActionBuilder:
         text = ActionFactory.createArgument("text")
         xPath = ActionFactory.createArgument("xpath")
         css = ActionFactory.createArgument("css")
-        lIs = ActionFactory.createArgument("is")
-        lContains = ActionFactory.createArgument("contains")
-        links = ActionFactory.createActionGroup("link", [lIs, lContains])
-        selector = ActionFactory.createActionGroup("selector", [xPath, css, text, variable, links])
+
+        #lIs = ActionFactory.createArgument("is")
+        #lContains = ActionFactory.createArgument("contains")
+        #link = ActionFactory.createActionGroup("link", [lIs, lContains])
+
+        true = ActionFactory.createArgument("true")
+        false = ActionFactory.createArgument("false")
+        exact = ActionFactory.createActionGroup("strict", [true, false])
+        link = ActionFactory.createAction("link", [text, exact])
+
+        selector = ActionFactory.createActionGroup("selector", [xPath, css, text, variable, link])
 
         url = ActionFactory.createArgument("url")
         tab = ActionFactory.createArgument("tab")
         saveAs = ActionFactory.createArgument("save as")
+
+        # if action group
+        # if [find] [succeeds, fails]
+        # end if
 
         #variable = ActionFactory.createArgument("variable")
         #create action group for saving to variable or outputs

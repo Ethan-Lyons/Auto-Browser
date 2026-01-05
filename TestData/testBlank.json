@@ -89,25 +89,38 @@
                                     "description": ""
                                 },
                                 {
-                                    "type": "ActionGroup",
+                                    "type": "Action",
                                     "name": "link",
-                                    "selected": {
-                                        "type": "Argument",
-                                        "name": "is",
-                                        "value": null,
-                                        "description": ""
-                                    },
-                                    "allArgs": [
+                                    "args": [
                                         {
                                             "type": "Argument",
-                                            "name": "is",
+                                            "name": "text",
                                             "value": null,
                                             "description": ""
                                         },
                                         {
-                                            "type": "Argument",
-                                            "name": "contains",
-                                            "value": null,
+                                            "type": "ActionGroup",
+                                            "name": "strict",
+                                            "selected": {
+                                                "type": "Argument",
+                                                "name": "true",
+                                                "value": null,
+                                                "description": ""
+                                            },
+                                            "allArgs": [
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "true",
+                                                    "value": null,
+                                                    "description": ""
+                                                },
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "false",
+                                                    "value": null,
+                                                    "description": ""
+                                                }
+                                            ],
                                             "description": ""
                                         }
                                     ],
@@ -162,25 +175,38 @@
                                             "description": ""
                                         },
                                         {
-                                            "type": "ActionGroup",
+                                            "type": "Action",
                                             "name": "link",
-                                            "selected": {
-                                                "type": "Argument",
-                                                "name": "is",
-                                                "value": null,
-                                                "description": ""
-                                            },
-                                            "allArgs": [
+                                            "args": [
                                                 {
                                                     "type": "Argument",
-                                                    "name": "is",
+                                                    "name": "text",
                                                     "value": null,
                                                     "description": ""
                                                 },
                                                 {
-                                                    "type": "Argument",
-                                                    "name": "contains",
-                                                    "value": null,
+                                                    "type": "ActionGroup",
+                                                    "name": "strict",
+                                                    "selected": {
+                                                        "type": "Argument",
+                                                        "name": "true",
+                                                        "value": null,
+                                                        "description": ""
+                                                    },
+                                                    "allArgs": [
+                                                        {
+                                                            "type": "Argument",
+                                                            "name": "true",
+                                                            "value": null,
+                                                            "description": ""
+                                                        },
+                                                        {
+                                                            "type": "Argument",
+                                                            "name": "false",
+                                                            "value": null,
+                                                            "description": ""
+                                                        }
+                                                    ],
                                                     "description": ""
                                                 }
                                             ],
@@ -244,25 +270,38 @@
                                             "description": ""
                                         },
                                         {
-                                            "type": "ActionGroup",
+                                            "type": "Action",
                                             "name": "link",
-                                            "selected": {
-                                                "type": "Argument",
-                                                "name": "is",
-                                                "value": null,
-                                                "description": ""
-                                            },
-                                            "allArgs": [
+                                            "args": [
                                                 {
                                                     "type": "Argument",
-                                                    "name": "is",
+                                                    "name": "text",
                                                     "value": null,
                                                     "description": ""
                                                 },
                                                 {
-                                                    "type": "Argument",
-                                                    "name": "contains",
-                                                    "value": null,
+                                                    "type": "ActionGroup",
+                                                    "name": "strict",
+                                                    "selected": {
+                                                        "type": "Argument",
+                                                        "name": "true",
+                                                        "value": null,
+                                                        "description": ""
+                                                    },
+                                                    "allArgs": [
+                                                        {
+                                                            "type": "Argument",
+                                                            "name": "true",
+                                                            "value": null,
+                                                            "description": ""
+                                                        },
+                                                        {
+                                                            "type": "Argument",
+                                                            "name": "false",
+                                                            "value": null,
+                                                            "description": ""
+                                                        }
+                                                    ],
                                                     "description": ""
                                                 }
                                             ],

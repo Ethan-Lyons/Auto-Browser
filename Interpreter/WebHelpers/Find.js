@@ -1,58 +1,62 @@
+import { timeout, TimeoutError } from "puppeteer-core";
 import { getActivePage } from "./WebHelpers.js";
 import puppeteer from 'puppeteer-core';
+
+const SEARCH_TIMEOUT = 3000
 
 /**
  * Finds an element based on the given selector.
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
  * @param {Object} findStep An object containing the information for the find action. This object should have a selector action group
  * with a selected type and value.
- * @returns {Promise<puppeteer.ElementHandle>} A promise that resolves with the element found.
+ * @returns {Promise<puppeteer.ElementHandle> | null} A promise that resolves with the element found.
  * @throws Will throw an error if the element cannot be found.
  */
 export async function find(context, findStep) {
+    let page, selectorGroup, selectorType;
     try {
-        //TODO: Find by text
-
-        let page, selectorGroup, selectedArg;
         selectorGroup = findStep.args[0];
-        selectedArg = selectorGroup.selected;
+        selectorType = selectorGroup.selected;
         page = await getActivePage(context);
 
-        if (selectedArg.name == "xpath") {
-            const target = selectedArg.value;
+        if (selectorType.name == "xpath") {
+            const target = selectorType.value;
             const element = await findByXPath(page, target);
-            checkValidElement(element, selectedArg);
+            checkValidElement(element, selectorType);
             return element;
         }
-        else if (selectedArg.name == "id") {
-            const target = selectedArg.value;
+        else if (selectorType.name == "id") {
+            const target = selectorType.value;
             const element = await findByID(page, target);
-            checkValidElement(element, selectedArg);
+            checkValidElement(element, selectorType);
             return element;
         }
-        else if (selectedArg.name == "link") {
-            const linkType = selectedArg.selected;
-            console.log("Link type: " + linkType.name);
-                if (linkType.name == "is") {
-                    //console.log("Link is: " + linkType.value);
-                    const target = linkType.value;
-                    const element = await findByLinkAddress(page, target, true);
-                    checkValidElement(element, linkType);
-                    return element;
-                }
-                else if (linkType.name == "contains") {
-                    //console.log("Link contains: " + linkType.value);
-                    const target = linkType.value;
-                    const element = await findByLinkAddress(page, target, false);
-                    checkValidElement(element, linkType);
-                    return element;
-                }
-            }
+        else if (selectorType.name == "text"){
+            const target = selectorType.value;
+            const element = await findByText(page, target)
+            checkValidElement(element, selectorType);
+            return element;
+        }
+        else if (selectorType.name == "css") {
+            const target = selectorType.value;
+            const element = await page.waitForSelector(target, {timeout: SEARCH_TIMEOUT});
+            checkValidElement(element, selectorType)
+            return element;
+        }
+        else if (selectorType.name == "link") {
+            const [textArg, strictGroup] = selectorType.args;
+            const strictVal = strictGroup.selected.value
+            const textVal = textArg.value
+
+            const element = await findByLinkAddress(page, textVal, strictVal);
+            checkValidElement(element, textArg);
+            return element;
+        }
         else {
-            console.log("Warning: Unknown find type: " + selectedArg.name);
+            throw new Error ("Error: Unknown find type: " + selectorType.name);
         }
     } catch (err) {
-        throw new Error('Find (find) error:\n' + err);
+        return handleFindErrors(err, "Find (find) error")
     }
 }
 
@@ -60,23 +64,23 @@ export async function find(context, findStep) {
  * Helper to find an element by its link address.
  * @param {puppeteer.Page} page The page to search for the element
  * @param {string} linkAddress The link address to search for
- * @param {boolean} [strict=false] Whether to search for an exact link address or a link address that contains the given string
+ * @param {string} [strict="false"] Whether to search for an exact link address or a link address that contains the given string
  * @returns {Promise<puppeteer.ElementHandle>} The element found
  */
-async function findByLinkAddress(page, linkAddress, strict=false) {
+async function findByLinkAddress(page, linkAddress, strict="false") {
+    let fullXpath;
     try {
-        if (strict) { // link "is"
-            const fullXpath = '::-p-xpath(' + `//a[@href="${linkAddress}"]` + ')';
-            const element = await page.waitForSelector(fullXpath);
-            return element;
+        if (strict == true) { // link "is"
+            fullXpath = '::-p-xpath(' + `//a[@href="${linkAddress}"]` + ')';
         }
         else { // link "contains"
-            const fullXpath = '::-p-xpath(' + `//a[contains(@href, "${linkAddress}")]` + ')';
-            const element = await page.waitForSelector(fullXpath);
-            return element;
+            fullXpath = '::-p-xpath(' + `//a[contains(@href, "${linkAddress}")]` + ')';
         }
+
+        const element = await page.waitForSelector(fullXpath, {timeout: SEARCH_TIMEOUT});
+        return element;
     } catch (err) {
-        throw err;
+        return handleFindErrors(err, "Find (findByLinkAddress [strict = " + strict + "]) error")
     }
 }
 
@@ -84,16 +88,43 @@ async function findByLinkAddress(page, linkAddress, strict=false) {
  * Helper function to find an element by XPath.
  * @param {puppeteer.Page} page The page to search for the element
  * @param {string} xPath The XPath to search for
- * @returns {Promise<puppeteer.ElementHandle>} The element found
+ * @returns {Promise<puppeteer.ElementHandle> | null} The element found
  */
 async function findByXPath(page, xPath) {
-    try{
+    try {
         const fullXPath = 'xpath/' + xPath;
-        const element = await page.waitForSelector(fullXPath);
+        const element = await page.waitForSelector(fullXPath, {timeout: SEARCH_TIMEOUT});
         return element;
+    } catch (err) {
+        return handleFindErrors(err, "Find (findByXPath) error")
     }
-    catch (err) {
-        throw new Error('Find (findByXPath) error:\n' + err);
+}
+
+async function findByText(page, text) {
+  try {
+    return await page.waitForSelector( `::-p-aria([name="${text}"])`, { timeout: SEARCH_TIMEOUT });
+    //await page.locator('::-p-aria(Submit)').click();
+    //await page.locator('::-p-aria([name="Click me"][role="button"])').click();
+  } catch {}
+
+  try {
+    return await page.waitForSelector(`text/${text}`, { timeout: SEARCH_TIMEOUT, exact:false });
+  } catch {}
+
+  return await page.waitForSelector(
+    `::-p-xpath(//*[contains(normalize-space(.), "${text}")])`,
+    { timeout: SEARCH_TIMEOUT }
+  );
+}
+
+async function findByAria(page, aria){
+    '::-p-aria(' + aria + ')';
+    try {
+        const fullXPath = 'xpath/' + xPath;
+        const element = await page.waitForSelector(fullXPath, {timeout: SEARCH_TIMEOUT});
+        return element;
+    } catch (err) {
+        return handleFindErrors(err, "Find (findByXPath) error")
     }
 }
 
@@ -101,15 +132,15 @@ async function findByXPath(page, xPath) {
  * Helper function to find an element by its ID.
  * @param {puppeteer.Page} page The page to search for the element
  * @param {string} id The ID of the element to search for
- * @returns {Promise<puppeteer.ElementHandle>} The element found
+ * @returns {Promise<puppeteer.ElementHandle> | null} The element found
  */
 async function findByID(page, id) {
     try {
         if (!(id.startsWith('#'))) { id = '#' + id}
-        const element = await page.waitForSelector(id);
+        const element = await page.waitForSelector(id, {timeout: SEARCH_TIMEOUT});
         return element;
     } catch (err) {
-        throw new Error('Find (findByID) error:\n' + err);
+        return handleFindErrors(err, "Find (findByID) error")
     }
 }
 
@@ -129,3 +160,13 @@ function checkValidElement(findReturn, target) {
         return false;
     }
 }
+
+function handleFindErrors(err, message=""){
+    if (err instanceof TimeoutError) {
+            console.warn(message, err.message);
+            return null
+        }
+        else {
+            throw new Error(message + ": " + err);
+        }
+    }

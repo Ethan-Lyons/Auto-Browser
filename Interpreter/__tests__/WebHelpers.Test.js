@@ -45,7 +45,7 @@ test('connectToBrowser', async () => {
     await WebHelpers.disconnect(browser);
 });*/
 
-test('urlNav', async () => {
+test('loadUrlNav', async () => {
     await WebHelpers.newTab(context);
     testRoutinePath = './TestData/testNav.json'
     //browser = await WebHelpers.connectToBrowser();
@@ -58,6 +58,13 @@ test('urlNav', async () => {
 
     await WebHelpers.urlNav(context, urlAction);
     //await WebHelpers.browserDisconnect(browser);
+});
+
+test('urlNav', async () => {
+    await WebHelpers.newTab(context);
+    url = {value : 'google.com'}
+    navAction = {name : 'URL_NAV', args: [url]}
+    await WebHelpers.urlNav(context, navAction);
 });
 
 test('getCurrentUrl', async () => {
