@@ -6,17 +6,16 @@ import puppeteer from 'puppeteer-core';
  * Helper function to navigate to a page by clicking on an element.
  * Will wait for the page to finish loading and navigate to the new page.
  * @param {puppeteer.Page} page The page to navigate
- * @param {puppeteer.ElementHandle} element The element to click
+ * @param {puppeteer.ElementHandle} locator The element locator of the element to click
  */
-export async function waitForNavClick(page, element) {
+export async function waitForNavClick(page, locator) {
     try {
-        await Promise.all([
-            page.waitForNavigation(),
-            element.click()
+        await Promise.allSettled([
+            page.waitForNavigation({ waitUntil: 'networkidle0'}),
+            locator.click(),
         ]);
     } catch (err) {
-        console.error('Navigation (waitForNavClick) error:\n', err);
-        process.exit(1);
+        throw new Error('Click (waitForNavClick) error:\n' + err);
     }
 }
 
@@ -31,9 +30,9 @@ export async function click(context, clickStep) {
     try {
         const page = await getActivePage(context);
         const findStep = clickStep.args[0];
-        const foundElement = await find(context, findStep);
-        if (foundElement) {
-            await waitForNavClick(page, foundElement);
+        const locator = await find(context, findStep);
+        if (locator) {
+            await waitForNavClick(page, locator);
         }
         else {
             console.log("Warning: Element not found: " + clickStep.name + " " + clickStep.selectedArg);

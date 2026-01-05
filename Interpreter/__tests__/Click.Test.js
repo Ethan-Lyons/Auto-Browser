@@ -71,7 +71,7 @@ test('Click Xpath', async () => {
     const url = { value: 'google.com'}
     const navAction = { name: 'URL_NAV', args: [url]} // Navigate action
 
-    const xpath = { name: 'xpath', value:  '/html/body/div[1]/div[3]/form/div[1]/div[1]/div[3]/center/input[1]'};
+    const xpath = { name: 'xpath', value:  '//a[@href="https://policies.google.com/privacy?hl=en&fg=1"]'};
     const selectorGroup = { name: 'selector', selected: xpath}
     const findAction = { name: 'FIND', args: [selectorGroup] };  // Find action
     const clickAction = { name: 'CLICK', args: [findAction]}

@@ -21,17 +21,14 @@ class UserActionBuilder:
         text = ActionFactory.createArgument("text")
         xPath = ActionFactory.createArgument("xpath")
         css = ActionFactory.createArgument("css")
-
-        #lIs = ActionFactory.createArgument("is")
-        #lContains = ActionFactory.createArgument("contains")
-        #link = ActionFactory.createActionGroup("link", [lIs, lContains])
+        aria = ActionFactory.createArgument("aria")
 
         true = ActionFactory.createArgument("true")
         false = ActionFactory.createArgument("false")
         exact = ActionFactory.createActionGroup("strict", [true, false])
         link = ActionFactory.createAction("link", [text, exact])
 
-        selector = ActionFactory.createActionGroup("selector", [xPath, css, text, variable, link])
+        selector = ActionFactory.createActionGroup("selector", [xPath, css, text, variable, link, aria])
 
         url = ActionFactory.createArgument("url")
         tab = ActionFactory.createArgument("tab")
@@ -52,11 +49,7 @@ class UserActionBuilder:
         newTabType = self.createUserAction("NEW_TAB", [], "Open a new tab")
         findType = self.createUserAction("FIND", [selector], "Find an element")
         storeType = self.createUserAction("STORE", [findType, saveAs], "Find and store")
-        #("STORE", [findType, saveAs]
-        #findGroupType = self.createUserAction("FIND_GROUP", [selector, saveAs], "Find and store group")
         clickType = self.createUserAction("CLICK", [findType], "Click an element")
-        
-        fakeAction = self.createUserAction("FAKE_ACTION", [], "Fake Action")
 
         userActionGroup = ActionFactory.createActionGroup("USER_ACTIONS", self.userSteps)
         return userActionGroup

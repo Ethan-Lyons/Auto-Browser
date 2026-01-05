@@ -1,4 +1,5 @@
 import { getActiveIndex, setActivePage } from "./WebHelpers.js";
+const DEFAULT_TIMEOUT = 3000
 
 /**
  * Get all tabs in the browser context.
@@ -20,10 +21,11 @@ export async function newTab(context) {
     try {
         const newPage = await context.newPage();
         await setActivePage(context, newPage);
+        newPage.setDefaultTimeout(DEFAULT_TIMEOUT)
         return newPage;
 
     } catch (error) {
-        throw new Error(`Error opening new tab: ${error}`);
+        throw new Error('Tab (newTab) error:\n' + err);
     }
 }
 

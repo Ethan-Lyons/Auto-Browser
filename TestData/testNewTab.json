@@ -118,6 +118,12 @@
                                         }
                                     ],
                                     "description": ""
+                                },
+                                {
+                                    "type": "Argument",
+                                    "name": "aria",
+                                    "value": null,
+                                    "description": ""
                                 }
                             ],
                             "description": ""
@@ -203,6 +209,12 @@
                                                     "description": ""
                                                 }
                                             ],
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "Argument",
+                                            "name": "aria",
+                                            "value": null,
                                             "description": ""
                                         }
                                     ],
@@ -298,6 +310,12 @@
                                                     "description": ""
                                                 }
                                             ],
+                                            "description": ""
+                                        },
+                                        {
+                                            "type": "Argument",
+                                            "name": "aria",
+                                            "value": null,
                                             "description": ""
                                         }
                                     ],
