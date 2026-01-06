@@ -8,7 +8,8 @@ export * from './Browser.js';
 export * from './Page.js';
 export * from './WebHelpers.js';
 export * from './StepsHandler.js'
-
+export * from './Store.js'
+export * from './StoreVariables.js'
 
 // TODO:  go forward, go back, refresh, hover, screenshot, title, url
 

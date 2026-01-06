@@ -1,8 +1,5 @@
 import InputOutput
 from Routine import Routine
-from UserActionBuilder import UserActionBuilder
-from Steps import Action
-from Steps import ActionGroup
 
 def _saveRoutine(routine, name):
     routine.saveRoutine(filePath="./TestData/" + name + ".json")
@@ -40,7 +37,7 @@ def testClick():
 
     userAG2.setSelected(clickA)
     selector.setSelected(xpath)
-    xpath.setValue("/html/body/div[1]/div[6]/div/div[1]/div[3]/a[1]")   # setting click action parts
+    xpath.setValue('//a[@href="https://policies.google.com/privacy?hl=en&fg=1"]')   # setting click action parts
 
     _saveRoutine(routine, "testClick")
 

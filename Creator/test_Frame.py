@@ -40,7 +40,7 @@ def test_remove_action(routineEnv):
 
     frame.addActionBranch()
 
-    frame.removeActionBranch(frame.getActionFrames()[1])
+    frame.removeActionFrame(frame.getActionFrames()[1])
 
     assert len(routine.steps) == 1
     assert len(frame.getSteps()) == 1

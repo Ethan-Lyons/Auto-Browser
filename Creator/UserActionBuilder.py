@@ -6,7 +6,7 @@ import ActionFactory as ActionFactory
 class UserActionBuilder:
 
     def __init__(self):
-        self.userSteps = []
+        
         self.userActionGroup = None
 
     def _buildUserActions(self):
@@ -17,22 +17,24 @@ class UserActionBuilder:
         Returns:
             ActionGroup: The ActionGroup of user actions
         """
+        self.userSteps = []
+        
         variable = ActionFactory.createArgument("variable")
         text = ActionFactory.createArgument("text")
         xPath = ActionFactory.createArgument("xpath")
         css = ActionFactory.createArgument("css")
         aria = ActionFactory.createArgument("aria")
 
-        true = ActionFactory.createArgument("true")
-        false = ActionFactory.createArgument("false")
-        exact = ActionFactory.createActionGroup("strict", [true, false])
+        trueArg = ActionFactory.createArgument("true")
+        falseArg = ActionFactory.createArgument("false")
+        exact = ActionFactory.createActionGroup("strict", [trueArg, falseArg])
         link = ActionFactory.createAction("link", [text, exact])
 
         selector = ActionFactory.createActionGroup("selector", [xPath, css, text, variable, link, aria])
 
         url = ActionFactory.createArgument("url")
         tab = ActionFactory.createArgument("tab")
-        saveAs = ActionFactory.createArgument("save as")
+        #saveAs = ActionFactory.createArgument("save as")
 
         # if action group
         # if [find] [succeeds, fails]
@@ -47,9 +49,13 @@ class UserActionBuilder:
         urlNavType = self.createUserAction("URL_NAV", [url], "Go to URL")
         tabNavType = self.createUserAction("TAB_NAV", [tab], "Navigate to an existing tab")
         newTabType = self.createUserAction("NEW_TAB", [], "Open a new tab")
+
         findType = self.createUserAction("FIND", [selector], "Find an element")
-        storeType = self.createUserAction("STORE", [findType, saveAs], "Find and store")
         clickType = self.createUserAction("CLICK", [findType], "Click an element")
+        infoType = self.createUserAction("INFO", [], "Retrieve page info")
+
+        storableType = ActionFactory.createActionGroup("storable", [findType, text, variable, infoType])
+        storeType = self.createUserAction("STORE", [storableType, variable], "Store a value under a custom variable name")
 
         userActionGroup = ActionFactory.createActionGroup("USER_ACTIONS", self.userSteps)
         return userActionGroup

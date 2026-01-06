@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test:py": "pytest Creator",
-    "test:js": "env python3 ./Creator/JSTestData.py && cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --roots Interpreter",
+    "test:js": "env python3 ./Creator/JSTestData.py && cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
     "test": "npm run test:py && npm run test:js"
   },
   "keywords": [],
