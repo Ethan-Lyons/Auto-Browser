@@ -31,6 +31,10 @@ export async function store(storeAction) {
     }
 }
 
+async function storeFind (findStep, endVarStep){
+    //async function find(context, findStep) {
+}
+
 async function storeVar(varStep, endVarStep){
     const sendingVar = varStep.value;
     const recieveName = endVarStep.value;

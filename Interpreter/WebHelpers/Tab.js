@@ -34,7 +34,7 @@ export async function newTab(context) {
         newPage.setDefaultTimeout(DEFAULT_TIMEOUT)
         return newPage;
 
-    } catch (error) {
+    } catch (err) {
         throw new Error('Tab (newTab) error:\n' + err);
     }
 }

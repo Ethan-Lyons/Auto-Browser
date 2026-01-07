@@ -4,9 +4,13 @@ import { test, expect } from '@jest/globals';
 let browser;
 let context;
 
+const url = { value: 'google.com'}
+const navAction = { name: 'URL_NAV', args: [url]} // Navigate action
+
 beforeAll(async () => {
     try {
         browser = await WebHelpers.browserConnect();
+
     } catch (err) {
         console.error('Error connecting to Puppeteer:\n', err);
         process.exit(1);
@@ -15,6 +19,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
     context = await WebHelpers.createNewContext(browser);
+    await WebHelpers.newTab(context);
 });
 
 afterEach(async () => {
@@ -26,10 +31,6 @@ afterAll(async () => {
 });
 
 test('Find Link Fail', async () => {
-    // Navigate
-    const url = { value: 'https://google.com' };
-    const navAction = { name: 'URL_NAV', args: [url] };
-
     // link text argument
     const textArg = { name: 'text', value: '$$$foobar&&&', type: 'argument'};
 
@@ -46,18 +47,12 @@ test('Find Link Fail', async () => {
     // find action
     const findAction = { name: 'FIND', args: [selectorType]};
 
-    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
-
     const locator = await WebHelpers.find(context, findAction);
     await expect(locator.waitHandle()).rejects.toThrow()
 });
 
 test('Find Link Contains', async () => {
-    // Navigate
-    const url = { value: 'https://google.com' };
-    const navAction = { name: 'URL_NAV', args: [url] };
-
     // link text argument
     const textArg = { name: 'text', value: 'privacy' };
 
@@ -83,19 +78,13 @@ test('Find Link Contains', async () => {
         args: [selectorType]
     };
 
-    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
-
     const locator = await WebHelpers.find(context, findAction);
     expect(await locator.waitHandle()).toBeDefined();
 });
 
 
 test('Find Link Is', async () => {
-        // Navigate
-    const url = { value: 'https://google.com' };
-    const navAction = { name: 'URL_NAV', args: [url] };
-
     // link text argument
     const textArg = { name: 'text', value: 'https://policies.google.com/privacy?hl=en&fg=1' };
 
@@ -121,24 +110,49 @@ test('Find Link Is', async () => {
         args: [selectorType]
     };
 
-    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
-
     const locator = await WebHelpers.find(context, findAction);
     expect(await locator.waitHandle()).toBeDefined();
 });
 
 test('Find Xpath', async () => {
-    const url = { value: 'google.com'}
-    const navAction = { name: 'URL_NAV', args: [url]} // Navigate action
-
     const xpath = { name: 'xpath', value:  '//a[@href="https://policies.google.com/privacy?hl=en&fg=1"]'};
     const selectorGroup = { name: 'selector', selected: xpath}
     const findAction = { name: 'FIND', args: [selectorGroup] };  // Find action
 
-    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
     const locator = await WebHelpers.find(context, findAction);
     expect(await locator.waitHandle()).toBeDefined()
 });
+
+test('Find Text' , async () => {
+    const text = { name: 'text', value: 'Privacy'};
+    const selectorGroup = { name: 'selector', selected: text}
+    const findAction = { name: 'FIND', args: [selectorGroup] };  // Find action
+
+    await WebHelpers.urlNav(context, navAction);
+    const locator = await WebHelpers.find(context, findAction);
+    expect(await locator.waitHandle()).toBeDefined()
+})
+
+test('Find CSS' , async () => {
+    const css = { name: 'css', value: '*'};
+    const selectorGroup = { name: 'selector', selected: css}
+    const findAction = { name: 'FIND', args: [selectorGroup] };  // Find action
+
+    await WebHelpers.urlNav(context, navAction);
+    const locator = await WebHelpers.find(context, findAction);
+    expect(await locator.waitHandle()).toBeDefined()
+})
+
+test('Find Aria' , async () => {
+    const aria = { name: 'aria', value: 'Privacy'};
+    const selectorGroup = { name: 'selector', selected: aria}
+    const findAction = { name: 'FIND', args: [selectorGroup] };  // Find action
+
+    await WebHelpers.urlNav(context, navAction);
+    const locator = await WebHelpers.find(context, findAction);
+    expect(await locator.waitHandle()).toBeDefined()
+})
+
 
