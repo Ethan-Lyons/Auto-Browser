@@ -1,5 +1,7 @@
 import { getActivePage } from './WebHelpers.js';
 import * as Variables from './StoreVariables.js';
+
+
 export async function store(storeAction) {
     /*    testVar = "Test Variable"
     testVal = "Value To Store"
@@ -11,27 +13,36 @@ export async function store(storeAction) {
 
     const storeAction = { name: "STORE", args: [storableType, variable]}*/
 
-    const [storableType, storeVar] = storeAction.args;
+    const [storableType, endVar] = storeAction.args;
     const selectedStep = storableType.selected;
-    const sName = selectedStep.name.toLowerCase();
+    const selectedName = selectedStep.name.toLowerCase();
 
-    if (sName == "text"){
-        await storeText(selectedStep, storeVar)
+    if (selectedName == "text"){
+        await storeText(selectedStep, endVar);
     }
-    else if (sName == "variable"){
+    else if (selectedName == "variable"){
+        await storeVar(selectedStep, endVar);
+    }
+    else if (selectedName == "find"){
         console.log("METHOD NOT IMPLEMENTED")
     }
-    else if (sName == "find"){
-        console.log("METHOD NOT IMPLEMENTED")
-    }
-    else if (sName == "info"){
+    else if (selectedName == "info"){
         console.log("METHOD NOT IMPLEMENTED")
     }
 }
 
-async function storeText(textStep, storeVar){
-    const storeValue = textStep.value
-    const storeName = storeVar.value
+async function storeVar(varStep, endVarStep){
+    const sendingVar = varStep.value;
+    const recieveName = endVarStep.value;
 
-    Variables.setVariable(storeName, storeValue)
+    const newVal = Variables.getVariableValue(sendingVar);
+
+    Variables.setVariable(recieveName, newVal);
+}
+
+async function storeText(textStep, endVarStep){
+    const newVal = textStep.value;
+    const recieveName = endVarStep.value;
+
+    Variables.setVariable(recieveName, newVal);
 }
