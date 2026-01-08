@@ -41,7 +41,7 @@ test('Store Text Var', async () => {
 
     const storeAction = { name: "STORE", args: [storableType, variable]};
 
-    await WebHelpers.store(storeAction);
+    await WebHelpers.store(context, storeAction);
 
     const updatedVal = await WebHelpers.getVariableValue(testVar);
     expect(testVal).toEqual(updatedVal);
@@ -58,7 +58,7 @@ test('Store Var Var', async () => {
     const storableType1 = { name: "storable", selected: textArg1};
     const storeAction1 = { name: "STORE", args: [storableType1, variable1]};
 
-    await WebHelpers.store(storeAction1);
+    await WebHelpers.store(context, storeAction1);
 
     // Create new variable to transfer text value to
     const variable2 = { name: "variable", value: var2};    // The variable name to store under
@@ -66,7 +66,7 @@ test('Store Var Var', async () => {
     const storableType2 = { name: "storable", selected: variableArg};
     const storeAction2 = { name: "STORE", args: [storableType2, variable2]};
 
-    await WebHelpers.store(storeAction2);
+    await WebHelpers.store(context, storeAction2);
 
     const v1Value = await WebHelpers.getVariableValue("var1");
     const v2Value = await WebHelpers.getVariableValue("var2");
@@ -76,29 +76,56 @@ test('Store Var Var', async () => {
 });
 
 test('Store Find Var', async () => {
-    const testVal = "Value To Store";
-    const var1 = "var1";
-    const var2 = "var2";
+    let recieved, expected;
+    const storeName = "TestVar";
 
-    // Create a text variable
-    const variable1 = { name: "variable", value: var1};    // The variable name to store under
-    const textArg1 = { name: "text", value: testVal}; // The text value to store
-    const storableType1 = { name: "storable", selected: textArg1};
-    const storeAction1 = { name: "STORE", args: [storableType1, variable1]};
+    const url = { value: 'google.com'}
+    const navAction = { name: 'URL_NAV', args: [url]} // Navigate action
 
-    await WebHelpers.store(storeAction1);
 
-    // Create new variable to transfer text value to
-    const variable2 = { name: "variable", value: var2};    // The variable name to store under
-    const variableArg = { name: "variable", value: var1}; // The name of the variable with the value to store
-    const storableType2 = { name: "storable", selected: variableArg};
-    const storeAction2 = { name: "STORE", args: [storableType2, variable2]};
+    const variable = { name: "variable", value: storeName};    // The variable name to store under
 
-    await WebHelpers.store(storeAction2);
+    const text = { name: 'text', value: 'Privacy'};
+    const selector = { name: 'selector', selected: text};
+    const findAction = { name: 'FIND', args: [selector] };  // Find action
 
-    const v1Value = await WebHelpers.getVariableValue("var1");
-    const v2Value = await WebHelpers.getVariableValue("var2");
+    const storable = { name: "storable", selected: findAction};
+    const storeStep = { name: "STORE", args: [storable, variable]}; // Store action
+
+    await WebHelpers.newTab(context);
+    await WebHelpers.urlNav(context, navAction);
+    await WebHelpers.store(context, storeStep);
+
+    recieved = await WebHelpers.getVariableValue(storeName);
+    recieved = await recieved.waitHandle()
+    expected = await WebHelpers.find(context, findAction);
+    expected = await expected.waitHandle()
     
-    expect(v2Value).toEqual(v1Value);
-    expect(v2Value).toEqual(testVal);
+    expect(recieved).toBeDefined()
+    expect(recieved).toEqual(expected);
+});
+
+test('Store Info Var URL', async () => {
+    const storeName = "TestVar";
+    const target = 'google.com'
+    const url = { value: target}
+    const navAction = { name: 'URL_NAV', args: [url]} // Navigate action
+
+    const variable = { name: "variable", value: storeName};    // The variable name to store under
+
+    const urlArg = { name: 'url', value: null};
+    const selector = { name: 'info_select', selected: urlArg};
+    const infoAction = { name: 'info', args: [selector] };  // Info action
+
+    const storable = { name: "storable", selected: infoAction};
+    const storeStep = { name: "STORE", args: [storable, variable]}; // Store action
+
+    await WebHelpers.newTab(context);
+    await WebHelpers.urlNav(context, navAction);
+    await WebHelpers.store(context, storeStep);
+
+    const recieved = await WebHelpers.getVariableValue(storeName);
+    
+    expect(recieved).toBeDefined()
+    expect(recieved).toMatch(target);
 });

@@ -33,10 +33,7 @@ test('loadUrlNav', async () => {
     testRoutinePath = './TestData/testNav.json'
     routine = await WebHelpers.loadRoutineFromJSON(testRoutinePath);
     urlActionGroup = routine.steps[0];
-    urlAction = urlActionGroup.selected;
-
-    console.log(" urlAction: " + urlAction.name + " " + urlAction.type + " " + urlAction.args[0].value);
-    
+    urlAction = urlActionGroup.selected;    
 
     await WebHelpers.urlNav(context, urlAction);
 });
@@ -46,11 +43,4 @@ test('urlNav', async () => {
     url = {value : 'google.com'}
     navAction = {name : 'URL_NAV', args: [url]}
     await WebHelpers.urlNav(context, navAction);
-});
-
-test('getCurrentUrl', async () => {
-    await WebHelpers.newTab(context);
-    page = await WebHelpers.getActivePage(context);
-    curUrl = await WebHelpers.getUrl(page);
-    expect(curUrl).toBe("about:blank");
 });

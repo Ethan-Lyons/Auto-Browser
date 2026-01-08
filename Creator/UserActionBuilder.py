@@ -33,6 +33,7 @@ class UserActionBuilder:
         selector = ActionFactory.createActionGroup("selector", [xPath, css, text, variable, link, aria])
 
         url = ActionFactory.createArgument("url")
+        tabNum = ActionFactory.createArgument("tab_number")
         tab = ActionFactory.createArgument("tab")
         #saveAs = ActionFactory.createArgument("save as")
 
@@ -45,6 +46,7 @@ class UserActionBuilder:
         # [findType, text, variable, info]
         # create info action group with methods for info access (tab number, page url, etc)
 
+        infoSelect = ActionFactory.createActionGroup("info_select", [url, tabNum])
 
         urlNavType = self.createUserAction("URL_NAV", [url], "Go to URL")
         tabNavType = self.createUserAction("TAB_NAV", [tab], "Navigate to an existing tab")
@@ -52,7 +54,7 @@ class UserActionBuilder:
 
         findType = self.createUserAction("FIND", [selector], "Find an element")
         clickType = self.createUserAction("CLICK", [findType], "Click an element")
-        infoType = self.createUserAction("INFO", [], "Retrieve page info")
+        infoType = self.createUserAction("INFO", [infoSelect], "Retrieve page or browser info")
 
         storableType = ActionFactory.createActionGroup("storable", [findType, text, variable, infoType])
         storeType = self.createUserAction("STORE", [storableType, variable], "Store a value under a custom variable name")

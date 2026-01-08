@@ -1,8 +1,8 @@
-import { getActivePage } from './WebHelpers.js';
+import { getActivePage, find, info } from './WebHelpers.js';
 import * as Variables from './StoreVariables.js';
 
 
-export async function store(storeAction) {
+export async function store(context, storeAction) {
     /*    testVar = "Test Variable"
     testVal = "Value To Store"
 
@@ -24,15 +24,28 @@ export async function store(storeAction) {
         await storeVar(selectedStep, endVar);
     }
     else if (selectedName == "find"){
-        console.log("METHOD NOT IMPLEMENTED")
+        await storeFind(context, selectedStep, endVar)
     }
     else if (selectedName == "info"){
-        console.log("METHOD NOT IMPLEMENTED")
+        await storeInfo(context, selectedStep, endVar)
+    }
+    else {
+        throw new Error ("Error: Unknown store type: " + selectedName);
     }
 }
 
-async function storeFind (findStep, endVarStep){
-    //async function find(context, findStep) {
+async function storeFind (context, findStep, endVarStep){
+    const recieveName = endVarStep.value;
+    const findReturn = await find(context, findStep)
+
+    Variables.setVariable(recieveName, findReturn);
+}
+
+async function storeInfo (context, infoStep, endVarStep){
+    const recieveName = endVarStep.value;
+    const infoReturn = await info(context, infoStep)
+
+    Variables.setVariable(recieveName, infoReturn);
 }
 
 async function storeVar(varStep, endVarStep){

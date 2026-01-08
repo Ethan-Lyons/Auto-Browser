@@ -236,8 +236,34 @@
                 {
                     "type": "Action",
                     "name": "INFO",
-                    "args": [],
-                    "description": "Retrieve page info"
+                    "args": [
+                        {
+                            "type": "ActionGroup",
+                            "name": "info_select",
+                            "selected": {
+                                "type": "Argument",
+                                "name": "url",
+                                "value": null,
+                                "description": ""
+                            },
+                            "allArgs": [
+                                {
+                                    "type": "Argument",
+                                    "name": "url",
+                                    "value": null,
+                                    "description": ""
+                                },
+                                {
+                                    "type": "Argument",
+                                    "name": "tab_number",
+                                    "value": null,
+                                    "description": ""
+                                }
+                            ],
+                            "description": ""
+                        }
+                    ],
+                    "description": "Retrieve page or browser info"
                 },
                 {
                     "type": "Action",
@@ -438,8 +464,34 @@
                                 {
                                     "type": "Action",
                                     "name": "INFO",
-                                    "args": [],
-                                    "description": "Retrieve page info"
+                                    "args": [
+                                        {
+                                            "type": "ActionGroup",
+                                            "name": "info_select",
+                                            "selected": {
+                                                "type": "Argument",
+                                                "name": "url",
+                                                "value": null,
+                                                "description": ""
+                                            },
+                                            "allArgs": [
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "url",
+                                                    "value": null,
+                                                    "description": ""
+                                                },
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "tab_number",
+                                                    "value": null,
+                                                    "description": ""
+                                                }
+                                            ],
+                                            "description": ""
+                                        }
+                                    ],
+                                    "description": "Retrieve page or browser info"
                                 }
                             ],
                             "description": ""
@@ -773,8 +825,34 @@
                 {
                     "type": "Action",
                     "name": "INFO",
-                    "args": [],
-                    "description": "Retrieve page info"
+                    "args": [
+                        {
+                            "type": "ActionGroup",
+                            "name": "info_select",
+                            "selected": {
+                                "type": "Argument",
+                                "name": "url",
+                                "value": null,
+                                "description": ""
+                            },
+                            "allArgs": [
+                                {
+                                    "type": "Argument",
+                                    "name": "url",
+                                    "value": null,
+                                    "description": ""
+                                },
+                                {
+                                    "type": "Argument",
+                                    "name": "tab_number",
+                                    "value": null,
+                                    "description": ""
+                                }
+                            ],
+                            "description": ""
+                        }
+                    ],
+                    "description": "Retrieve page or browser info"
                 },
                 {
                     "type": "Action",
@@ -975,8 +1053,34 @@
                                 {
                                     "type": "Action",
                                     "name": "INFO",
-                                    "args": [],
-                                    "description": "Retrieve page info"
+                                    "args": [
+                                        {
+                                            "type": "ActionGroup",
+                                            "name": "info_select",
+                                            "selected": {
+                                                "type": "Argument",
+                                                "name": "url",
+                                                "value": null,
+                                                "description": ""
+                                            },
+                                            "allArgs": [
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "url",
+                                                    "value": null,
+                                                    "description": ""
+                                                },
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "tab_number",
+                                                    "value": null,
+                                                    "description": ""
+                                                }
+                                            ],
+                                            "description": ""
+                                        }
+                                    ],
+                                    "description": "Retrieve page or browser info"
                                 }
                             ],
                             "description": ""
