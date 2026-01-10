@@ -3,16 +3,6 @@ import * as Variables from './StoreVariables.js';
 
 
 export async function store(context, storeAction) {
-    /*    testVar = "Test Variable"
-    testVal = "Value To Store"
-
-    const variable = { name: "variable", value: testVar}    // The variable name to store under
-
-    const textArg = { name: "text", value: testVal} // The text value to store
-    const storableType = { name: "storable", selected: textArg}
-
-    const storeAction = { name: "STORE", args: [storableType, variable]}*/
-
     const [storableType, endVar] = storeAction.args;
     const selectedStep = storableType.selected;
     const selectedName = selectedStep.name.toLowerCase();

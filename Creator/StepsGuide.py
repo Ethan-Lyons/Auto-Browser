@@ -90,7 +90,8 @@ class StepsGuide():
         for id in entries:
             curMatch = None
             name = tree.item(id, "text")
-            curMatch = re.search(name, jsText, re.IGNORECASE)
+            expectedMatch = r"\.name\s*==\s*['\"]" + re.escape(name) + r"['\"]"
+            curMatch = re.search(expectedMatch, jsText, re.IGNORECASE)
             if curMatch:
                 tree.set(id, column="js", value="yes")
             else:

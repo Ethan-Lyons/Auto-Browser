@@ -49,6 +49,9 @@ export async function handleAction(context, currentStep) {
         else if (currentStep.name == "NEW_TAB") {
           await WebHelpers.newTab(context);
         }
+        else if (currentStep.name == "STORE") {
+          await WebHelpers.store(context, currentStep);
+        }
         else {
           throw new Error('\"' + currentStep.name + '\" is not defined in WebHelpers.');
         }
