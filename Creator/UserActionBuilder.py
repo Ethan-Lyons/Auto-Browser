@@ -4,63 +4,77 @@ from Steps import Argument
 import ActionFactory as ActionFactory
 
 class UserActionBuilder:
-
     def __init__(self):
-        
         self.userActionGroup = None
 
     def _buildUserActions(self):
-        """
-        Defines the user actions for the Action Builder.These are the base actions
-        that are available to the user.
+        r = ActionRegistry()
 
-        Returns:
-            ActionGroup: The ActionGroup of user actions
-        """
-        self.userSteps = []
+        # ---------- Arguments ----------
+        variable = r.arg("variable")
+        text = r.arg("text")
+        url = r.arg("url")
+        tab = r.arg("tab")
+        milliseconds = r.arg("milliseconds")
+
+        xpath = r.arg("xpath")
+        css = r.arg("css")
+        aria = r.arg("aria")
+
+        true = r.arg("true")
+        false = r.arg("false")
+
+        # ---------- Groups ----------
+        strict = r.group("strict", [true, false], "Strict or non-strict search")
+
+        link = r.action("link", [text, strict])
+        find = r.group(
+            "Find",
+            [xpath, css, text, variable, link, aria],
+            "Find an element and return locator"
+        )
+        info = r.group("info", [url, tab], "Return page or browser info") # TODO: tab info group, has like count, url, title, etc.
+
+        condition = r.group("condition", [find, variable])
+
+        # ---------- Actions ----------
         
-        variable = ActionFactory.createArgument("variable")
-        text = ActionFactory.createArgument("text")
-        xPath = ActionFactory.createArgument("xpath")
-        css = ActionFactory.createArgument("css")
-        aria = ActionFactory.createArgument("aria")
+        find_text = r.action(
+            "find_text",
+            [find],
+            "Find an element and return its text content"
+        )
+        storable = r.group(
+            "storable",
+            [find_text, text, variable, info]
+        )
+        store = r.userAction(
+            "STORE",
+            [storable, variable],
+            "Store a value under a custom variable name"
+        )
 
-        trueArg = ActionFactory.createArgument("true")
-        falseArg = ActionFactory.createArgument("false")
-        exact = ActionFactory.createActionGroup("strict", [trueArg, falseArg])
-        link = ActionFactory.createAction("link", [text, exact])
+        urlNav = r.userAction("URL_NAV", [url], "Navigate to a URL")
+        tabNav = r.userAction("TAB_NAV", [tab], "Navigate to a tab")
+        newTab = r.userAction("NEW_TAB", [], "Open a new tab")
 
-        selector = ActionFactory.createActionGroup("selector", [xPath, css, text, variable, link, aria])
+        click = r.userAction("CLICK", [find], "Click an element")
+        typeA = r.userAction("TYPE", [find, text], "Type text into input")  # TODO: confirm this
+        wait = r.userAction("WAIT", [milliseconds], "Wait")
 
-        url = ActionFactory.createArgument("url")
-        tabNum = ActionFactory.createArgument("tab_number")
-        tab = ActionFactory.createArgument("tab")
-        #saveAs = ActionFactory.createArgument("save as")
+        # ---------- Control Flow ----------
+        ifType = r.userAction("IF", [condition], "If condition")
+        elifType = r.userAction("ELSEIF", [condition], "Else if branch")
+        elseType = r.userAction("ELSE", [], "Else branch")
+        endifType = r.userAction("ENDIF", [], "End if")
 
-        # if action group
-        # if [find] [succeeds, fails]
-        # end if
+        forType = r.userAction("FOR", [], "Loop over a range of values")
+        endforType = r.userAction("ENDFOR", [], "End loop block")
 
-        #variable = ActionFactory.createArgument("variable")
-        #create action group for saving to variable or outputs
-        # [findType, text, variable, info]
-        # create info action group with methods for info access (tab number, page url, etc)
+        whileType = r.userAction("WHILE", [condition], "Loop while a condition is true")
+        endwhileType = r.userAction("ENDWHILE", [], "End loop block")
 
-        infoSelect = ActionFactory.createActionGroup("info_select", [url, tabNum])
-
-        urlNavType = self.createUserAction("URL_NAV", [url], "Go to URL")
-        tabNavType = self.createUserAction("TAB_NAV", [tab], "Navigate to an existing tab")
-        newTabType = self.createUserAction("NEW_TAB", [], "Open a new tab")
-
-        findType = self.createUserAction("FIND", [selector], "Find an element")
-        clickType = self.createUserAction("CLICK", [findType], "Click an element")
-        infoType = self.createUserAction("INFO", [infoSelect], "Retrieve page or browser info")
-
-        storableType = ActionFactory.createActionGroup("storable", [findType, text, variable, infoType])
-        storeType = self.createUserAction("STORE", [storableType, variable], "Store a value under a custom variable name")
-
-        userActionGroup = ActionFactory.createActionGroup("USER_ACTIONS", self.userSteps)
-        return userActionGroup
+        return ActionFactory.createActionGroup("USER_ACTIONS", r.userActions)
     
     def createUserAction(self, name, args, description):
         newAction = ActionFactory.createAction(name, args, description)
@@ -68,9 +82,37 @@ class UserActionBuilder:
         return newAction
     
     def getUserActionGroup(self):
-        """Returns the user actions group"""
+        """Returns the list of initial actions available to the user."""
         if self.userActionGroup is None:
             self.userActionGroup = self._buildUserActions()
         return self.userActionGroup
+
+class ActionRegistry:
+    def __init__(self):
+        self.arguments = {}
+        self.groups = {}
+        self.actions = {}
+        self.userActions = []
+
+    def arg(self, name, description=""):
+        argObj = ActionFactory.createArgument(name, description)
+        self.arguments[name] = argObj
+        return argObj
+
+    def group(self, name, items, description=""):
+        groupObj = ActionFactory.createActionGroup(name, items, description)
+        self.groups[name] = groupObj
+        return groupObj
+
+    def action(self, name, args, description=""):
+        actionObj = ActionFactory.createAction(name, args, description)
+        self.actions[name] = actionObj
+        return actionObj
+    
+    def userAction(self, name, args, description=""):
+        actionObj = ActionFactory.createAction(name, args, description)
+        self.actions[name] = actionObj
+        self.userActions.append(actionObj)
+        return actionObj
 
     

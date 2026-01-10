@@ -32,11 +32,13 @@ def testClick():
 
     clickA = userAG2.find("CLICK")
     find = clickA.find("find")
-    selector = find.find("selector")
-    xpath = selector.find("xpath")  # finding click action parts
+    #selector = find.find("selector")
+    #xpath = selector.find("xpath")  # finding click action parts
+    xpath = find.find("xpath")
 
     userAG2.setSelected(clickA)
-    selector.setSelected(xpath)
+    #selector.setSelected(xpath)
+    find.setSelected(xpath)
     xpath.setValue('//a[@href="https://policies.google.com/privacy?hl=en&fg=1"]')   # setting click action parts
 
     _saveRoutine(routine, "testClick")

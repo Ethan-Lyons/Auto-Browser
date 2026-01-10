@@ -35,7 +35,7 @@ test('url return', async () => {
     const navAction = { name: 'URL_NAV', args: [url]} // Navigate action
     await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
-    infoReturn = WebHelpers.contextToUrl(context)
+    infoReturn = await WebHelpers.contextToUrl(context)
     expect(infoReturn).toMatch(target)
 });
 

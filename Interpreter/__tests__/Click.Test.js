@@ -1,4 +1,4 @@
-import * as WebHelpers from '../WebHelpers/WebHelpers.js'; 
+import * as WebHelpers from '../WebHelpers/WebHelpers.js';
 import { test, expect } from '@jest/globals';
 
 let browser;
@@ -26,62 +26,71 @@ afterAll(async () => {
 });
 
 test('Click Link', async () => {
-    // Navigate
     const url = { value: 'https://google.com' };
     const navAction = { name: 'URL_NAV', args: [url] };
 
-    // link text argument
-    const textArg = { name: 'text', value: 'https://policies.google.com/privacy?hl=en&fg=1' };
+    const textArg = {
+        name: 'text',
+        value: 'https://policies.google.com/privacy?hl=en&fg=1'
+    };
 
-    // strict = false
-    const strictFalse = { name: 'true', value: 'true' };
-    const strictGroup = { name: 'strict', selected: strictFalse };
+    const strictTrue = { name: 'true', value: 'true' };
+    const strictGroup = { name: 'strict', selected: strictTrue };
 
-    // link action (text + strict)
     const linkAction = {
         name: 'link',
         args: [textArg, strictGroup]
     };
 
-    // selector group
-    const selectorType = {
-        name: 'selector',
+    const findAction = {
+        name: 'FIND',
         selected: linkAction
     };
 
-    // find action
-    const findAction = {
-        name: 'FIND',
-        args: [selectorType]
+    const clickAction = {
+        name: 'CLICK',
+        args: [findAction]
     };
-    
-    const clickAction = { name: 'CLICK', args: [findAction]}
 
     await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
 
-    page = await WebHelpers.getActivePage(context)
-    startURL = await WebHelpers.getUrl(page)
-    await WebHelpers.click(context, clickAction)
-    newURL = await WebHelpers.getUrl(page)
-    expect(newURL).not.toMatch(startURL)
+    const page = await WebHelpers.getActivePage(context);
+    const startURL = await WebHelpers.getUrl(page);
+
+    await WebHelpers.click(context, clickAction);
+
+    const newURL = await WebHelpers.getUrl(page);
+    expect(newURL).not.toMatch(startURL);
 });
 
 test('Click Xpath', async () => {
-    const url = { value: 'google.com'}
-    const navAction = { name: 'URL_NAV', args: [url]} // Navigate action
+    const url = { value: 'google.com' };
+    const navAction = { name: 'URL_NAV', args: [url] };
 
-    const xpath = { name: 'xpath', value:  '//a[@href="https://policies.google.com/privacy?hl=en&fg=1"]'};
-    const selectorGroup = { name: 'selector', selected: xpath}
-    const findAction = { name: 'FIND', args: [selectorGroup] };  // Find action
-    const clickAction = { name: 'CLICK', args: [findAction]}    // Click action
+    const xpath = {
+        name: 'xpath',
+        value: '//a[@href="https://policies.google.com/privacy?hl=en&fg=1"]'
+    };
+
+    const findAction = {
+        name: 'FIND',
+        selected: xpath
+    };
+
+    const clickAction = {
+        name: 'CLICK',
+        args: [findAction]
+    };
 
     await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
 
-    page = await WebHelpers.getActivePage(context)
-    startURL = await WebHelpers.getUrl(page)
-    await WebHelpers.click(context, clickAction)
-    newURL = await WebHelpers.getUrl(page)
-    expect(newURL).not.toMatch(startURL)
+    const page = await WebHelpers.getActivePage(context);
+    const startURL = await WebHelpers.getUrl(page);
+
+    await WebHelpers.click(context, clickAction);
+
+    const newURL = await WebHelpers.getUrl(page);
+    expect(newURL).not.toMatch(startURL);
 });

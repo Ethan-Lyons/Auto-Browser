@@ -12,8 +12,9 @@ import puppeteer from 'puppeteer-core';
 export async function find(context, findStep) {
     let page, selectorGroup, selectorType;
     try {
-        selectorGroup = findStep.args[0];
-        selectorType = selectorGroup.selected;
+        //selectorGroup = findStep.args[0];
+        //selectorType = selectorGroup.selected;
+        selectorType = findStep.selected;
         page = await getActivePage(context);
 
         if (selectorType.name == "xpath") {
