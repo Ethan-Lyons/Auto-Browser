@@ -1,7 +1,21 @@
 import fs from 'fs';
 import * as WebHelpers from './WebHelpers.js';
 
-export async function handleStep(context, step) {
+export async function handleRoutine(context, routine) {
+  let rStack;
+  rStack = routine.steps.reverse();
+  while (rStack != []){
+    currentStep = rStack.pop;
+    handleStep(context, currentStep, rStack);
+    // the only special case to support is the conditionals (for, if, etc.)
+    // those will only be accessible as top level user actions (wouldnt make sense to be in other places i think)
+    // and are the only way which
+    // alters steps below itself in the stack
+  }
+
+}
+
+async function handleStep(context, step, rStack) {
   let selectedStep;
   console.log("Step: " + step.name + " " + step.type);
 
@@ -10,7 +24,7 @@ export async function handleStep(context, step) {
     await handleStep(context, selectedStep);
   }
   else if (step.type == "Action") {
-    await handleAction(context, step);
+    await handleAction(context, step, rStack);
   }
   else if (step.type == "Argument") {
     //ignore
@@ -29,7 +43,7 @@ export async function handleStep(context, step) {
  * @param {Object} currentStep A dictionary entry for a step. This step should have a single action and its corresponding arguments.
  * @throws {Error} Error during execution of action.
  */
-export async function handleAction(context, currentStep) {
+export async function handleAction(context, currentStep, routineStack) {
     try {
         if(currentStep.name == "CLICK") {
           await WebHelpers.click(context, currentStep);

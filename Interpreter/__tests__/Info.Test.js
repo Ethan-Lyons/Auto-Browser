@@ -4,8 +4,6 @@ import { test, expect } from '@jest/globals';
 let browser;
 let context;
 
-
-
 beforeAll(async () => {
     try {
         browser = await WebHelpers.browserConnect();

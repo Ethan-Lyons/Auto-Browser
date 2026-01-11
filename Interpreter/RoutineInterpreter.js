@@ -42,9 +42,10 @@ async function runBrowser(routine) {
   //browser = await WebHelpers.browserConnect();
   const context = await WebHelpers.connectToContext();
   try {
-    for (let step of routine.steps) {
-      await WebHelpers.handleStep(context, step);
-    }
+    //for (let step of routine.steps) {
+      //await WebHelpers.handleStep(context, step);
+    //}
+    await WebHelpers.handleRoutine(context, routine)
   } catch (err) {
     throw new Error('Error during routine execution in runBrowser:\n' + err);
   } finally {
