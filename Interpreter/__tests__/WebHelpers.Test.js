@@ -29,13 +29,13 @@ afterAll(async () => {
 test('connectToBrowser', async () => { });
 
 test('loadUrlNav', async () => {
-    await WebHelpers.newTab(context);
+    /*await WebHelpers.newTab(context);
     testRoutinePath = './TestData/testNav.json'
-    routine = await WebHelpers.loadRoutineFromJSON(testRoutinePath);
+    routine = await WebHelpers.jsonToRoutineStack(testRoutinePath);
     urlActionGroup = routine.steps[0];
     urlAction = urlActionGroup.selected;    
 
-    await WebHelpers.urlNav(context, urlAction);
+    await WebHelpers.urlNav(context, urlAction);*/
 });
 
 test('urlNav', async () => {

@@ -1,22 +1,16 @@
-/*export async function routineFor(context, forStep, routineStack) {
-    try {
-        // make a new 'for stack'
-        forStack = []
-        [startIndex, endIndex] = forStep.args
-        // TODO: have like a resolve text function which can get text value from variables
-        loopCount = Math.max(endIndex-startIndex, 0)
+export async function routineFor(context, forStep, runtime) {
+  let [startIndex, endIndex] = forStep.args;
 
-        for(){ // for loop count
-            for () {// for item in for stack
-                // insert item into routine stack
-                // (double check the ordering)
-                // might need to reverse original routine ordering, maybe like stack = routine.steps.reverse
-            }
-        }
-        //for loopCount - 1 (s)
-        
-        
-    } catch (err) {
-        throw new Error('Find (find) error:\n' + err);
-    }
-}*/
+  startIndex = Number(startIndex.value ?? startIndex);
+  endIndex = Number(endIndex.value ?? endIndex);
+
+  const loopCount = Math.max(endIndex - startIndex, 0);
+
+  const body = runtime.popUntil(
+    step => step.name?.toUpperCase() === "ENDFOR"
+  );
+
+  for (let i = 0; i < loopCount; i++) {
+    runtime.pushMany(body);
+  }
+}

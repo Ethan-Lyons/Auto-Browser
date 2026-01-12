@@ -882,7 +882,7 @@
                 },
                 {
                     "type": "Action",
-                    "name": "ELSEIF",
+                    "name": "ELSE_IF",
                     "args": [
                         {
                             "type": "ActionGroup",
@@ -1070,19 +1070,32 @@
                 },
                 {
                     "type": "Action",
-                    "name": "ENDIF",
+                    "name": "END_IF",
                     "args": [],
                     "description": "End if"
                 },
                 {
                     "type": "Action",
                     "name": "FOR",
-                    "args": [],
+                    "args": [
+                        {
+                            "type": "Argument",
+                            "name": "start_index",
+                            "value": null,
+                            "description": ""
+                        },
+                        {
+                            "type": "Argument",
+                            "name": "end_index",
+                            "value": null,
+                            "description": ""
+                        }
+                    ],
                     "description": "Loop over a range of values"
                 },
                 {
                     "type": "Action",
-                    "name": "ENDFOR",
+                    "name": "END_FOR",
                     "args": [],
                     "description": "End loop block"
                 },
@@ -1270,7 +1283,7 @@
                 },
                 {
                     "type": "Action",
-                    "name": "ENDWHILE",
+                    "name": "END_WHILE",
                     "args": [],
                     "description": "End loop block"
                 }

@@ -2,29 +2,23 @@ import fs from 'fs';
 import * as WebHelpers from './WebHelpers.js';
 
 export async function handleRoutine(context, routine) {
-  let rStack;
-  rStack = routine.steps.reverse();
-  while (rStack != []){
-    currentStep = rStack.pop;
-    handleStep(context, currentStep, rStack);
-    // the only special case to support is the conditionals (for, if, etc.)
-    // those will only be accessible as top level user actions (wouldnt make sense to be in other places i think)
-    // and are the only way which
-    // alters steps below itself in the stack
+  while (routine.hasNext()) {
+    const step = routine.pop();
+    await handleStep(context, step, routine);
   }
-
 }
 
-async function handleStep(context, step, rStack) {
+
+async function handleStep(context, step, routine) {
   let selectedStep;
   console.log("Step: " + step.name + " " + step.type);
 
   if (step.type == "ActionGroup") {
     selectedStep = step.selected;
-    await handleStep(context, selectedStep);
+    await handleStep(context, selectedStep, routine);
   }
   else if (step.type == "Action") {
-    await handleAction(context, step, rStack);
+    await handleAction(context, step, routine);
   }
   else if (step.type == "Argument") {
     //ignore
@@ -43,9 +37,13 @@ async function handleStep(context, step, rStack) {
  * @param {Object} currentStep A dictionary entry for a step. This step should have a single action and its corresponding arguments.
  * @throws {Error} Error during execution of action.
  */
-export async function handleAction(context, currentStep, routineStack) {
+export async function handleAction(context, currentStep, routine) {
+    currentStep.name = currentStep.name.toUpperCase()
     try {
-        if(currentStep.name == "CLICK") {
+        if (currentStep.name == "FOR") {
+          await WebHelpers.routineFor(context, currentStep, routine)
+        }
+        else if(currentStep.name == "CLICK") {
           await WebHelpers.click(context, currentStep);
         }
         else if (currentStep.name == "FIND") {
@@ -73,19 +71,3 @@ export async function handleAction(context, currentStep, routineStack) {
         throw new Error('\nError during execution of action: ' + currentStep.name + '\n' + err);
       }
     }
-
-/**
- * Loads a routine object from a JSON file.
- * @param {string} filePath The path of the file to load the routine from.
- * @throws {Error} Error during execution of action.
- * @returns {Routine} The loaded routine object.
- */
-export function loadRoutineFromJSON(filePath) {
-  try {
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    const routine = JSON.parse(fileContent);
-    return routine;
-  } catch (error) {
-    throw new Error(`Failed to load routine from file '${filePath}' in loadRoutineFromJSON: ${error}`);
-  }
-}

@@ -16,6 +16,8 @@ class UserActionBuilder:
         url = r.arg("url")
         tab = r.arg("tab")
         milliseconds = r.arg("milliseconds")
+        startIndex = r.arg("start_index")
+        endIndex = r.arg("end_index")
 
         xpath = r.arg("xpath")
         css = r.arg("css")
@@ -64,15 +66,15 @@ class UserActionBuilder:
 
         # ---------- Control Flow ----------
         ifType = r.userAction("IF", [condition], "If condition")
-        elifType = r.userAction("ELSEIF", [condition], "Else if branch")
+        elifType = r.userAction("ELSE_IF", [condition], "Else if branch")
         elseType = r.userAction("ELSE", [], "Else branch")
-        endifType = r.userAction("ENDIF", [], "End if")
+        endifType = r.userAction("END_IF", [], "End if")
 
-        forType = r.userAction("FOR", [], "Loop over a range of values")
-        endforType = r.userAction("ENDFOR", [], "End loop block")
+        forType = r.userAction("FOR", [startIndex, endIndex], "Loop over a range of values")
+        endforType = r.userAction("END_FOR", [], "End loop block")
 
         whileType = r.userAction("WHILE", [condition], "Loop while a condition is true")
-        endwhileType = r.userAction("ENDWHILE", [], "End loop block")
+        endwhileType = r.userAction("END_WHILE", [], "End loop block")
 
         return ActionFactory.createActionGroup("USER_ACTIONS", r.userActions)
     

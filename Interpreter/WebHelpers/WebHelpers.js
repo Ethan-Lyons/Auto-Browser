@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer-core';
+import { browserConnect } from './Browser.js';
 export * from './Find.js';
 export * from './Info.js';
 export * from './Click.js';
@@ -10,6 +11,8 @@ export * from './WebHelpers.js';
 export * from './StepsHandler.js'
 export * from './Store.js'
 export * from './StoreVariables.js'
+export * from './Conditionals.js';
+export * from './Browser.js'
 
 // TODO:  go forward, go back, refresh, hover, screenshot, title, url
 

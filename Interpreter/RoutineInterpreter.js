@@ -1,8 +1,9 @@
-// Manual execution example:  node RoutineInterpreter.js ../Creator/Routines/test1.json
+// Manual execution example:  node ./Intepreter/RoutineInterpreter.js ./Creator/Routines/test1.json
 
 import * as WebHelpers from './WebHelpers/WebHelpers.js';  
 import { fileURLToPath } from 'url';
 import path from 'path';
+import { Routine } from './WebHelpers/Routine.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -18,14 +19,13 @@ const NEW_TAB = "NEW_TAB";
  * @returns {Promise<void>}
  */
 async function main() {
-  let routine;
-  routine = await getRoutine();
+  const routine = await getRoutine();
   await runBrowser(routine);
 }
 
 async function getRoutine() {
   const routinePath = await getPath();
-  const routine = await WebHelpers.loadRoutineFromJSON(routinePath);
+  const routine = Routine.fromFile(routinePath)
   return routine;
 }
 
@@ -42,9 +42,6 @@ async function runBrowser(routine) {
   //browser = await WebHelpers.browserConnect();
   const context = await WebHelpers.connectToContext();
   try {
-    //for (let step of routine.steps) {
-      //await WebHelpers.handleStep(context, step);
-    //}
     await WebHelpers.handleRoutine(context, routine)
   } catch (err) {
     throw new Error('Error during routine execution in runBrowser:\n' + err);
