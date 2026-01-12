@@ -16,8 +16,8 @@ class UserActionBuilder:
         url = r.arg("url")
         tab = r.arg("tab")
         milliseconds = r.arg("milliseconds")
-        startIndex = r.arg("start_index")
-        endIndex = r.arg("end_index")
+        start = r.arg("start")
+        end = r.arg("end")
 
         xpath = r.arg("xpath")
         css = r.arg("css")
@@ -68,9 +68,8 @@ class UserActionBuilder:
         ifType = r.userAction("IF", [condition], "If condition")
         elifType = r.userAction("ELSE_IF", [condition], "Else if branch")
         elseType = r.userAction("ELSE", [], "Else branch")
-        endifType = r.userAction("END_IF", [], "End if")
 
-        forType = r.userAction("FOR", [startIndex, endIndex], "Loop over a range of values")
+        forType = r.userAction("FOR", [start, end], "Loop over a range of values")
         endforType = r.userAction("END_FOR", [], "End loop block")
 
         whileType = r.userAction("WHILE", [condition], "Loop while a condition is true")

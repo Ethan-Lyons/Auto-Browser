@@ -1,62 +1,118 @@
 import InputOutput
 from Routine import Routine
 
-def _saveRoutine(routine, name):
-    routine.saveRoutine(filePath="./TestData/" + name + ".json")
+TEST_OUTPUT_DIR = "./TestData"
+
+def saveRoutine(routine, name):
+    routine.saveRoutine(filePath=f"{TEST_OUTPUT_DIR}/{name}.json")
+
+def newRoutine():
+    return Routine(inputOutput=InputOutput)
+
+def addNavStep(routine, urlValue):
+    ag = routine.createDefaultAG()
+    nav = ag.get("URL_NAV")
+    ag.setSelected(nav)
+
+    url_arg = nav.get("url")
+    url_arg.setValue(urlValue)
+
+def addClickXpathStep(routine, xpathValue):
+    ag = routine.createDefaultAG()
+    click = ag.get("CLICK")
+    ag.setSelected(click)
+
+    find = click.get("find")
+    xpath = find.get("xpath")
+    find.setSelected(xpath)
+
+    xpath.setValue(xpathValue)
+
+def addClickLinkStep(routine, linkValue, strictValue=False):
+    ag = routine.createDefaultAG()
+    click = ag.get("CLICK")
+    ag.setSelected(click)   # click action
+
+    find = click.get("find")
+    link = find.get("link")
+    find.setSelected(link)  # link action
+
+    text = link.get("text")
+    text.setValue(linkValue)    # text argument
+
+    strict = link.get("strict")
+    if strictValue == True:
+        true = strict.get("true")
+        strict.setSelected(true)
+    else:
+        false = strict.get("false")
+        strict.setSelected(false)    # strict action group
+
+
+def addNewTabStep(routine):
+    ag = routine.createDefaultAG()
+    new_tab = ag.get("NEW_TAB")
+    ag.setSelected(new_tab)
 
 def testBlank():
-    routine = Routine(inputOutput=InputOutput)
+    routine = newRoutine()
     routine.createDefaultAG()
-    _saveRoutine(routine, "testBlank")
+    saveRoutine(routine, "test_blank")
 
 def testNav():
-    routine = Routine(inputOutput=InputOutput)
-    userAG = routine.createDefaultAG()
-
-    navA = userAG.find("URL_NAV")
-    userAG.setSelected(navA)
-    urlArg = navA.find("url")
-    urlArg.setValue("https://www.google.com")
-
-    _saveRoutine(routine, "testNav")
+    routine = newRoutine()
+    addNavStep(routine, "https://www.google.com")
+    saveRoutine(routine, "test_nav")
 
 def testClick():
-    routine = Routine(inputOutput=InputOutput)
-    userAG1 = routine.createDefaultAG()
-    userAG2 = routine.createDefaultAG()
+    routine = newRoutine()
 
-    navA = userAG1.find("URL_NAV")
-    userAG1.setSelected(navA)
-    urlArg = navA.find("url")
-    urlArg.setValue("https://www.google.com")   # base navigation
+    addNavStep(routine, "https://www.google.com")
 
-    clickA = userAG2.find("CLICK")
-    find = clickA.find("find")
-    #selector = find.find("selector")
-    #xpath = selector.find("xpath")  # finding click action parts
-    xpath = find.find("xpath")
+    addClickXpathStep(
+        routine,
+        '//a[@href="https://policies.google.com/privacy?hl=en&fg=1"]'
+    )
 
-    userAG2.setSelected(clickA)
-    #selector.setSelected(xpath)
-    find.setSelected(xpath)
-    xpath.setValue('//a[@href="https://policies.google.com/privacy?hl=en&fg=1"]')   # setting click action parts
-
-    _saveRoutine(routine, "testClick")
+    saveRoutine(routine, "test_click")
 
 def testNewTab():
-    routine = Routine(inputOutput=InputOutput)
-    userAG = routine.createDefaultAG()
+    routine = newRoutine()
+    addNewTabStep(routine)
+    saveRoutine(routine, "test_new_tab")
 
-    newTabA = userAG.find("NEW_TAB")
-    userAG.setSelected(newTabA)
+def testForLoop():
+    routine = newRoutine()
 
-    _saveRoutine(routine, "testNewTab")
+    # FOR i = 0..2
+    ag = routine.createDefaultAG()
+    forAction = ag.get("FOR")
+    ag.setSelected(forAction)
 
-def generateTestData():
+    start = forAction.get("start")
+    end = forAction.get("end")
+
+    start.setValue(0)
+    end.setValue(2)
+
+    # Loop body: NAV
+    addNavStep(routine, "https://example.com")
+
+    # Loop body: CLICK
+    addClickLinkStep(routine, "example")
+
+    # ENDFOR
+    endAG = routine.createDefaultAG()
+    endforAction = endAG.get("END_FOR")
+    endAG.setSelected(endforAction)
+
+    saveRoutine(routine, "test_for_loop")
+
+def generate_test_data():
     testBlank()
     testNav()
     testClick()
+    testForLoop()
     testNewTab()
 
-generateTestData()
-
+generate_test_data()

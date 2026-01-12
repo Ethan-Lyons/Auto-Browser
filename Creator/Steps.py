@@ -17,7 +17,7 @@ class Action:
     def getArgs(self):
         """Returns the arguments of the action"""
         return self.args
-    def find(self, argName):
+    def get(self, argName):
         """Finds and returns an argument in the action by name string. Returns None if no argument found"""
         for arg in self.args:
             if str(arg).lower() == argName.lower():
@@ -57,7 +57,7 @@ class ActionGroup:
         """Sets the selected action for the action group"""
         self.selected = action
     
-    def find(self, actionName):
+    def get(self, actionName):
         """Finds and returns an arg (action, actionGroup, or argument) in the action group by name string. Returns None if no action found"""
         for action in self.args:
             if str(action).lower() == actionName.lower():

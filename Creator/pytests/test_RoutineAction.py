@@ -79,9 +79,9 @@ def test_find_action_in_group():
     testAction = Action(name=testName, args=[Argument("testArg")], description="Action Description")
     actionGroup = ActionGroup(name="GroupName", args=[testAction], description="Group Description")
 
-    assert actionGroup.find("WrongName") == None
-    assert str(actionGroup.find(testName)) == str(testAction)
-    assert actionGroup.find(testName) == testAction
+    assert actionGroup.get("WrongName") == None
+    assert str(actionGroup.get(testName)) == str(testAction)
+    assert actionGroup.get(testName) == testAction
 
 def test_set_value_in_action_group():
     testName = "ActionName"

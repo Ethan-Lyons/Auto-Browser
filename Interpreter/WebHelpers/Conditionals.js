@@ -1,16 +1,17 @@
-export async function routineFor(context, forStep, runtime) {
-  let [startIndex, endIndex] = forStep.args;
+export async function routineFor(context, forStep, routine) {
+  let [start, end] = forStep.args;
+  const forName = forStep.name
 
-  startIndex = Number(startIndex.value ?? startIndex);
-  endIndex = Number(endIndex.value ?? endIndex);
+  //start = Number(start.value ?? start);
+  //end = Number(end.value ?? end);
+  start = Number(start.value)
+  end = Number(end.value)
 
-  const loopCount = Math.max(endIndex - startIndex, 0);
+  const loopCount = Math.max(end - start, 0);
 
-  const body = runtime.popUntil(
-    step => step.name?.toUpperCase() === "ENDFOR"
-  );
+  const body = routine.popControlBlock(forName)
 
   for (let i = 0; i < loopCount; i++) {
-    runtime.pushMany(body);
+    routine.pushMany(body);
   }
 }

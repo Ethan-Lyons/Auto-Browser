@@ -143,7 +143,7 @@ def dictToActions(actionDict):
                                args=[dictToActions(a) for a in actionDict["allArgs"]],
                                description=actionDict["description"])
         
-        selectedAction = newGroup.find(actionDict["selected"]["name"])    # Find the selected action
+        selectedAction = newGroup.get(actionDict["selected"]["name"])    # Find the selected action
         newGroup.setSelected(selectedAction)
         return newGroup
     

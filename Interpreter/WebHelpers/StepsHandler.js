@@ -11,14 +11,15 @@ export async function handleRoutine(context, routine) {
 
 async function handleStep(context, step, routine) {
   let selectedStep;
-  console.log("Step: " + step.name + " " + step.type);
+  if (step.name !== "USER_ACTIONS")
+  console.log("Step: " + step.name + "  [" + step.type + "]");
 
   if (step.type == "ActionGroup") {
     selectedStep = step.selected;
     await handleStep(context, selectedStep, routine);
   }
   else if (step.type == "Action") {
-    await handleAction(context, step, routine);
+    await handleAction(context, step,routine);
   }
   else if (step.type == "Argument") {
     //ignore
@@ -65,7 +66,7 @@ export async function handleAction(context, currentStep, routine) {
           await WebHelpers.store(context, currentStep);
         }
         else {
-          throw new Error('\"' + currentStep.name + '\" is not defined in WebHelpers.');
+          throw new Error('\"' + currentStep.name + '\" is not defined under StepsHandler.');
         }
       } catch (err) {
         throw new Error('\nError during execution of action: ' + currentStep.name + '\n' + err);

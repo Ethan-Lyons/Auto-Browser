@@ -36,15 +36,41 @@ export class Routine {
     }
   }
 
-  popUntil(predicate) {
-    const collected = [];
-    while (this.stack.length > 0) {
-      const step = this.stack.pop();
-      if (predicate(step)) break;
-      collected.push(step);
-    }
-    return collected;
+  popControlBlock(type) {
+  switch (type) {
+    case "FOR": return this.popBlock("FOR", "END_FOR");
+    case "IF": return this.popBlock("IF", "END_IF");
+    case "WHILE": return this.popBlock("WHILE", "END_WHILE");
   }
+}
+
+  popBlock(startToken, endToken) {
+  const collected = [];
+  let depth = 1;
+
+  while (this.stack.length > 0) {
+    const nextAg = this.stack.pop();
+    const next = nextAg.selected
+
+    if (next.name == startToken) {
+      depth++;
+    } else if (next.name == endToken) {
+      depth--;
+      if (depth == 0) {
+        break;
+      }
+    }
+
+    collected.push(next);
+  }
+
+  if (depth !== 0) {
+    throw new Error(`Unmatched ${startToken}/${endToken} block (depth: ${depth})`);
+  }
+
+  return collected.reverse();
+  }
+
 
   getSteps(){
     return this.steps
