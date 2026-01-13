@@ -157,7 +157,7 @@ class ActionFrame:
             gFrame (Frame): The parent frame associated with the action group
             newStrSelection (str): The string name of the newly selected action in the dropdown menu
         """
-        newSelection = group.find(actionName=newStrSelection)
+        newSelection = group.get(actionName=newStrSelection)
         group.setSelected(newSelection)
 
         oldFrame = self.groupFrames[group]   # Destroy old args subframe

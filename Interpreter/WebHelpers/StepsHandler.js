@@ -42,7 +42,10 @@ export async function handleAction(context, currentStep, routine) {
     currentStep.name = currentStep.name.toUpperCase()
     try {
         if (currentStep.name == "FOR") {
-          await WebHelpers.routineFor(context, currentStep, routine)
+          WebHelpers.routineFor(currentStep, routine)
+        }
+        else if (currentStep.name == "IF") {
+          WebHelpers.routineIf(currentStep, routine)
         }
         else if(currentStep.name == "CLICK") {
           await WebHelpers.click(context, currentStep);

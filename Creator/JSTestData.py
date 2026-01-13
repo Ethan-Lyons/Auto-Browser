@@ -51,8 +51,19 @@ def addClickLinkStep(routine, linkValue, strictValue=False):
 
 def addNewTabStep(routine):
     ag = routine.createDefaultAG()
-    new_tab = ag.get("NEW_TAB")
-    ag.setSelected(new_tab)
+    newTab = ag.get("NEW_TAB")
+    ag.setSelected(newTab)
+
+def addStoreAction(routine, storeName, varValue):
+    ag = routine.createDefaultAG()
+    store = ag.get("STORE")
+
+    storable = store.get("storable")
+    text = storable.get("text")
+    text.setValue(varValue)
+
+    variable = store.get("variable")
+    variable.setValue(storeName)
 
 def testBlank():
     routine = newRoutine()
@@ -101,12 +112,68 @@ def testForLoop():
     # Loop body: CLICK
     addClickLinkStep(routine, "example")
 
-    # ENDFOR
+    # END_FOR
     endAG = routine.createDefaultAG()
     endforAction = endAG.get("END_FOR")
     endAG.setSelected(endforAction)
 
     saveRoutine(routine, "test_for_loop")
+
+def testIfTrue():
+    routine = newRoutine()
+    storeName = "boolToCheck"
+
+    addStoreAction(routine, storeName, "true")
+
+    # IF
+    ag = routine.createDefaultAG()
+    ifAction = ag.get("IF")
+    ag.setSelected(ifAction)
+
+    condition = ifAction.get("condition")
+    var = condition.get("variable")
+    var.setValue(storeName)           # TODO: make sure if can resolve variables
+    
+
+    # If body: NAV
+    addNavStep(routine, "https://example.com")
+
+    # If body: CLICK
+    addClickLinkStep(routine, "example")
+
+    # END_IF
+    endAG = routine.createDefaultAG()
+    endifAction = endAG.get("END_IF")
+    endAG.setSelected(endifAction)
+
+    saveRoutine(routine, "test_if_true")
+
+def testIfFalse():
+    routine = newRoutine()
+
+    # IF
+    ag = routine.createDefaultAG()
+    ifAction = ag.get("IF")
+    ag.setSelected(ifAction)
+
+    condition = ifAction.get("condition")
+    text = condition.get("text")
+    condition.setSelected(text)
+
+    text.setValue("false")
+
+    # If body: NAV
+    addNavStep(routine, "https://example.com")
+
+    # If body: CLICK
+    addClickLinkStep(routine, "example")
+
+    # END_IF
+    endAG = routine.createDefaultAG()
+    endifAction = endAG.get("END_IF")
+    endAG.setSelected(endifAction)
+
+    saveRoutine(routine, "test_if_false")
 
 def generate_test_data():
     testBlank()
@@ -114,5 +181,7 @@ def generate_test_data():
     testClick()
     testForLoop()
     testNewTab()
+    testIfTrue()
+    testIfFalse()
 
 generate_test_data()

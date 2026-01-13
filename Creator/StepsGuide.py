@@ -100,9 +100,6 @@ class StepsGuide():
     def getFileContents(self, filePath):
         with open(filePath, "r", encoding="utf-8") as file:
             return file.read()
-            
-
-
 
 
 if __name__ == "__main__":
