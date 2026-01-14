@@ -1,4 +1,4 @@
-import { getActivePage } from "./WebHelpers.js";
+import { getActivePage, resolveString, resolveBoolean } from "./WebHelpers.js";
 import puppeteer from 'puppeteer-core';
 
 /**
@@ -12,35 +12,33 @@ import puppeteer from 'puppeteer-core';
 export async function find(context, findStep) {
     let page, selectorGroup, selectorType;
     try {
-        //selectorGroup = findStep.args[0];
-        //selectorType = selectorGroup.selected;
         selectorType = findStep.selected;
         page = await getActivePage(context);
 
         if (selectorType.name == "xpath") {
-            const target = selectorType.value;
+            const target = resolveString(selectorType.value);
             const locator = await findByXPath(page, target);
             return locator;
         }
         else if (selectorType.name == "text"){
-            const target = selectorType.value;
+            const target = resolveString(selectorType.value);
             const locator = await findByText(page, target)
             return locator;
         }
         else if (selectorType.name == "aria") {
-            const target = selectorType.value;
-            const locator = await findByAria(page, target)
+            const target = resolveString(selectorType.value);
+            const locator = await findByAria(page, target);
             return locator;
         }
         else if (selectorType.name == "css") {
-            const target = selectorType.value;
+            const target = resolveString(selectorType.value);
             const locator = await page.locator(target);
             return locator;
         }
         else if (selectorType.name == "link") {
             const [textArg, strictGroup] = selectorType.args;
-            const strictVal = strictGroup.selected.value
-            const textVal = textArg.value
+            const strictVal = resolveBoolean(strictGroup.selected.value);
+            const textVal = resolveString(textArg.value);
 
             const locator = await findByLinkAddress(page, textVal, strictVal);
             return locator;
@@ -61,7 +59,7 @@ export async function find(context, findStep) {
  * @param {string} [strict="false"] Whether to search for an exact link address or a link address that contains the given string
  * @returns {Promise<puppeteer.locator> | null} The locator for the element if found
  */
-async function findByLinkAddress(page, linkAddress, strict="false") {
+async function findByLinkAddress(page, linkAddress, strict=false) {
     let fullXpath;
     try {
         if (strict == true) { // link "is"

@@ -47,6 +47,9 @@ export async function handleAction(context, currentStep, routine) {
         else if (currentStep.name == "IF") {
           WebHelpers.routineIf(currentStep, routine)
         }
+        else if (currentStep.name == "WHILE") {
+          WebHelpers.routineWhile(currentStep, routine)
+        }
         else if(currentStep.name == "CLICK") {
           await WebHelpers.click(context, currentStep);
         }
@@ -67,6 +70,9 @@ export async function handleAction(context, currentStep, routine) {
         }
         else if (currentStep.name == "STORE") {
           await WebHelpers.store(context, currentStep);
+        }
+        else if (currentStep.name == "WAIT") {
+          await WebHelpers.wait(currentStep)
         }
         else {
           throw new Error('\"' + currentStep.name + '\" is not defined under StepsHandler.');

@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer-core';
 import { browserConnect } from './Browser.js';
+import { resolveNumber } from './StoreVariables.js';
 export * from './Find.js';
 export * from './Info.js';
 export * from './Click.js';
@@ -129,4 +130,10 @@ export async function getActiveIndex(context) {
     const page = await getActivePage(context);
     const pages = await context.pages();
     return pages.indexOf(page);
+}
+
+export async function wait(waitStep) {
+    let [ms] = waitStep.args
+    ms = resolveNumber(ms)
+    await new Promise(r => setTimeout(r, waitStep));
 }

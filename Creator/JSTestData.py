@@ -132,7 +132,7 @@ def testIfTrue():
 
     condition = ifAction.get("condition")
     var = condition.get("variable")
-    var.setValue(storeName)           # TODO: make sure if can resolve variables
+    var.setValue(storeName)
     
 
     # If body: NAV
@@ -150,6 +150,9 @@ def testIfTrue():
 
 def testIfFalse():
     routine = newRoutine()
+    storeName = "boolToCheck"
+
+    addStoreAction(routine, storeName, "false")
 
     # IF
     ag = routine.createDefaultAG()
@@ -157,10 +160,9 @@ def testIfFalse():
     ag.setSelected(ifAction)
 
     condition = ifAction.get("condition")
-    text = condition.get("text")
-    condition.setSelected(text)
-
-    text.setValue("false")
+    var = condition.get("variable")
+    var.setValue(storeName)
+    
 
     # If body: NAV
     addNavStep(routine, "https://example.com")

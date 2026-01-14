@@ -51,27 +51,36 @@ export function resolveNumber(input) {
     if (typeof input !== 'string') {
         return input;
     }
-    const resolveVars = resolveString(input)
 
-    const matchString = resolveVars.replaceAll(" ", "").replaceAll(",", "")    // Remove commas and spaces
+    const resolveVars = resolveString(input);
+    const matchString = resolveVars.replaceAll(" ", "").replaceAll(",", "");
 
-    const regex = /[0-9]+([.][0-9]+)?/;
-    const match = regex.match(matchString)[0];  // Match integer and decimal numbers
+    const regex = /[0-9]+(\.[0-9]+)?/;
+    const match = matchString.match(regex);
 
-    return Number(match);
+    if (!match) {
+        throw new Error(`No numeric value found in "${input}"`);
+    }
+
+    return Number(match[0]);
 }
 
 export function resolveBoolean(input) {
     if (typeof input !== 'string') {
         return input;
     }
-    const resolveVars = resolveString(input)
 
-    const matchString = resolveVars.replaceAll(" ", "")         // Remove commas, spaces,
-                            .replaceAll(",", "").toLowerCase()  // and lower case
+    const resolveVars = resolveString(input);
+    const matchString = resolveVars.replaceAll(" ", "")
+                                   .replaceAll(",", "")
+                                   .toLowerCase();
 
-    const regex = /\s*(true|false)\s*/i;
-    const match = regex.match(matchString)[0];  // Match boolean strings
+    const regex = /^(true|false)$/;
+    const match = matchString.match(regex);
 
-    return Number(match);
+    if (!match) {
+        throw new Error(`No boolean value found in "${input}"`);
+    }
+
+    return match[1] === "true";
 }

@@ -32,7 +32,7 @@ class UserActionBuilder:
         link = r.action("link", [text, strict])
         find = r.group(
             "Find",
-            [xpath, css, text, variable, link, aria],
+            [xpath, css, text, link, aria],
             "Find an element and return locator"
         )
         info = r.group("info", [url, tab], "Return page or browser info") # TODO: tab info group, has like count, url, title, etc.
@@ -66,8 +66,8 @@ class UserActionBuilder:
 
         # ---------- Control Flow ----------
         ifType = r.userAction("IF", [condition], "If condition")
-        elifType = r.userAction("ELSE_IF", [condition], "Else if branch")
         elseType = r.userAction("ELSE", [], "Else branch")
+        endIfType = r.userAction("END_IF", [], "End if block")
 
         forType = r.userAction("FOR", [start, end], "Loop over a range of values")
         endforType = r.userAction("END_FOR", [], "End loop block")
