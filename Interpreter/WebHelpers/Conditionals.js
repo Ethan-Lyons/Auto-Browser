@@ -1,4 +1,4 @@
-import { resolveString, resolveNumber, resolveBoolean } from "./StoreVariables";
+import { resolveString, resolveNumber, resolveBoolean } from "./StoreVariables.js";
 
 export function routineFor(forStep, routine) {
   let [start, end] = forStep.args;
@@ -12,8 +12,8 @@ export function routineFor(forStep, routine) {
   const block = routine.popControlBlock(forName);
   const body = block.body;
 
-  for (let i = 0; i < loopCount; i++) {
-    routine.pushMany(body);
+  for (let i = 0; i < loopCount; i++) { // repeat for loop n times
+    routine.pushManyStack(body);
   }
 }
 
@@ -27,9 +27,9 @@ export function routineWhile(whileStep, routine) {
   const body = block.slice(0, -1);
 
   if (condition){
-    routine.pushMany(body);  // push actions to execute
+    routine.pushManyStack(body);  // push actions to execute
 
-    routine.pushMany(block);
+    routine.pushManyStack(block);
     routine.push(whileStep) //duplicate original while structure
   }
 }
@@ -43,9 +43,9 @@ export function routineIf(ifStep, routine) {
   const block = routine.popControlBlock(ifName);
 
   if (condition){
-    routine.pushMany(block.body); // Push items inside the if section
+    routine.pushManyStack(block.body); // Push items inside the if section
   }
   else {
-    routine.pushMany(block.bodyPost); // Push items inside the else section
+    routine.pushManyStack(block.bodyPost); // Push items inside the else section
   }
 }

@@ -4,6 +4,10 @@ export class Routine {
   constructor(routineJSON) {
     this.steps = routineJSON.steps;
     this.stack = [...this.steps].reverse();
+    this.stackLogPath = "stack.log";
+    fs.writeFileSync(this.stackLogPath, "=== STACK TRACE START ===\n");
+
+    this._logStack("INIT");
   }
 
   static fromFile(filePath) {
@@ -23,17 +27,30 @@ export class Routine {
   }
 
   pop() {
-    return this.stack.pop();
+    const step = this.stack.pop();
+    this._logStack("POP", step?.selected?.name);
+    return step;
   }
 
   push(step) {
+    this._logStack("PUSH", step?.selected?.name);
     this.stack.push(step);
   }
 
-  pushMany(steps) {
-    for (let i = steps.length - 1; i >= 0; i--) {
-      this.stack.push(steps[i]);
+    // Pushes items onto the stack assuming input follows stack ordering
+  pushManyStack(stack) {
+    for (let i = 0; i < stack.length; i++) {
+      this.stack.push(stack[i]);
     }
+    this._logStack("PUSH_MANY_STACK");
+  }
+
+  // Pushes items onto the stack assuming input follows list ordering
+  pushManyList(list) {
+    for (let i = list.length - 1; i >= 0; i--) {
+      this.stack.push(list[i]);
+    }
+    this._logStack("PUSH_MANY_LIST");
   }
 
   popControlBlock(type) {
@@ -44,13 +61,15 @@ export class Routine {
     }
   }
 
+  // Returns a stack ordered sequence
   popBlock(startToken, endToken, splitToken = null) {
+    this._logStack("POP_BLOCK_START", `\"${startToken} -> ${endToken}\"`);
     let depth = 1;
 
     const before = [];
     const after = [];
 
-    let collectingAfter = false;
+    let collectPost = false;
     let endStep = null;
 
     while (this.stack.length > 0) {
@@ -75,11 +94,12 @@ export class Routine {
             next.name === splitToken &&
             depth === 1
         ) {
-            collectingAfter = true;
+            this._logStack("POP_BLOCK_SPLIT", splitToken);
+            collectPost = true;
             continue;
         }
 
-        if (collectingAfter) {
+        if (collectPost) {
             after.push(next);
         } else {
             before.push(next);
@@ -91,10 +111,15 @@ export class Routine {
             `Unmatched ${startToken}/${endToken} block (depth: ${depth})`
         );
     }
-
+    
+    
+    const returnBody = before.reverse()
+    const returnPost = after.length > 0 ? after.reverse() : null
+    // Return post body: [" + returnPost.map(a => a.name) + "]"
+    this._logStack("POP_BLOCK_END");
     return {
-        body: before.reverse(),
-        bodyPost: after.length > 0 ? after.reverse() : null,
+        body: returnBody,
+        bodyPost: returnPost,
         end: endStep
     };
 }
@@ -106,4 +131,21 @@ export class Routine {
   getStack(){
     return this.stack
   }
+
+  _logStack(op, detail = "") {
+  const snapshot = this._formatStack();
+  fs.appendFileSync(
+    this.stackLogPath,
+    `[${op}] ${detail}\n` +
+    `TOP → ${snapshot.join(" | ")}\n\n`
+  );
+  }
+
+  _formatStack() {
+    return this.stack
+      .slice()
+      .reverse()
+      .map(s => s.selected?.name ?? s.name ?? "<unknown>");
+  }
+
 }
