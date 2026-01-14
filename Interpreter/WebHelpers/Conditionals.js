@@ -9,22 +9,43 @@ export function routineFor(forStep, routine) {
 
   const loopCount = Math.max(end - start, 0);
 
-  const body = routine.popControlBlock(forName)
+  const block = routine.popControlBlock(forName);
+  const body = block.body;
 
   for (let i = 0; i < loopCount; i++) {
     routine.pushMany(body);
   }
 }
 
-export function routineIf(ifStep, routine) {
-  let [condition] = ifStep.args;
-  const ifName = ifStep.name
+export function routineWhile(whileStep, routine) {
+  let [condition] = whileStep.args;
+  const whileName = whileStep.name;
 
-  condition = resolveBoolean(condition)
+  condition = resolveBoolean(condition);
 
-  const body = routine.popControlBlock(ifName)
+  const block = routine.popControlBlock(whileName);
+  const body = block.slice(0, -1);
 
   if (condition){
-    routine.pushMany(body);
+    routine.pushMany(body);  // push actions to execute
+
+    routine.pushMany(block);
+    routine.push(whileStep) //duplicate original while structure
+  }
+}
+
+export function routineIf(ifStep, routine) {
+  let [condition] = ifStep.args;
+  const ifName = ifStep.name;
+
+  condition = resolveBoolean(condition);
+
+  const block = routine.popControlBlock(ifName);
+
+  if (condition){
+    routine.pushMany(block.body); // Push items inside the if section
+  }
+  else {
+    routine.pushMany(block.bodyPost); // Push items inside the else section
   }
 }

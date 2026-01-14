@@ -37,40 +37,67 @@ export class Routine {
   }
 
   popControlBlock(type) {
-  switch (type) {
-    case "FOR": return this.popBlock("FOR", "END_FOR");
-    case "IF": return this.popBlock("IF", "END_IF");
-    case "WHILE": return this.popBlock("WHILE", "END_WHILE");
+    switch (type) {
+      case "FOR": return this.popBlock("FOR", "END_FOR");
+      case "IF": return this.popBlock("IF", "END_IF", "ELSE");
+      case "WHILE": return this.popBlock("WHILE", "END_WHILE");
+    }
   }
-}
 
-  popBlock(startToken, endToken) {
-  const collected = [];
-  let depth = 1;
+  popBlock(startToken, endToken, splitToken = null) {
+    let depth = 1;
 
-  while (this.stack.length > 0) {
-    const nextAg = this.stack.pop();
-    const next = nextAg.selected
+    const before = [];
+    const after = [];
 
-    if (next.name == startToken) {
-      depth++;
-    } else if (next.name == endToken) {
-      depth--;
-      if (depth == 0) {
-        break;
-      }
+    let collectingAfter = false;
+    let endStep = null;
+
+    while (this.stack.length > 0) {
+        const nextAg = this.stack.pop();
+        const next = nextAg.selected;
+
+        if (next.name === startToken) {
+            depth++;
+        }
+
+        else if (next.name === endToken) {
+            depth--;
+
+            if (depth === 0) {
+                endStep = next;
+                break;
+            }
+        }
+
+        else if (
+            splitToken !== null &&
+            next.name === splitToken &&
+            depth === 1
+        ) {
+            collectingAfter = true;
+            continue;
+        }
+
+        if (collectingAfter) {
+            after.push(next);
+        } else {
+            before.push(next);
+        }
     }
 
-    collected.push(next);
-  }
+    if (depth !== 0) {
+        throw new Error(
+            `Unmatched ${startToken}/${endToken} block (depth: ${depth})`
+        );
+    }
 
-  if (depth !== 0) {
-    throw new Error(`Unmatched ${startToken}/${endToken} block (depth: ${depth})`);
-  }
-
-  return collected.reverse();
-  }
-
+    return {
+        body: before.reverse(),
+        bodyPost: after.length > 0 ? after.reverse() : null,
+        end: endStep
+    };
+}
 
   getSteps(){
     return this.steps
