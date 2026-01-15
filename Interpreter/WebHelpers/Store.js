@@ -1,4 +1,4 @@
-import { getActivePage, find, info } from './WebHelpers.js';
+import { find, info } from './WebHelpers.js';
 import * as Variables from './StoreVariables.js';
 
 

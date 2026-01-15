@@ -35,7 +35,10 @@ class UserActionBuilder:
             [xpath, css, text, link, aria],
             "Find an element and return locator"
         )
-        info = r.group("info", [url, tab], "Return page or browser info") # TODO: tab info group, has like count, url, title, etc.
+        info = r.group("info", [url, tab], "Return page or browser info")
+        # TODO: tab info group, has like count, url, title, current tab index! etc.
+
+        # TODO:  go forward, go back, refresh, hover, screenshot, title, url
 
         condition = r.group("condition", [find, variable])
 
@@ -61,7 +64,7 @@ class UserActionBuilder:
         newTab = r.userAction("NEW_TAB", [], "Open a new tab")
 
         click = r.userAction("CLICK", [find], "Click an element")
-        typeA = r.userAction("TYPE", [find, text], "Type text into input")  # TODO: confirm this
+        typeA = r.userAction("TYPE", [find, text], "Type text into input")  # TODO: confirm this, does it need a find if click before
         wait = r.userAction("WAIT", [milliseconds], "Wait")
 
         # ---------- Control Flow ----------

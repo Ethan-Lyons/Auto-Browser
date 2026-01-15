@@ -10,19 +10,14 @@ import puppeteer from 'puppeteer-core';
  * @throws {Error} Error during execution of action.
  */
 export async function click(context, clickStep) {
-    try {
-        const page = await getActivePage(context);
-        const findStep = clickStep.args[0];
-        const locator = await find(context, findStep);
-        if (locator) {
-            await waitForNavClick(page, locator);
-        }
-        else {
-            console.log("Warning: Element not found: " + clickStep.name + " " + clickStep.selectedArg);
-        }
-        
-    } catch (err) {
-        throw new Error('Click (click) error:\n' + err);
+    const page = await getActivePage(context);
+    const findStep = clickStep.args[0];
+    const locator = await find(context, findStep);
+    if (locator) {
+        await waitForNavClick(page, locator);
+    }
+    else {
+        throw new Error("Error: Click element not found: " + clickStep.name + " " + clickStep.selectedArg);
     }
 }
 
@@ -33,12 +28,8 @@ export async function click(context, clickStep) {
  * @param {puppeteer.ElementHandle} locator The element locator of the element to click
  */
 async function waitForNavClick(page, locator) {
-    try {
-        await Promise.allSettled([
-            page.waitForNavigation({ waitUntil: 'networkidle0'}),
-            locator.click(),
-        ]);
-    } catch (err) {
-        throw new Error('Click (waitForNavClick) error:\n' + err);
-    }
+    await Promise.allSettled([
+        page.waitForNavigation({ waitUntil: 'networkidle0'}),
+        locator.click(),
+    ]);
 }

@@ -10,45 +10,40 @@ import puppeteer from 'puppeteer-core';
  * @throws Will throw an error if the element locator cannot be found.
  */
 export async function find(context, findStep) {
-    let page, selectorGroup, selectorType;
-    try {
-        selectorType = findStep.selected;
-        page = await getActivePage(context);
+    let page, selectorType;
+    selectorType = findStep.selected;
+    page = await getActivePage(context);
 
-        if (selectorType.name == "xpath") {
-            const target = resolveString(selectorType.value);
-            const locator = await findByXPath(page, target);
-            return locator;
-        }
-        else if (selectorType.name == "text"){
-            const target = resolveString(selectorType.value);
-            const locator = await findByText(page, target)
-            return locator;
-        }
-        else if (selectorType.name == "aria") {
-            const target = resolveString(selectorType.value);
-            const locator = await findByAria(page, target);
-            return locator;
-        }
-        else if (selectorType.name == "css") {
-            const target = resolveString(selectorType.value);
-            const locator = await page.locator(target);
-            return locator;
-        }
-        else if (selectorType.name == "link") {
-            const [textArg, strictGroup] = selectorType.args;
-            const strictVal = resolveBoolean(strictGroup.selected.value);
-            const textVal = resolveString(textArg.value);
+    if (selectorType.name == "xpath") {
+        const target = resolveString(selectorType.value);
+        const locator = await findByXPath(page, target);
+        return locator;
+    }
+    else if (selectorType.name == "text"){
+        const target = resolveString(selectorType.value);
+        const locator = await findByText(page, target)
+        return locator;
+    }
+    else if (selectorType.name == "aria") {
+        const target = resolveString(selectorType.value);
+        const locator = await findByAria(page, target);
+        return locator;
+    }
+    else if (selectorType.name == "css") {
+        const target = resolveString(selectorType.value);
+        const locator = await page.locator(target);
+        return locator;
+    }
+    else if (selectorType.name == "link") {
+        const [textArg, strictGroup] = selectorType.args;
+        const strictVal = resolveBoolean(strictGroup.selected.value);
+        const textVal = resolveString(textArg.value);
 
-            const locator = await findByLinkAddress(page, textVal, strictVal);
-            return locator;
-        }
-        else {
-            throw new Error ("Error: Unknown find type: " + selectorType.name);
-        }
-        
-    } catch (err) {
-        throw new Error('Find (find) error:\n' + err);
+        const locator = await findByLinkAddress(page, textVal, strictVal);
+        return locator;
+    }
+    else {
+        throw new Error ("Error: Unknown find type: " + selectorType.name);
     }
 }
 
@@ -59,22 +54,19 @@ export async function find(context, findStep) {
  * @param {string} [strict="false"] Whether to search for an exact link address or a link address that contains the given string
  * @returns {Promise<puppeteer.locator> | null} The locator for the element if found
  */
-async function findByLinkAddress(page, linkAddress, strict=false) {
-    let fullXpath;
-    try {
-        if (strict == true) { // link "is"
-            fullXpath = '::-p-xpath(' + `//a[@href="${linkAddress}"]` + ')';
-        }
-        else { // link "contains"
-            fullXpath = '::-p-xpath(' + `//a[contains(@href, "${linkAddress}")]` + ')';
-        }
-
-        const locator = await page.locator(fullXpath);
-        return locator;
-
-    } catch (err) {
-        throw new Error('Find (findByLinkAddress [strict = ' + strict + ']) error:\n' + err);
+async function findByLinkAddress(page, linkAddress, strict = false) {
+    if (!page) {
+        throw new TypeError('findByLinkAddress: page is required');
     }
+    if (typeof linkAddress !== 'string' || linkAddress.length === 0) {
+        throw new TypeError('findByLinkAddress: linkAddress must be a non-empty string');
+    }
+
+    const fullXpath = strict
+        ? `::-p-xpath(//a[@href="${linkAddress}"])`
+        : `::-p-xpath(//a[contains(@href, "${linkAddress}")])`;
+
+    return page.locator(fullXpath);
 }
 
 /**
@@ -84,14 +76,9 @@ async function findByLinkAddress(page, linkAddress, strict=false) {
  * @returns {Promise<puppeteer.locator> | null} The locator for the element if found
  */
 async function findByXPath(page, xPath) {
-    try {
-        const fullXPath = 'xpath/' + xPath;
-        const locator = await page.locator(fullXPath);
-        return locator;
-
-    } catch (err) {
-        throw new Error('Find (findByXPath) error:\n' + err);
-    }
+    const fullXPath = 'xpath/' + xPath;
+    const locator = await page.locator(fullXPath);
+    return locator;
 }
 
 async function findByText(page, text) {
@@ -109,12 +96,7 @@ async function findByText(page, text) {
 }
 
 async function findByAria(page, aria){
-    try {
-        const fullXPath = '::-p-aria(' + aria + ')';
-        const locator = await page.locator(fullXPath);
-        return locator;
-
-    } catch (err) {
-        throw new Error('Find (findByAria) error:\n' + err);
-    }
+    const fullXPath = '::-p-aria(' + aria + ')';
+    const locator = await page.locator(fullXPath);
+    return locator;
 }

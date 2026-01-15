@@ -28,15 +28,10 @@ export async function getTabCount(context) {
  * @throws {Error} If there is an error opening the tab.
  */
 export async function newTab(context) {
-    try {
-        const newPage = await context.newPage();
-        await setActivePage(context, newPage);
-        newPage.setDefaultTimeout(DEFAULT_TIMEOUT)
-        return newPage;
-
-    } catch (err) {
-        throw new Error('Tab (newTab) error:\n' + err);
-    }
+    const newPage = await context.newPage();
+    await setActivePage(context, newPage);
+    newPage.setDefaultTimeout(DEFAULT_TIMEOUT)
+    return newPage;
 }
 
 /**
@@ -45,16 +40,11 @@ export async function newTab(context) {
  * @throws {Error} If there is an error closing the tab.
  */
 export async function closeTab(tab) {
-    try {
-        if (tab != null) {
-            await tab.close();
-        }
-        else {
-            throw new Error('Invalid tab for closing (closeTab) :\n' + "Input: " + tab);
-        }
-
-    } catch (err) {
-        throw new Error('Tab (closeTab) error:\n' + err);
+    if (tab != null) {
+        await tab.close();
+    }
+    else {
+        throw new Error('Invalid tab for closing (closeTab) :\n' + "Input: " + tab);
     }
 }
 
@@ -67,30 +57,25 @@ export async function closeTab(tab) {
  * @throws {Error} If the tab field is invalid or there is an error navigating to the tab.
  */
 export async function navToTab(context, navAction) {
-    try {
-        const tabStr = navAction.tab;
-        const tabs = await getTabs(context);
-        const newReg = /^(new)\s*$/i;
+    const tabStr = navAction.tab;
+    const tabs = await getTabs(context);
+    const newReg = /^(new)\s*$/i;
 
-        // If the tab string is "new", open a new tab
-        if (newReg.test(tabStr)) {
-            await newTab(context);
-            return;
-        }
-        // If there are no tabs, do nothing
-        else if (tabs.length === 0) {
-            return;
-        }
-
-        const index = await resolveTabIndex(tabStr, context);
-        if (index == -1) {  // returns -1 if tabStr is invalid
-            throw new Error('Invalid tab for navigation (navToTab):\n' + "Input: " + tabStr);
-        }
-        await setActivePage(context, tabs[index]);
-        
-    } catch (err) {
-        throw new Error('Tab (navToTab) error:\n' + err);
+    // If the tab string is "new", open a new tab
+    if (newReg.test(tabStr)) {
+        await newTab(context);
+        return;
     }
+    // If there are no tabs, do nothing
+    else if (tabs.length === 0) {
+        return;
+    }
+
+    const index = await resolveTabIndex(tabStr, context);
+    if (index == -1) {  // returns -1 if tabStr is invalid
+        throw new Error('Invalid tab for navigation (navToTab):\n' + "Input: " + tabStr);
+    }
+    await setActivePage(context, tabs[index]);
 }
 
 /**
@@ -109,35 +94,30 @@ export async function navToTab(context, navAction) {
  */
 async function resolveTabIndex(tabStr, context) {
     let intValue, index;
-    try{
-        // If the tab string is a number, resolve it to ensure it is a valid index
-        if (typeof tabStr === "number") {
-            tabStr = await resolveTabInt(tabStr, context);
-            return tabStr;
-        }
-        // If the tab string is a string, convert it to an index value
-        else if (typeof tabStr == "string") {
-            intValue = await resolveStringInt(tabStr);
+    // If the tab string is a number, resolve it to ensure it is a valid index
+    if (typeof tabStr === "number") {
+        tabStr = await resolveTabInt(tabStr, context);
+        return tabStr;
+    }
+    // If the tab string is a string, convert it to an index value
+    else if (typeof tabStr == "string") {
+        intValue = await resolveStringInt(tabStr);
 
-            // If the tab string is a number string, resolve it to a valid index value
-            if (intValue != null) {
-                index = await resolveTabInt(intValue, context);
-                return index;
-            }
-            // If the tab string is not a number string, resolve it to an index value relative to the current tab
-            else {
-                const activeIndex = await getActiveIndex(context);
-                index = await resolveTabStrIndex(tabStr, activeIndex, context);
-                return index;
-            }
+        // If the tab string is a number string, resolve it to a valid index value
+        if (intValue != null) {
+            index = await resolveTabInt(intValue, context);
+            return index;
         }
-        // If the tab string is not a string or number, throw an error
+        // If the tab string is not a number string, resolve it to an index value relative to the current tab
         else {
-            throw new Error('Invalid input type (resolveTabIndex):\n' + "Input: " + tabStr + ", Type: " + typeof tabStr);
+            const activeIndex = await getActiveIndex(context);
+            index = await resolveTabStrIndex(tabStr, activeIndex, context);
+            return index;
         }
-
-    } catch (err) {
-        throw new Error('Tab (resolveTabIndex) error:\n' + err);
+    }
+    // If the tab string is not a string or number, throw an error
+    else {
+        throw new Error('Invalid input type (resolveTabIndex):\n' + "Input: " + tabStr + ", Type: " + typeof tabStr);
     }
 }
 
@@ -149,14 +129,9 @@ async function resolveTabIndex(tabStr, context) {
  * @throws {Error} If there is an error resolving the integer.
  */
 async function resolveTabInt(tabInt, context) {
-    try {
-        const tabs = await getTabs(context);
-        const index = Math.min(Math.max(0, tabs.length - 1),Math.max(0, tabInt));
-        return index;
-
-    } catch (err) {
-        throw new Error('Tab (resolveTabInt) error:\n' + err);
-    }
+    const tabs = await getTabs(context);
+    const index = Math.min(Math.max(0, tabs.length - 1),Math.max(0, tabInt));
+    return index;
 }
 
 /**
@@ -178,33 +153,28 @@ async function resolveTabStrIndex(tabStr, activeIndex, context) {
     const pReg = /^(previous|prev|p)\s*$/i;
     const lReg = /^(last|l)\s*$/i;
     const fReg = /^(first|f)\s*$/i;
-    try {
-        // If the tab string is "previous" or "prev", navigate to the previous tab
-        if (pReg.test(tabStr)) {
-            const index = await resolveTabInt(activeIndex - 1, context);
-            return index;
-        }
-        // If the tab string is "next", navigate to the next tab
-        else if (nReg.test(tabStr)) {
-            const index = await resolveTabInt(activeIndex + 1, context);
-            return index;
-        }
-        // If the tab string is "last", navigate to the last tab
-        else if (lReg.test(tabStr)) {
-            const tabs = await getTabs(context);
-            return tabs.length - 1;
-        }
-        // If the tab string is "first", navigate to the first tab
-        else if (fReg.test(tabStr)) {
-            return 0;
-        }
-        // If the tab string is not a valid tab string, throw an error
-        else {
-            throw new Error('Invalid tab string (resolveTabStrIndex):\n' + "Input: " + tabStr);
-        }
-
-    } catch (err) {
-        throw new Error('Tab (resolveTabStrIndex) error:\n' + "Input: " + tabStr + "\n" + err);
+    // If the tab string is "previous" or "prev", navigate to the previous tab
+    if (pReg.test(tabStr)) {
+        const index = await resolveTabInt(activeIndex - 1, context);
+        return index;
+    }
+    // If the tab string is "next", navigate to the next tab
+    else if (nReg.test(tabStr)) {
+        const index = await resolveTabInt(activeIndex + 1, context);
+        return index;
+    }
+    // If the tab string is "last", navigate to the last tab
+    else if (lReg.test(tabStr)) {
+        const tabs = await getTabs(context);
+        return tabs.length - 1;
+    }
+    // If the tab string is "first", navigate to the first tab
+    else if (fReg.test(tabStr)) {
+        return 0;
+    }
+    // If the tab string is not a valid tab string, throw an error
+    else {
+        throw new Error('Invalid tab string (resolveTabStrIndex):\n' + "Input: " + tabStr);
     }
 }
 
@@ -215,24 +185,19 @@ async function resolveTabStrIndex(tabStr, activeIndex, context) {
  * @throws {Error} If there is an error resolving the string.
  */
 async function resolveStringInt(value) {
-    try {
-        if (typeof value === 'string') {
-            const converted = Number.parseInt(value);
-            // If the conversion is successful, return the converted number
-            if (Number.isInteger(converted)) {
-                return converted;
-            }
-            // If the conversion is not successful, return null
-            else { return null; }
+    if (typeof value === 'string') {
+        const converted = Number.parseInt(value);
+        // If the conversion is successful, return the converted number
+        if (Number.isInteger(converted)) {
+            return converted;
         }
-        // If the value was already a number, return the value
-        else if (Number.isInteger(value)) {return value;}
-        // If the value is not a string or number, throw an error
-        else {
-            throw new Error('Invalid input type (convertStringInt):\n' + "Input: " + value + ", Type: " + typeof value);
-        }
-
-    } catch (err) {
-        throw new Error('Tab (convertStringInt) error:\n' + err);
+        // If the conversion is not successful, return null
+        else { return null; }
+    }
+    // If the value was already a number, return the value
+    else if (Number.isInteger(value)) {return value;}
+    // If the value is not a string or number, throw an error
+    else {
+        throw new Error('Invalid input type (convertStringInt):\n' + "Input: " + value + ", Type: " + typeof value);
     }
 }

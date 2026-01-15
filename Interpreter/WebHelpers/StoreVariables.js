@@ -1,5 +1,6 @@
 const variableStorage = new Map();
 
+// Removes optional variable bracket markers
 function normalizeVariableName(name) {
     const match = name.match(/^\{(.+)\}$/);
     if (match !== null) {
@@ -23,9 +24,16 @@ export function clearVariables() {
     variableStorage.clear();
 }
 
+// Replaces named variables inside brackets with their
+// associated values in place to create a new string
 export function resolveString(input) {
     if (typeof input !== 'string') {
-        return input;
+        try{
+            return String(input)
+        }
+        catch{
+            throw new Error ("Invalid input for resolving string, type: " + typeof input)
+        }
     }
 
     const regex = /\{([^}]+)\}/g;

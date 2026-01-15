@@ -36,15 +36,10 @@ export async function browserConnect() {
  * @returns {Promise<void>} A promise that resolves when the disconnection is completed.
  */
 export async function browserDisconnect(browser) {
-    try {
-        if (browser.connected) {
-            await browser.disconnect();
-        }
-        console.log("Browser disconnected.");
-
-    } catch (err) {
-        throw new Error('Error disconnecting from Puppeteer:\n' + err);
+    if (browser.connected) {
+        await browser.disconnect();
     }
+    console.log("Browser disconnected.");
 }
 
 /**
