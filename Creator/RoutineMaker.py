@@ -23,10 +23,3 @@ if __name__ == "__main__":
 
 # TODO
 # Add a toolbar for routine frame (delete duplicate add save etc.)
-# Add if function (if then? else? (need like an end if/then/else))
-# Add for function 
-# Add let function (i.e. let var scoobert = # of tabs) (let var = length of custom variable (for groups))
-# Add wait function
-
-# TODO - interpreter
-# Add support for custom variables (store as), (maintain dictionary)

@@ -20,6 +20,7 @@ class Routine:
         """
         self.inputOutput.saveRoutine(self, filePath)
     
+    # Returns a bool indicating if the routine has been updated
     def loadRoutine(self, filePath=None):
         """
         Load a routine from a JSON file using the InputOutput class.
@@ -28,7 +29,10 @@ class Routine:
             filePath (str): The path of the file to load the routine from. Defaults to None.
         """
         newRoutine = self.inputOutput.loadRoutine(filePath)
-        self.steps = newRoutine.getSteps()
+        if newRoutine:
+            self.steps = newRoutine.getSteps()
+            return True
+        return False
 
     def addStep(self, action):
         """Adds an action to the routine step list."""
@@ -80,6 +84,7 @@ class Routine:
     def getActionFromIndex(self, index):
         """Returns the action at the given index in the routine."""
         return self.steps[index]
+    
     def removeByIndex(self, index):
         """Removes the action at the given index from the routine."""
         return self.steps.pop(index)
@@ -88,6 +93,7 @@ class Routine:
         """Move an action from one index to another in the routine."""
         moved_action = self.steps.pop(actionIndex)
         self.steps.insert(toIndex, moved_action)
+
     def replaceAction(self, oldAction, newAction):
         """Replace an action in the routine with a new action."""
         try:

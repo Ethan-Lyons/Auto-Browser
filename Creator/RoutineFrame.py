@@ -40,12 +40,13 @@ class RoutineFrame():
         Loads a routine from a file and rebuilds the action frames accordingly.
         This function will destroy the existing action frames and rebuild the list from the loaded routine.
         """
-        self.routine.loadRoutine()  # load the routine from file and remove previous frames
-        self.actionsFrameContainer.destroy()
-        self.actionFrames = []
+        needUpdate = self.routine.loadRoutine()  # load the routine from file and remove previous frames
+        if needUpdate:
+            self.actionsFrameContainer.destroy()
+            self.actionFrames = []
 
-        self.actionsFrameContainer = self._buildAFContainer()   # re-build the frame
-        self.actionsFrameContainer.grid(row=0, column=0)
+            self.actionsFrameContainer = self._buildAFContainer()   # re-build the frame
+            self.actionsFrameContainer.grid(row=0, column=0)
 
     def _buildAFContainer(self):
         """

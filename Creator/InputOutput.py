@@ -19,16 +19,21 @@ def saveRoutine(routine, filePath=None):
             Defaults to None.
     """
     if not filePath:    # Prompt the user to select file output
+        routineDir = os.path.join(os.path.dirname(__file__), "../Routines")
+        routineDir = os.path.normpath(routineDir)
+
+        os.makedirs(routineDir, exist_ok=True)
+
         filePath = tkinter.filedialog.asksaveasfilename(
-            initialdir = os.path.join(os.path.dirname(__file__), "Routines"),
+            initialdir = routineDir,
             title = "Select file",
             filetypes = (("json files", "*.json"), ("all files", "*.*")),
             defaultextension = ".json"
         )
-
-    rTD = actionsToDict(routine)    # Convert and output routine
-    outputRoutine(rTD, filePath)
-    print("Saved routine to " + filePath)
+    if filePath:
+        rTD = actionsToDict(routine)    # Convert and output routine
+        outputRoutine(rTD, filePath)
+        print("Saved routine to " + filePath)
 
 def outputRoutine(routineData, addr):
     """
@@ -62,17 +67,17 @@ def loadRoutine(filePath=None):
             filetypes = (("json files", "*.json"), ("all files", "*.*")),
             defaultextension = ".json"
         )
-
-    try:    # Try to load the file
-        with open(filePath) as file:
-            data = json.load(file)
-    except:
-        print("Error loading routine from " + filePath)
-        return
-    
-    output = dictToActions(data)    # Convert and output
-    print("Loaded routine from " + filePath)
-    return output
+    if filePath:
+        try:    # Try to load the file
+            with open(filePath) as file:
+                data = json.load(file)
+        except:
+            print("Error loading routine from " + filePath)
+            return
+        
+        output = dictToActions(data)    # Convert and output
+        print("Loaded routine from " + filePath)
+        return output
 
 def actionsToDict(entry):
     """
