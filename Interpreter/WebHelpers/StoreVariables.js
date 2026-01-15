@@ -10,16 +10,28 @@ function normalizeVariableName(name) {
     }
 }
 
+/**
+ * Sets a value under a custom variable name.
+ * @param {string} name - The variable name to store the value under.
+ * @param {*} value - The value to store.
+ */
 export function setVariable(name, value) {
     const normalized = normalizeVariableName(name);
     variableStorage.set(normalized, value);
 }
 
+/**
+ * Gets a value under a custom variable name.
+ * @param {string} name - The variable name with the stored value.
+ */
 export function getVariableValue(name) {
     const normalized = normalizeVariableName(name);
     return variableStorage.get(normalized);
 }
 
+/**
+ * Clears all stored variables.
+ */
 export function clearVariables() {
     variableStorage.clear();
 }
@@ -27,31 +39,42 @@ export function clearVariables() {
 // Replaces named variables inside brackets with their
 // associated values in place to create a new string
 export function resolveString(input) {
-    if (typeof input !== 'string') {
+    if (typeof input !== 'string') {    // input is not a string
         try{
-            return String(input)
+            input = String(input);       // try to convert to string
         }
         catch{
-            throw new Error ("Invalid input for resolving string, type: " + typeof input)
+            throw new Error ('Invalid input for resolving string, ' +
+                'type: ' + typeof input)
         }
     }
 
-    const regex = /\{([^}]+)\}/g;
+    const regex = /\{([^}]+)\}/g;   // matches characters between { and }
 
+    /**
+     * Helper function for resolving named variables inside a string.
+     * If the variable exists in the variableStorage map, it will
+     * replace the full match with the associated value as a string.
+     * If the variable does not exist, it will return the full match
+     * unchanged.
+     * @param {string} fullMatch - The full match of the regex.
+     * @param {string} variableName - The name of the variable to resolve.
+     * @returns {string} The resolved string.
+     */
     function replacer(fullMatch, variableName) {
         const exists = variableStorage.has(variableName);
 
-        if (exists === false) {
+        if (exists === false) { // variable does not exist
             return fullMatch;
         }
 
         const value = variableStorage.get(variableName);
-        const valueAsString = String(value);
+        const valueAsString = String(value);    // convert value to string
 
         return valueAsString;
     }
 
-    const result = input.replace(regex, replacer);
+    const result = input.replace(regex, replacer);  // replace named variables
     return result.trim();
 }
 

@@ -16,12 +16,16 @@ export * from './Conditionals.js';
 export * from './Browser.js'
 
 let browserEventHooked = false;
-const contextToPage = new WeakMap();  // Map from each browser context to its active page
+// Maps each browser context to its active page
+const contextToPage = new WeakMap();
 
 /**
- * Establishes a connection to the Puppeteer browser and returns the default context.
- * @returns {Promise<puppeteer.BrowserContext>} A promise that resolves with a Puppeteer browser context instance.
- * @throws Will throw an error if the connection to the browser context cannot be established.
+ * Establishes a connection to the Puppeteer browser and
+ *  returns the default context.
+ * @returns {Promise<puppeteer.BrowserContext>} A promise that resolves
+ *  with a Puppeteer browser context instance.
+ * @throws Will throw an error if the connection to the browser context
+ * cannot be established.
  */
 export async function connectToContext() {
     const browser = await browserConnect();
@@ -48,8 +52,8 @@ export async function connectToContext() {
 /**
  * Creates a new browser context instance.
  * @param {puppeteer.Browser} browser The browser instance to use.
- * @returns {Promise<puppeteer.BrowserContext>} A promise that resolves with a new browser context instance.
- * @throws Will throw an error if the context creation fails.
+ * @returns {Promise<puppeteer.BrowserContext>} A promise that resolves with
+ *  a new browser context instance.
  */
 export async function createNewContext(browser) {
     const context = await browser.createBrowserContext();
@@ -100,12 +104,23 @@ export async function getActivePage(context) {
     return pages[0]; // deterministic fallback
 }
 
+/**
+ * Retrieves the index of the active page in the browser context.
+ * @param {puppeteer.BrowserContext} context The browser context instance to use.
+ * @returns {Promise<number>} The index of the active page in the browser context.
+*/
 export async function getActiveIndex(context) {
     const page = await getActivePage(context);
     const pages = await context.pages();
     return pages.indexOf(page);
 }
 
+/**
+ * Waits for a specified amount of time.
+ * @param {Object} waitStep An object for a wait action.
+ *  This step should be of type action with the name value
+ *  'WAIT' and a single argument for the milliseconds to wait.
+ */
 export async function wait(waitStep) {
     let [ms] = waitStep.args
     ms = resolveNumber(ms)
