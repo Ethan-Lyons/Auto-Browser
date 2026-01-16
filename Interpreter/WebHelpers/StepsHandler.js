@@ -31,7 +31,8 @@ async function handleStep(context, step, routine) {
  * 
  * 
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @param {Object} currentStep A dictionary entry for a step. This step should have a single action and its corresponding arguments.
+ * @param {Object} currentStep A dictionary entry for a step.
+ *  This step should have a single action and its corresponding arguments.
  * @throws {Error} Error during execution of action.
  */
 export async function handleAction(context, currentStep, routine) {
@@ -65,6 +66,7 @@ export async function handleAction(context, currentStep, routine) {
     await WebHelpers.wait(currentStep)
   }
   else {
-    throw new Error('\"' + currentStep.name + '\" is not defined under StepsHandler.');
+    throw new Error('\"' + currentStep.name +
+      '\" is not defined under StepsHandler.');
   }
 }

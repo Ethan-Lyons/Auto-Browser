@@ -29,7 +29,7 @@ export async function browserConnect() {
         throw new Error('Puppeteer could not connect.\n' +
             'Ensure browser instance and debug port are open. ' + 
             'If error persists, close all browser instances and retry.\n' +
-            'Error:\n' + err);
+            '\nError:\n' + err);
     }
 }
 

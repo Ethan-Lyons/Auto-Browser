@@ -462,37 +462,31 @@
                             "type": "ActionGroup",
                             "name": "condition",
                             "selected": {
-                                "type": "ActionGroup",
-                                "name": "Find",
-                                "selected": {
-                                    "type": "Argument",
-                                    "name": "xpath",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                "allArgs": [
+                                "type": "Action",
+                                "name": "can_find",
+                                "args": [
                                     {
-                                        "type": "Argument",
-                                        "name": "xpath",
-                                        "value": null,
-                                        "description": ""
-                                    },
-                                    {
-                                        "type": "Argument",
-                                        "name": "css",
-                                        "value": null,
-                                        "description": ""
-                                    },
-                                    {
-                                        "type": "Argument",
-                                        "name": "text",
-                                        "value": null,
-                                        "description": ""
-                                    },
-                                    {
-                                        "type": "Action",
-                                        "name": "link",
-                                        "args": [
+                                        "type": "ActionGroup",
+                                        "name": "Find",
+                                        "selected": {
+                                            "type": "Argument",
+                                            "name": "xpath",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        "allArgs": [
+                                            {
+                                                "type": "Argument",
+                                                "name": "xpath",
+                                                "value": null,
+                                                "description": ""
+                                            },
+                                            {
+                                                "type": "Argument",
+                                                "name": "css",
+                                                "value": null,
+                                                "description": ""
+                                            },
                                             {
                                                 "type": "Argument",
                                                 "name": "text",
@@ -500,75 +494,82 @@
                                                 "description": ""
                                             },
                                             {
-                                                "type": "ActionGroup",
-                                                "name": "strict",
-                                                "selected": {
-                                                    "type": "Argument",
-                                                    "name": "true",
-                                                    "value": null,
-                                                    "description": ""
-                                                },
-                                                "allArgs": [
+                                                "type": "Action",
+                                                "name": "link",
+                                                "args": [
                                                     {
                                                         "type": "Argument",
-                                                        "name": "true",
+                                                        "name": "text",
                                                         "value": null,
                                                         "description": ""
                                                     },
                                                     {
-                                                        "type": "Argument",
-                                                        "name": "false",
-                                                        "value": null,
-                                                        "description": ""
+                                                        "type": "ActionGroup",
+                                                        "name": "strict",
+                                                        "selected": {
+                                                            "type": "Argument",
+                                                            "name": "true",
+                                                            "value": null,
+                                                            "description": ""
+                                                        },
+                                                        "allArgs": [
+                                                            {
+                                                                "type": "Argument",
+                                                                "name": "true",
+                                                                "value": null,
+                                                                "description": ""
+                                                            },
+                                                            {
+                                                                "type": "Argument",
+                                                                "name": "false",
+                                                                "value": null,
+                                                                "description": ""
+                                                            }
+                                                        ],
+                                                        "description": "Strict or non-strict search"
                                                     }
                                                 ],
-                                                "description": "Strict or non-strict search"
+                                                "description": ""
+                                            },
+                                            {
+                                                "type": "Argument",
+                                                "name": "aria",
+                                                "value": null,
+                                                "description": ""
                                             }
                                         ],
-                                        "description": ""
-                                    },
-                                    {
-                                        "type": "Argument",
-                                        "name": "aria",
-                                        "value": null,
-                                        "description": ""
+                                        "description": "Find an element and return locator"
                                     }
                                 ],
-                                "description": "Find an element and return locator"
+                                "description": "If an element can be found, return true, else false"
                             },
                             "allArgs": [
                                 {
-                                    "type": "ActionGroup",
-                                    "name": "Find",
-                                    "selected": {
-                                        "type": "Argument",
-                                        "name": "xpath",
-                                        "value": null,
-                                        "description": ""
-                                    },
-                                    "allArgs": [
+                                    "type": "Action",
+                                    "name": "can_find",
+                                    "args": [
                                         {
-                                            "type": "Argument",
-                                            "name": "xpath",
-                                            "value": null,
-                                            "description": ""
-                                        },
-                                        {
-                                            "type": "Argument",
-                                            "name": "css",
-                                            "value": null,
-                                            "description": ""
-                                        },
-                                        {
-                                            "type": "Argument",
-                                            "name": "text",
-                                            "value": null,
-                                            "description": ""
-                                        },
-                                        {
-                                            "type": "Action",
-                                            "name": "link",
-                                            "args": [
+                                            "type": "ActionGroup",
+                                            "name": "Find",
+                                            "selected": {
+                                                "type": "Argument",
+                                                "name": "xpath",
+                                                "value": null,
+                                                "description": ""
+                                            },
+                                            "allArgs": [
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "xpath",
+                                                    "value": null,
+                                                    "description": ""
+                                                },
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "css",
+                                                    "value": null,
+                                                    "description": ""
+                                                },
                                                 {
                                                     "type": "Argument",
                                                     "name": "text",
@@ -576,45 +577,58 @@
                                                     "description": ""
                                                 },
                                                 {
-                                                    "type": "ActionGroup",
-                                                    "name": "strict",
-                                                    "selected": {
-                                                        "type": "Argument",
-                                                        "name": "true",
-                                                        "value": null,
-                                                        "description": ""
-                                                    },
-                                                    "allArgs": [
+                                                    "type": "Action",
+                                                    "name": "link",
+                                                    "args": [
                                                         {
                                                             "type": "Argument",
-                                                            "name": "true",
+                                                            "name": "text",
                                                             "value": null,
                                                             "description": ""
                                                         },
                                                         {
-                                                            "type": "Argument",
-                                                            "name": "false",
-                                                            "value": null,
-                                                            "description": ""
+                                                            "type": "ActionGroup",
+                                                            "name": "strict",
+                                                            "selected": {
+                                                                "type": "Argument",
+                                                                "name": "true",
+                                                                "value": null,
+                                                                "description": ""
+                                                            },
+                                                            "allArgs": [
+                                                                {
+                                                                    "type": "Argument",
+                                                                    "name": "true",
+                                                                    "value": null,
+                                                                    "description": ""
+                                                                },
+                                                                {
+                                                                    "type": "Argument",
+                                                                    "name": "false",
+                                                                    "value": null,
+                                                                    "description": ""
+                                                                }
+                                                            ],
+                                                            "description": "Strict or non-strict search"
                                                         }
                                                     ],
-                                                    "description": "Strict or non-strict search"
+                                                    "description": ""
+                                                },
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "aria",
+                                                    "value": null,
+                                                    "description": ""
                                                 }
                                             ],
-                                            "description": ""
-                                        },
-                                        {
-                                            "type": "Argument",
-                                            "name": "aria",
-                                            "value": null,
-                                            "description": ""
+                                            "description": "Find an element and return locator"
                                         }
                                     ],
-                                    "description": "Find an element and return locator"
+                                    "description": "If an element can be found, return true, else false"
                                 },
                                 {
                                     "type": "Argument",
-                                    "name": "variable",
+                                    "name": "text",
                                     "value": null,
                                     "description": ""
                                 }
@@ -669,37 +683,31 @@
                             "type": "ActionGroup",
                             "name": "condition",
                             "selected": {
-                                "type": "ActionGroup",
-                                "name": "Find",
-                                "selected": {
-                                    "type": "Argument",
-                                    "name": "xpath",
-                                    "value": null,
-                                    "description": ""
-                                },
-                                "allArgs": [
+                                "type": "Action",
+                                "name": "can_find",
+                                "args": [
                                     {
-                                        "type": "Argument",
-                                        "name": "xpath",
-                                        "value": null,
-                                        "description": ""
-                                    },
-                                    {
-                                        "type": "Argument",
-                                        "name": "css",
-                                        "value": null,
-                                        "description": ""
-                                    },
-                                    {
-                                        "type": "Argument",
-                                        "name": "text",
-                                        "value": null,
-                                        "description": ""
-                                    },
-                                    {
-                                        "type": "Action",
-                                        "name": "link",
-                                        "args": [
+                                        "type": "ActionGroup",
+                                        "name": "Find",
+                                        "selected": {
+                                            "type": "Argument",
+                                            "name": "xpath",
+                                            "value": null,
+                                            "description": ""
+                                        },
+                                        "allArgs": [
+                                            {
+                                                "type": "Argument",
+                                                "name": "xpath",
+                                                "value": null,
+                                                "description": ""
+                                            },
+                                            {
+                                                "type": "Argument",
+                                                "name": "css",
+                                                "value": null,
+                                                "description": ""
+                                            },
                                             {
                                                 "type": "Argument",
                                                 "name": "text",
@@ -707,75 +715,82 @@
                                                 "description": ""
                                             },
                                             {
-                                                "type": "ActionGroup",
-                                                "name": "strict",
-                                                "selected": {
-                                                    "type": "Argument",
-                                                    "name": "true",
-                                                    "value": null,
-                                                    "description": ""
-                                                },
-                                                "allArgs": [
+                                                "type": "Action",
+                                                "name": "link",
+                                                "args": [
                                                     {
                                                         "type": "Argument",
-                                                        "name": "true",
+                                                        "name": "text",
                                                         "value": null,
                                                         "description": ""
                                                     },
                                                     {
-                                                        "type": "Argument",
-                                                        "name": "false",
-                                                        "value": null,
-                                                        "description": ""
+                                                        "type": "ActionGroup",
+                                                        "name": "strict",
+                                                        "selected": {
+                                                            "type": "Argument",
+                                                            "name": "true",
+                                                            "value": null,
+                                                            "description": ""
+                                                        },
+                                                        "allArgs": [
+                                                            {
+                                                                "type": "Argument",
+                                                                "name": "true",
+                                                                "value": null,
+                                                                "description": ""
+                                                            },
+                                                            {
+                                                                "type": "Argument",
+                                                                "name": "false",
+                                                                "value": null,
+                                                                "description": ""
+                                                            }
+                                                        ],
+                                                        "description": "Strict or non-strict search"
                                                     }
                                                 ],
-                                                "description": "Strict or non-strict search"
+                                                "description": ""
+                                            },
+                                            {
+                                                "type": "Argument",
+                                                "name": "aria",
+                                                "value": null,
+                                                "description": ""
                                             }
                                         ],
-                                        "description": ""
-                                    },
-                                    {
-                                        "type": "Argument",
-                                        "name": "aria",
-                                        "value": null,
-                                        "description": ""
+                                        "description": "Find an element and return locator"
                                     }
                                 ],
-                                "description": "Find an element and return locator"
+                                "description": "If an element can be found, return true, else false"
                             },
                             "allArgs": [
                                 {
-                                    "type": "ActionGroup",
-                                    "name": "Find",
-                                    "selected": {
-                                        "type": "Argument",
-                                        "name": "xpath",
-                                        "value": null,
-                                        "description": ""
-                                    },
-                                    "allArgs": [
+                                    "type": "Action",
+                                    "name": "can_find",
+                                    "args": [
                                         {
-                                            "type": "Argument",
-                                            "name": "xpath",
-                                            "value": null,
-                                            "description": ""
-                                        },
-                                        {
-                                            "type": "Argument",
-                                            "name": "css",
-                                            "value": null,
-                                            "description": ""
-                                        },
-                                        {
-                                            "type": "Argument",
-                                            "name": "text",
-                                            "value": null,
-                                            "description": ""
-                                        },
-                                        {
-                                            "type": "Action",
-                                            "name": "link",
-                                            "args": [
+                                            "type": "ActionGroup",
+                                            "name": "Find",
+                                            "selected": {
+                                                "type": "Argument",
+                                                "name": "xpath",
+                                                "value": null,
+                                                "description": ""
+                                            },
+                                            "allArgs": [
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "xpath",
+                                                    "value": null,
+                                                    "description": ""
+                                                },
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "css",
+                                                    "value": null,
+                                                    "description": ""
+                                                },
                                                 {
                                                     "type": "Argument",
                                                     "name": "text",
@@ -783,45 +798,58 @@
                                                     "description": ""
                                                 },
                                                 {
-                                                    "type": "ActionGroup",
-                                                    "name": "strict",
-                                                    "selected": {
-                                                        "type": "Argument",
-                                                        "name": "true",
-                                                        "value": null,
-                                                        "description": ""
-                                                    },
-                                                    "allArgs": [
+                                                    "type": "Action",
+                                                    "name": "link",
+                                                    "args": [
                                                         {
                                                             "type": "Argument",
-                                                            "name": "true",
+                                                            "name": "text",
                                                             "value": null,
                                                             "description": ""
                                                         },
                                                         {
-                                                            "type": "Argument",
-                                                            "name": "false",
-                                                            "value": null,
-                                                            "description": ""
+                                                            "type": "ActionGroup",
+                                                            "name": "strict",
+                                                            "selected": {
+                                                                "type": "Argument",
+                                                                "name": "true",
+                                                                "value": null,
+                                                                "description": ""
+                                                            },
+                                                            "allArgs": [
+                                                                {
+                                                                    "type": "Argument",
+                                                                    "name": "true",
+                                                                    "value": null,
+                                                                    "description": ""
+                                                                },
+                                                                {
+                                                                    "type": "Argument",
+                                                                    "name": "false",
+                                                                    "value": null,
+                                                                    "description": ""
+                                                                }
+                                                            ],
+                                                            "description": "Strict or non-strict search"
                                                         }
                                                     ],
-                                                    "description": "Strict or non-strict search"
+                                                    "description": ""
+                                                },
+                                                {
+                                                    "type": "Argument",
+                                                    "name": "aria",
+                                                    "value": null,
+                                                    "description": ""
                                                 }
                                             ],
-                                            "description": ""
-                                        },
-                                        {
-                                            "type": "Argument",
-                                            "name": "aria",
-                                            "value": null,
-                                            "description": ""
+                                            "description": "Find an element and return locator"
                                         }
                                     ],
-                                    "description": "Find an element and return locator"
+                                    "description": "If an element can be found, return true, else false"
                                 },
                                 {
                                     "type": "Argument",
-                                    "name": "variable",
+                                    "name": "text",
                                     "value": null,
                                     "description": ""
                                 }

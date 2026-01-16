@@ -4,7 +4,8 @@ import { getActivePage } from './WebHelpers.js';
  * Navigates to a URL.  Use the await keyword to ensure proper execution.
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
  * @param {Object} navStep An object for a url nav action.
- *      This step should be of type action with the corresponding name value and a url value in its args list.
+ *  This step should be of type 'action' with the corresponding name 'URL_NAV'
+ *  and a url value in its args list.
  */
 export async function urlNav(context, navStep) {
     let url;

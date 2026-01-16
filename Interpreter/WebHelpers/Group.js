@@ -10,6 +10,15 @@ export async function findByAttribute(page, type, attribute, value, strict = fal
     }
 }*/ 
 
+/*  might be useful
+const allTexts = await page.$$eval(
+    '.item-class', // CSS selector
+    elements => elements.map(el => el.textContent) // Map over all elements and return their text
+    );
+    console.log(allTexts); // This will be an array of strings
+
+ */
+
 async function getGroupByAttribute(page, type, attribute, value, strict=false) {
     if (strict) {   // strict
         try {

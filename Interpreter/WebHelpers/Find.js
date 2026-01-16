@@ -3,9 +3,11 @@ import puppeteer from 'puppeteer-core';
 
 /**
  * Finds an element locator based on the given selector.
- * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @param {Object} findStep An object containing the information for the find action.
- *  This object should have a selector action group with a selected type and value.
+ * @param {puppeteer.BrowserContext} context The browser context
+ *  instance to use.
+ * @param {Object} findStep An object containing the information
+ *  for the find action. This object should have a selector
+ *  action group with a selected type and its value.
  * @returns {Promise<puppeteer.locator>} A promise that resolves with
  *  the element locator found.
  * @throws Will throw an error if the selection method is not supported

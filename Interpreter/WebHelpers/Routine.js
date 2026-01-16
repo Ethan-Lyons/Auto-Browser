@@ -4,8 +4,10 @@ export class Routine {
   constructor(routineJSON) {
     this.steps = routineJSON.steps;
     this.stack = [...this.steps].reverse();
+    
     this.stackLogPath = "stack.log";
-    fs.writeFileSync(this.stackLogPath, "=== STACK TRACE START ===\n");
+    fs.writeFileSync(this.stackLogPath,
+      "=== STACK TRACE START ===\n");
 
     this._logStack("INIT");
   }
@@ -17,7 +19,8 @@ export class Routine {
       return new Routine(routineJSON);
     } catch (error) {
       throw new Error(
-        `Failed to load routine from file '${filePath}',\nDirectory: ${process.cwd()}:\n${error.message}`
+        `Failed to load routine from file '${filePath}',
+        \nDirectory: ${process.cwd()}:\n${error.message}`
       );
     }
   }
@@ -37,7 +40,7 @@ export class Routine {
     this.stack.push(step);
   }
 
-    // Pushes items onto the stack assuming input follows stack ordering
+  // Pushes items onto the stack assuming input follows stack ordering
   pushManyStack(stack) {
     for (let i = 0; i < stack.length; i++) {
       this.stack.push(stack[i]);

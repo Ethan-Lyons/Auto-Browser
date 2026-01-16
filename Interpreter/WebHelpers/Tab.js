@@ -147,8 +147,8 @@ async function resolveTabInt(tabInt, context) {
  * Resolve a tab string to an index value relative to the current tab.
  * The tab string should be one of the following values (case isensetive):
  * - "new" for a new tab.
- * - "next" or "n" for the next tab (relative to the current tab).
- * - "previous" or "prev" or "p" for the previous tab (relative to the current tab).
+ * - "next" or "n" for the next tab (relative to current).
+ * - "previous" or "prev" or "p" for the previous tab (relative to current).
  * - "last" or "l" for the last tab.
  * - "first" or "f" for the first tab.
  * @param {string} tabStr The tab string to resolve.
@@ -186,7 +186,8 @@ async function resolveTabStrIndex(tabStr, activeIndex, context) {
     }
     // If tabStr is not a valid tab string, throw an error
     else {
-        throw new Error('Invalid tab index (resolveTabStrIndex):\n' + "Input: " + tabStr);
+        throw new Error('Invalid tab index (resolveTabStrIndex):\n' +
+            "Input: " + tabStr);
     }
 }
 

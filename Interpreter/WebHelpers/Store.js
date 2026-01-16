@@ -1,4 +1,4 @@
-import { find, info } from './WebHelpers.js';
+import { find, findText, info } from './WebHelpers.js';
 import * as Variables from './StoreVariables.js';
 
 /**
@@ -25,7 +25,7 @@ export async function store(context, storeAction) {
         await storeVar(selectedStep, endVar);
     }
     else if (selectedName == "find_text"){
-        await storeFind(context, selectedStep, endVar)
+        await storeFindText(context, selectedStep, endVar)
     }
     else if (selectedName == "info"){
         await storeInfo(context, selectedStep, endVar)
@@ -36,9 +36,9 @@ export async function store(context, storeAction) {
 }
 
 // TODO: convert to text find
-async function storeFind (context, findStep, endVarStep){
+async function storeFindText (context, findStep, endVarStep){
     const recieveName = endVarStep.value;
-    const findReturn = await find(context, findStep)
+    const findReturn = await findText(context, findStep)
 
     Variables.setVariable(recieveName, findReturn);
 }

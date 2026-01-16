@@ -40,10 +40,14 @@ class UserActionBuilder:
 
         # TODO:  go forward, go back, refresh, hover, screenshot, title, url
 
-        condition = r.group("condition", [find, variable])
+        can_find = r.action(
+            "can_find",
+            [find],
+            "If an element can be found, return true, else false"
+        )
+        condition = r.group("condition", [can_find, text])
 
         # ---------- Actions ----------
-        
         find_text = r.action(
             "find_text",
             [find],
@@ -67,7 +71,7 @@ class UserActionBuilder:
         typeA = r.userAction("TYPE", [find, text], "Type text into input")  # TODO: confirm this, does it need a find if click before
         wait = r.userAction("WAIT", [milliseconds], "Wait")
 
-        # ---------- Control Flow ----------
+        # ---------- Conditionals ----------
         ifType = r.userAction("IF", [condition], "If condition")
         elseType = r.userAction("ELSE", [], "Else branch")
         endIfType = r.userAction("END_IF", [], "End if block")

@@ -77,6 +77,7 @@ test('Store Var Var', async () => {
 });
 
 test('Store Find Var', async () => {
+    const expected = 'Privacy';
     const storeName = 'TestVar';
 
     const url = { value: 'google.com' };
@@ -84,14 +85,12 @@ test('Store Find Var', async () => {
 
     const variable = { name: 'variable', value: storeName };
 
-    const text = { name: 'text', value: 'Privacy' };
+    const text = { name: 'text', value: expected };
 
-    const findAction = {
-        name: 'FIND',
-        selected: text
-    };
+    const findAction = { name: 'find', selected: text };
+    const findText = { name: 'find_text', args: [findAction] };
 
-    const storable = { name: 'storable', selected: findAction };
+    const storable = { name: 'storable', selected: findText };
     const storeStep = { name: 'STORE', args: [storable, variable] };
 
     await WebHelpers.newTab(context);
@@ -99,10 +98,6 @@ test('Store Find Var', async () => {
     await WebHelpers.store(context, storeStep);
 
     let recieved = await WebHelpers.getVariableValue(storeName);
-    recieved = await recieved.waitHandle();
-
-    let expected = await WebHelpers.find(context, findAction);
-    expected = await expected.waitHandle();
 
     expect(recieved).toBeDefined();
     expect(recieved).toEqual(expected);

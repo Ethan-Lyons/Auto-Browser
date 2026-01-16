@@ -131,8 +131,8 @@ def testIfTrue():
     ag.setSelected(ifAction)
 
     condition = ifAction.get("condition")
-    var = condition.get("variable")
-    var.setValue(storeName)
+    var = condition.get("text")
+    var.setValue("{" + storeName + "}")
     
 
     # If body: NAV
@@ -160,8 +160,8 @@ def testIfFalse():
     ag.setSelected(ifAction)
 
     condition = ifAction.get("condition")
-    var = condition.get("variable")
-    var.setValue(storeName)
+    var = condition.get("text")
+    var.setValue("{" + storeName + "}")
     
 
     # If body: NAV

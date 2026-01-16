@@ -2,6 +2,7 @@ import puppeteer from 'puppeteer-core';
 import { browserConnect } from './Browser.js';
 import { resolveNumber } from './StoreVariables.js';
 export * from './Find.js';
+export * from './FindAlt.js';
 export * from './Info.js';
 export * from './Click.js';
 export * from './Tab.js';
