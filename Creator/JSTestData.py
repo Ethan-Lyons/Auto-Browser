@@ -177,6 +177,35 @@ def testIfFalse():
 
     saveRoutine(routine, "test_if_false")
 
+def testWhileFalse():
+    routine = newRoutine()
+    storeName = "boolToCheck"
+
+    addStoreAction(routine, storeName, "false")
+
+    # IF
+    ag = routine.createDefaultAG()
+    ifAction = ag.get("WHILE")
+    ag.setSelected(ifAction)
+
+    condition = ifAction.get("condition")
+    var = condition.get("text")
+    var.setValue("{" + storeName + "}")
+    
+
+    # If body: NAV
+    addNavStep(routine, "https://example.com")
+
+    # If body: CLICK
+    addClickLinkStep(routine, "example")
+
+    # END_IF
+    endAG = routine.createDefaultAG()
+    endifAction = endAG.get("END_WHILE")
+    endAG.setSelected(endifAction)
+
+    saveRoutine(routine, "test_while_false")
+
 def generate_test_data():
     testBlank()
     testNav()
@@ -184,6 +213,6 @@ def generate_test_data():
     testForLoop()
     testNewTab()
     testIfTrue()
-    testIfFalse()
+    testWhileFalse()
 
 generate_test_data()

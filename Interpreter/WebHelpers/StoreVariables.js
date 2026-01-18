@@ -1,4 +1,29 @@
 const variableStorage = new Map();
+// clear file and overwrite if it exists
+// update as needed (easiest to overwrite file each time?)
+// also likely a method for clean output of a map which would simplify
+
+/*this.stackLogPath = "stack.log";
+    fs.writeFileSync(this.stackLogPath,
+      "=== STACK TRACE START ===\n");
+
+    this._logStack("INIT");
+
+  _logStack(op, detail = "") {
+  const snapshot = this._formatStack();
+  fs.appendFileSync(
+    this.stackLogPath,
+    `[${op}] ${detail}\n` +
+    `TOP → ${snapshot.join(" | ")}\n\n`
+  );
+  }
+
+  _formatStack() {
+    return this.stack
+      .slice()
+      .reverse()
+      .map(s => s.selected?.name ?? s.name ?? "<unknown>");
+  }*/
 
 // Removes optional variable bracket markers
 function normalizeVariableName(name) {

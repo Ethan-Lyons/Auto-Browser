@@ -1,6 +1,15 @@
 import { canFind } from "./FindAlt.js";
 import { resolveNumber, resolveBoolean } from "./StoreVariables.js";
 
+/**
+ * Repeats a block of actions n times, where n is the difference between
+ * the end and start index of a FOR loop.
+ * (Indexes can be resolved from string, variable, or number formats)
+ * @param {Object} forStep - The 'FOR' loop step object. The step should have
+ *  the name 'FOR', and two arguments, the start and end index. A matching
+ *  'END_FOR' step is required to appear after.
+ * @param {Object} routine - The routine object
+ */
 export function routineFor(forStep, routine) {
   let [start, end] = forStep.args;
   const forName = forStep.name
