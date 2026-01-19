@@ -4,6 +4,7 @@ export class Routine {
   constructor(routineJSON) {
     this.steps = routineJSON.steps;
     this.stack = [...this.steps].reverse();
+    this.filePath = null;
     
     this.stackLogPath = "stack.log";
     fs.writeFileSync(this.stackLogPath,
@@ -16,7 +17,11 @@ export class Routine {
     try {
       const fileContent = fs.readFileSync(filePath, "utf8");
       const routineJSON = JSON.parse(fileContent);
-      return new Routine(routineJSON);
+
+      const routine = new Routine(routineJSON);
+      routine.filePath = filePath;
+      return routine;
+
     } catch (error) {
       throw new Error(
         `Failed to load routine from file '${filePath}',
@@ -41,9 +46,12 @@ export class Routine {
   }
 
   // Pushes items onto the stack assuming input follows stack ordering
-  pushManyStack(stack) {
-    for (let i = 0; i < stack.length; i++) {
-      this.stack.push(stack[i]);
+  pushManyStack(newElements) {
+    if (!newElements) {
+      return;
+    }
+    for (let i = 0; i < newElements.length; i++) {
+      this.stack.push(newElements[i]);
     }
     this._logStack("PUSH_MANY_STACK");
   }
@@ -125,14 +133,14 @@ export class Routine {
         bodyPost: returnPost,
         end: endStep
     };
-}
+  }
 
   getSteps(){
-    return this.steps
+    return this.steps;
   }
 
   getStack(){
-    return this.stack
+    return this.stack;
   }
 
   _logStack(op, detail = "") {
@@ -149,6 +157,10 @@ export class Routine {
       .slice()
       .reverse()
       .map(s => s.selected?.name ?? s.name ?? "<unknown>");
+  }
+
+  getName() {
+    return this.filePath;
   }
 
 }

@@ -6,7 +6,7 @@ let context;
 
 beforeAll(async () => {
     try {
-        browser = await WebHelpers.browserConnect();
+        browser = await WebHelpers.getBrowser();
 
     } catch (err) {
         console.error('Error connecting to Puppeteer:\n', err);

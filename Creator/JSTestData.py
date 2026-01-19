@@ -60,6 +60,7 @@ def addStoreAction(routine, storeName, varValue):
 
     storable = store.get("storable")
     text = storable.get("text")
+    storable.setSelected(text)    # select the text node
     text.setValue(varValue)
 
     variable = store.get("variable")
@@ -95,15 +96,16 @@ def testNewTab():
 def testForLoop():
     routine = newRoutine()
 
+    addNewTabStep(routine)
+
     # FOR i = 0..2
     ag = routine.createDefaultAG()
     forAction = ag.get("FOR")
     ag.setSelected(forAction)
 
     start = forAction.get("start")
-    end = forAction.get("end")
-
     start.setValue(0)
+    end = forAction.get("end")
     end.setValue(2)
 
     # Loop body: NAV
@@ -119,11 +121,43 @@ def testForLoop():
 
     saveRoutine(routine, "test_for_loop")
 
+def testForLoopWithStore():
+    routine = newRoutine()
+
+    addNewTabStep(routine)
+
+    # First, store the start and end values
+    addStoreAction(routine, "startIndex", "0")
+    addStoreAction(routine, "endIndex", "2")
+
+    # FOR i = {startIndex}..{endIndex}
+    ag = routine.createDefaultAG()
+    forAction = ag.get("FOR")
+    ag.setSelected(forAction)
+
+    start = forAction.get("start")
+    start.setValue("{startIndex}")   # reference stored variable
+    end = forAction.get("end")
+    end.setValue("{endIndex}")       # reference stored variable
+
+    # Loop body: NAV
+    addNavStep(routine, "https://example.com")
+
+    # Loop body: CLICK
+    addClickLinkStep(routine, "example")
+
+    # END_FOR
+    endAG = routine.createDefaultAG()
+    endforAction = endAG.get("END_FOR")
+    endAG.setSelected(endforAction)
+
+    saveRoutine(routine, "test_for_loop_store")
+# -----------------------------
+# IF tests using literal values
+# -----------------------------
 def testIfTrue():
     routine = newRoutine()
-    storeName = "boolToCheck"
-
-    addStoreAction(routine, storeName, "true")
+    addNewTabStep(routine)
 
     # IF
     ag = routine.createDefaultAG()
@@ -131,9 +165,9 @@ def testIfTrue():
     ag.setSelected(ifAction)
 
     condition = ifAction.get("condition")
-    var = condition.get("text")
-    var.setValue("{" + storeName + "}")
-    
+    text = condition.get("text")
+    condition.setSelected(text)
+    text.setValue("true")  # literal value
 
     # If body: NAV
     addNavStep(routine, "https://example.com")
@@ -148,11 +182,10 @@ def testIfTrue():
 
     saveRoutine(routine, "test_if_true")
 
+
 def testIfFalse():
     routine = newRoutine()
-    storeName = "boolToCheck"
-
-    addStoreAction(routine, storeName, "false")
+    addNewTabStep(routine)
 
     # IF
     ag = routine.createDefaultAG()
@@ -160,9 +193,9 @@ def testIfFalse():
     ag.setSelected(ifAction)
 
     condition = ifAction.get("condition")
-    var = condition.get("text")
-    var.setValue("{" + storeName + "}")
-    
+    text = condition.get("text")
+    condition.setSelected(text)
+    text.setValue("false")  # literal value
 
     # If body: NAV
     addNavStep(routine, "https://example.com")
@@ -177,9 +210,78 @@ def testIfFalse():
 
     saveRoutine(routine, "test_if_false")
 
+
+# -----------------------------
+# IF tests using a stored value
+# -----------------------------
+def testIfTrueStore():
+    routine = newRoutine()
+    storeName = "boolToCheck"
+    addNewTabStep(routine)
+
+    # Store the value
+    addStoreAction(routine, storeName, "true")
+
+    # IF
+    ag = routine.createDefaultAG()
+    ifAction = ag.get("IF")
+    ag.setSelected(ifAction)
+
+    condition = ifAction.get("condition")
+    text = condition.get("text")
+    condition.setSelected(text)
+    text.setValue("{" + storeName + "}")  # reference the stored variable
+
+    # If body: NAV
+    addNavStep(routine, "https://example.com")
+
+    # If body: CLICK
+    addClickLinkStep(routine, "example")
+
+    # END_IF
+    endAG = routine.createDefaultAG()
+    endifAction = endAG.get("END_IF")
+    endAG.setSelected(endifAction)
+
+    saveRoutine(routine, "test_if_true_store")
+
+
+def testIfFalseStore():
+    routine = newRoutine()
+    storeName = "boolToCheck"
+    addNewTabStep(routine)
+
+    # Store the value
+    addStoreAction(routine, storeName, "false")
+
+    # IF
+    ag = routine.createDefaultAG()
+    ifAction = ag.get("IF")
+    ag.setSelected(ifAction)
+
+    condition = ifAction.get("condition")
+    text = condition.get("text")
+    condition.setSelected(text)
+    text.setValue("{" + storeName + "}")  # reference the stored variable
+
+    # If body: NAV
+    addNavStep(routine, "https://example.com")
+
+    # If body: CLICK
+    addClickLinkStep(routine, "example")
+
+    # END_IF
+    endAG = routine.createDefaultAG()
+    endifAction = endAG.get("END_IF")
+    endAG.setSelected(endifAction)
+
+    saveRoutine(routine, "test_if_false_store")
+
+
 def testWhileFalse():
     routine = newRoutine()
     storeName = "boolToCheck"
+    addNewTabStep(routine)
 
     addStoreAction(routine, storeName, "false")
 
@@ -189,8 +291,9 @@ def testWhileFalse():
     ag.setSelected(ifAction)
 
     condition = ifAction.get("condition")
-    var = condition.get("text")
-    var.setValue("{" + storeName + "}")
+    text = condition.get("text")
+    condition.setSelected(text)
+    text.setValue("{" + storeName + "}")
     
 
     # If body: NAV
@@ -206,6 +309,8 @@ def testWhileFalse():
 
     saveRoutine(routine, "test_while_false")
 
+
+
 def generate_test_data():
     testBlank()
     testNav()
@@ -213,6 +318,10 @@ def generate_test_data():
     testForLoop()
     testNewTab()
     testIfTrue()
+    testIfFalse()
+    testIfTrueStore()
+    testIfFalseStore()
     testWhileFalse()
+    testForLoopWithStore()
 
 generate_test_data()

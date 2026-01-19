@@ -1,11 +1,13 @@
 import { find, getActivePage } from "./WebHelpers.js"
+import { TimeoutError } from "puppeteer-core";
 
 export async function canFind(context, canFindStep) {
     const [findStep] = canFindStep.args;
     try {
-        await find(context, findStep);
+        locator = await find(context, findStep);
+        await locator.waitHandle();
     } catch (err) {
-        if (err.code === 'TimeoutError') {
+        if (err instanceof TimeoutError) {
             return false;
         }
         throw err;

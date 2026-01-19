@@ -1,16 +1,12 @@
 import * as WebHelpers from '../WebHelpers/WebHelpers.js';
 import { test, expect } from '@jest/globals';
 
-/*
-    npm run test:js -- --runTestsByPath Interpreter/__tests__/Store.Test.js
-*/
-
 let browser;
 let context;
 
 beforeAll(async () => {
     try {
-        browser = await WebHelpers.browserConnect();
+        browser = await WebHelpers.getBrowser();
     } catch (err) {
         console.error('Error connecting to Puppeteer:\n', err);
         process.exit(1);

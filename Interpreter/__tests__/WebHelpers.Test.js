@@ -1,6 +1,10 @@
 import * as WebHelpers from '../WebHelpers/WebHelpers.js'; 
 import { test, expect } from '@jest/globals';
 
+/*
+    npm run test:js -- --runTestsByPath Interpreter/__tests__/name.Test.js
+*/
+
 let browser;
 let context;
 let page;

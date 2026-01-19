@@ -1,35 +1,49 @@
 import puppeteer from 'puppeteer-core';
 const debugPort = 9222;
 
-/**
- * Establishes a Puppeteer connection to an existing browser instance.
- * @returns {Promise<puppeteer.Browser>} A promise that resolves
- *  with a Puppeteer browser instance.
- * @throws Will throw an error if the connection to the browser
- *  cannot be established.
- */
-export async function browserConnect() {
-    try {
-        console.log("Establishing connection to Puppeteer...");
+const contextToPage = new WeakMap();
 
+let browserInstance = null;
+let disconnectFlag = false;
+
+export async function getBrowser() {
+    if (browserInstance && browserInstance.connected) {
+        return browserInstance;
+    }
+    try {
         const browser = await puppeteer.connect({
-            // Browser must be launched with matching port open
-            browserURL: 'http://localhost:' + debugPort, 
+            browserURL: 'http://localhost:' + debugPort,
             defaultViewport: null,
             headless: false
         });
 
-        // Listen for the browser being closed manually
-        browser.on('disconnected', () => {
-            console.log('Browser manually closed.');
+        browser.on('targetcreated', async target => { 
+            if (target.type() !== 'page') return;
+
+            const page = await target.page();
+            if (!page) return;
+
+            const context = page.browserContext();
+            contextToPage.set(context, page);
         });
 
+        browser.on('disconnected', () => {    // handle user exits
+            if (!disconnectFlag){
+                throw new Error("Browser was closed unexpectedly.")
+            }
+            console.log("Browser disconnected.");
+        });
+
+        browserInstance = browser;
+        disconnectFlag = false
         return browser;
+
     } catch (err) {
-        throw new Error('Puppeteer could not connect.\n' +
-            'Ensure browser instance and debug port are open. ' + 
-            'If error persists, close all browser instances and retry.\n' +
-            '\nError:\n' + err);
+        throw new Error(
+        'Puppeteer could not connect.\n' +
+        'Ensure browser instance and debug port are open.\n\n' +
+        err
+        );
     }
 }
 
@@ -42,10 +56,10 @@ export async function browserConnect() {
  *  the disconnection is completed.
  */
 export async function browserDisconnect(browser) {
+    disconnectFlag = true;
     if (browser.connected) {
         await browser.disconnect();
     }
-    console.log("Browser disconnected.");
 }
 
 /**

@@ -18,16 +18,16 @@ export async function store(context, storeAction) {
     const selectedStep = storableType.selected;
     const selectedName = selectedStep.name.toLowerCase();
 
-    if (selectedName == "text"){
-        await storeText(selectedStep, endVar);
+    if (selectedName === "text"){
+        storeText(selectedStep, endVar);
     }
-    else if (selectedName == "variable"){
-        await storeVar(selectedStep, endVar);
+    else if (selectedName === "variable"){
+        storeVar(selectedStep, endVar);
     }
-    else if (selectedName == "find_text"){
+    else if (selectedName === "find_text"){
         await storeFindText(context, selectedStep, endVar)
     }
-    else if (selectedName == "info"){
+    else if (selectedName === "info"){
         await storeInfo(context, selectedStep, endVar)
     }
     else {
@@ -35,7 +35,6 @@ export async function store(context, storeAction) {
     }
 }
 
-// TODO: convert to text find
 async function storeFindText (context, findStep, endVarStep){
     const recieveName = endVarStep.value;
     const findReturn = await findText(context, findStep)
@@ -67,10 +66,8 @@ async function storeInfo (context, infoStep, endVarStep){
  *  the variable name to store from.
  * @param {Object} endVarStep - A step object with a single argument,
  *  the new variable name to store under.
- * @returns {Promise<void>} - A promise that resolves when the value
- *  has been stored under the new variable name.
  */
-async function storeVar(varStep, endVarStep){
+function storeVar(varStep, endVarStep){
     const sendingVar = varStep.value;
     const recieveName = endVarStep.value;
 
@@ -85,10 +82,8 @@ async function storeVar(varStep, endVarStep){
  *  the text value to store from.
  * @param {Object} endVarStep - A step object with a single argument,
  *  the new variable name to store under.
- * @returns {Promise<void>} - A promise that resolves when the text
- *  value has been stored under the new variable name.
  */
-async function storeText(textStep, endVarStep){
+function storeText(textStep, endVarStep){
     const newVal = textStep.value;
     const recieveName = endVarStep.value;
 

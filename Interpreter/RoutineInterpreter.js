@@ -1,4 +1,5 @@
 import * as WebHelpers from './WebHelpers/WebHelpers.js';
+import { getBrowser, browserDisconnect } from './WebHelpers/Browser.js';
 import { Routine } from './WebHelpers/Routine.js';
 
 /**
@@ -20,19 +21,40 @@ export async function getRoutine(routinePath) {
 }
 
 /**
- * Execute routine in browser context
+ * Execute a routine in a browser context
+ * If an error occurs, the browser is force-closed to avoid leaks.
  */
-export async function runBrowser(routine) {
-  const context = await WebHelpers.connectToContext();
+export async function runRoutine(browser, routine, newContext = false, autoClose = true) {
+  let context;
+
   try {
+    context = await WebHelpers.getContext(browser, newContext);
     await WebHelpers.handleRoutine(context, routine);
-  } finally {
-    await WebHelpers.browserDisconnectContext(context);
+    console.log("Routine \"" + routine.getName() + "\" Finished.\n")
+
+  } catch (err) { // Hard failure: Clean up browser
+    //await browserDisconnect(browser)
+    throw err;
+    
+  } finally { // Clean up context
+    if (autoClose && context && newContext) {
+      await WebHelpers.closeContext(context);
+    }
   }
 }
 
+/**
+ * Entry point
+ */
 export async function main(argv = process.argv) {
   const routinePath = getPath(argv);
   const routine = await getRoutine(routinePath);
-  await runBrowser(routine);
+
+  const browser = await getBrowser();
+
+  try {
+    await runRoutine(browser, routine, false, true);
+  } finally {
+    await WebHelpers.browserDisconnect(browser)
+  }
 }

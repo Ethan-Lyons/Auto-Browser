@@ -42,7 +42,7 @@ export async function handleAction(context, currentStep, routine) {
     WebHelpers.routineFor(currentStep, routine)
   }
   else if (currentStep.name == "IF") {                // IF
-    WebHelpers.routineIf(currentStep, routine)
+    await WebHelpers.routineIf(currentStep, routine)
   }
   else if (currentStep.name == "WHILE") {             // WHILE
     WebHelpers.routineWhile(currentStep, routine)

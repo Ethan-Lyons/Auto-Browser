@@ -1145,14 +1145,14 @@
                                         "type": "Argument",
                                         "name": "url",
                                         "value": null,
-                                        "description": null
+                                        "description": ""
                                     },
                                     "allArgs": [
                                         {
                                             "type": "Argument",
                                             "name": "url",
                                             "value": null,
-                                            "description": null
+                                            "description": ""
                                         },
                                         {
                                             "type": "Argument",
@@ -1183,7 +1183,7 @@
                             "type": "Argument",
                             "name": "url",
                             "value": null,
-                            "description": null
+                            "description": ""
                         }
                     ],
                     "description": "Navigate to a URL"
