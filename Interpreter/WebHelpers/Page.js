@@ -1,4 +1,6 @@
-import { getActivePage } from './WebHelpers.js';
+import { defaultOutputDir, getActivePage } from './WebHelpers.js';
+
+import ( defaultOutputDir );
 
 /**
  * Navigates to a URL.  Use the await keyword to ensure proper execution.
@@ -10,7 +12,7 @@ import { getActivePage } from './WebHelpers.js';
 export async function urlNav(context, navStep) {
     let url;
         if (navStep.name != "URL_NAV") {
-            throw new Error('Invalid step type (urlNav):\n' + err);
+            throw new Error('Invalid step type for urlNav.' );
         }
         const [urlArg] = navStep.args;
         url = urlArg.value;
@@ -24,4 +26,47 @@ export async function urlNav(context, navStep) {
             page.waitForNavigation(),
             page.goto(url)
         ]);
+}
+
+export async function history(context, historyStep) {
+    const page = await getActivePage(context)
+    const [historyMode] = historyStep.args
+    const selectedMode = historyMode.selected
+    const name = selectedMode.value
+    
+    if (name === 'go_forward') {
+        await page.goForward()
+    }
+    else if (name === 'go_backward') {
+        await page.goBack()
+    }
+    else {
+        throw new Error('Unsupported history mode. Step: ' +
+            historyStep.name + ", Mode: " + name);
+    }
+}
+
+export async function screenshot(context, screenshotStep) {
+    const page = await getActivePage(context)
+   
+    const regex = /^([a-zA-Z0-9_.-])+(\.(jpg|jpeg|png|gif|bmp))?$/i;
+    const [fileName] = screenshotStep.args;
+    const name = fileName.value
+    
+    const match = name.match(regex);
+    if (!match) {
+        throw new Error('Invalid file name for screenshot output: ' +
+            "Name: " + name);
+    }
+
+    let outPath = match[1];
+    const extension = match[2];
+    if (!extension) {
+        outPath += ".png";
+    }
+
+    await page.screenshot({
+        path: outPath,
+        fullPage: true
+    });
 }

@@ -13,18 +13,26 @@ class UserActionBuilder:
         # ---------- Arguments ----------
         variable = r.arg("variable")
         text = r.arg("text")
+        fileName = r.arg("file_name")
         url = r.arg("url")
         tab = r.arg("tab")
         milliseconds = r.arg("milliseconds")
         start = r.arg("start")
         end = r.arg("end")
 
+        # Selector types
         xpath = r.arg("xpath")
         css = r.arg("css")
         aria = r.arg("aria")
 
+        # Bool
         true = r.arg("true")
         false = r.arg("false")
+
+        # Tab info
+        tabCount = r.arg("tab_count")
+        title = r.arg("title")
+        currentIndex = r.arg("current_index")
 
         # ---------- Groups ----------
         strict = r.group("strict", [true, false], "Strict or non-strict search")
@@ -35,17 +43,14 @@ class UserActionBuilder:
             [xpath, css, text, link, aria],
             "Find an element and return locator"
         )
-        info = r.group("info", [url, tab], "Return page or browser info")
-        # TODO: tab info group, has like count, url, title, current tab index! etc.
+        info = r.group("info", [tabCount, url, title, currentIndex], "Return page or browser info")
 
-        # TODO:  go forward, go back, refresh, hover, screenshot, title, url
-
-        can_find = r.action(
+        canFind = r.action(
             "can_find",
             [find],
             "If an element can be found, return true, else false"
         )
-        condition = r.group("condition", [can_find, text])
+        condition = r.group("condition", [canFind, text])
 
         # ---------- Actions ----------
         find_text = r.action(
@@ -63,6 +68,16 @@ class UserActionBuilder:
             "Store a value under a custom variable name"
         )
 
+        goForward = r.arg("go_forward")
+        goBackward = r.arg("go_backward")
+        historyMode = r.group(
+            "history_mode",
+            [goForward, goBackward]
+        )
+
+        screenshot = r.action("screenshot", [fileName])
+        canOutput = r.userAction("OUTPUT", [text, screenshot])
+
         urlNav = r.userAction("URL_NAV", [url], "Navigate to a URL")
         tabNav = r.userAction("TAB_NAV", [tab], "Navigate to a tab")
         newTab = r.userAction("NEW_TAB", [], "Open a new tab")
@@ -70,6 +85,7 @@ class UserActionBuilder:
         click = r.userAction("CLICK", [find], "Click an element")
         typeA = r.userAction("TYPE", [find, text], "Type text into input")  # TODO: confirm this, does it need a find if click before
         wait = r.userAction("WAIT", [milliseconds], "Wait")
+        history = r.userAction("HISTORY", [historyMode], "Go forward or backward in the page history")
 
         # ---------- Conditionals ----------
         ifType = r.userAction("IF", [condition], "If condition")

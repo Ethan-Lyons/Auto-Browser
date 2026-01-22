@@ -18,6 +18,8 @@ export * from './Browser.js'
 // Maps each browser context to its active page
 const contextToPage = new WeakMap();
 
+export const defaultOutputDir = "./OutputFiles/"
+
 /**
  * Returns a puppeteer browser context.
  * @param {boolean} newContext Whether to connect to current context

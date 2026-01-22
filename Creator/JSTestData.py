@@ -309,6 +309,106 @@ def testWhileFalse():
 
     saveRoutine(routine, "test_while_false")
 
+def testWhileFalseStore():
+    routine = newRoutine()
+    storeName = "boolToCheck"
+    addNewTabStep(routine)
+
+    addStoreAction(routine, storeName, "false")
+
+    # WHILE
+    ag = routine.createDefaultAG()
+    whileAction = ag.get("WHILE")
+    ag.setSelected(whileAction)
+
+    condition = whileAction.get("condition")
+    text = condition.get("text")
+    condition.setSelected(text)
+    text.setValue("{" + storeName + "}")
+
+    # While body (should NOT execute)
+    addNavStep(routine, "https://example.com")
+    addClickLinkStep(routine, "example")
+
+    # END_WHILE
+    endAG = routine.createDefaultAG()
+    endwhileAction = endAG.get("END_WHILE")
+    endAG.setSelected(endwhileAction)
+
+    saveRoutine(routine, "test_while_false_store")
+
+def testHistoryBackward():
+    routine = newRoutine()
+    addNewTabStep(routine)
+
+    addNavStep(routine, "https://example.com")
+    addNavStep(routine, "https://example.org")
+
+    ag = routine.createDefaultAG()
+    history = ag.get("HISTORY")
+    ag.setSelected(history)
+
+    mode = history.get("history_mode")
+    backward = mode.get("go_backward")
+    mode.setSelected(backward)
+
+    saveRoutine(routine, "test_history_backward")
+
+def testHistoryForward():
+    routine = newRoutine()
+    addNewTabStep(routine)
+
+    addNavStep(routine, "https://example.com")
+    addNavStep(routine, "https://example.org")
+
+    # go back first
+    ag1 = routine.createDefaultAG()
+    history1 = ag1.get("HISTORY")
+    ag1.setSelected(history1)
+    mode1 = history1.get("history_mode")
+    mode1.setSelected(mode1.get("go_backward"))
+
+    # then go forward
+    ag2 = routine.createDefaultAG()
+    history2 = ag2.get("HISTORY")
+    ag2.setSelected(history2)
+    mode2 = history2.get("history_mode")
+    mode2.setSelected(mode2.get("go_forward"))
+
+    saveRoutine(routine, "test_history_forward")
+
+def testScreenshotValid():
+    routine = newRoutine()
+    addNewTabStep(routine)
+    addNavStep(routine, "https://example.com")
+
+    ag = routine.createDefaultAG()
+    screenshot = ag.get("SCREENSHOT")
+    ag.setSelected(screenshot)
+
+    fileName = screenshot.get("fileName")
+    fileName.setValue("example_page")
+
+    saveRoutine(routine, "test_screenshot_valid")
+
+def testScreenshotInvalid():
+    routine = newRoutine()
+    addNewTabStep(routine)
+
+    ag = routine.createDefaultAG()
+    screenshot = ag.get("SCREENSHOT")
+    ag.setSelected(screenshot)
+
+    fileName = screenshot.get("fileName")
+    fileName.setValue("../evil.png")
+
+    saveRoutine(routine, "test_screenshot_invalid")
+
+# TODO:
+# info get title / url
+# info get tab number / active tab index
+# page history go forward / backward
+# screenshot
 
 
 def generate_test_data():
@@ -322,6 +422,11 @@ def generate_test_data():
     testIfTrueStore()
     testIfFalseStore()
     testWhileFalse()
+    testWhileFalseStore()
     testForLoopWithStore()
+    testHistoryBackward()
+    testHistoryForward()
+    testScreenshotValid()
+    testScreenshotInvalid()
 
 generate_test_data()
