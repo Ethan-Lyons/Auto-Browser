@@ -54,7 +54,7 @@ export async function handleAction(context, currentStep, routine) {
     await WebHelpers.urlNav(context, currentStep);
   }
   else if (currentStep.name == "TAB_NAV") {           // TAB_NAV
-    await WebHelpers.navToTab(context, currentStep);
+    await WebHelpers.tabNav(context, currentStep);
   }
   else if (currentStep.name == "NEW_TAB") {           // NEW_TAB
     await WebHelpers.newTab(context);

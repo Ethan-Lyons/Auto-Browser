@@ -377,13 +377,15 @@ def testHistoryForward():
 
     saveRoutine(routine, "test_history_forward")
 
-def testScreenshotValid():
+
+# TODO: screenshot should be under output, not its own action
+"""def testScreenshotValid():
     routine = newRoutine()
     addNewTabStep(routine)
     addNavStep(routine, "https://example.com")
 
     ag = routine.createDefaultAG()
-    screenshot = ag.get("SCREENSHOT")
+    screenshot = ag.get("screenshot")
     ag.setSelected(screenshot)
 
     fileName = screenshot.get("fileName")
@@ -402,13 +404,11 @@ def testScreenshotInvalid():
     fileName = screenshot.get("fileName")
     fileName.setValue("../evil.png")
 
-    saveRoutine(routine, "test_screenshot_invalid")
+    saveRoutine(routine, "test_screenshot_invalid")"""
 
 # TODO:
 # info get title / url
 # info get tab number / active tab index
-# page history go forward / backward
-# screenshot
 
 
 def generate_test_data():
@@ -426,7 +426,7 @@ def generate_test_data():
     testForLoopWithStore()
     testHistoryBackward()
     testHistoryForward()
-    testScreenshotValid()
-    testScreenshotInvalid()
+    #testScreenshotValid()
+    #testScreenshotInvalid()
 
 generate_test_data()

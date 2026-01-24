@@ -1,4 +1,5 @@
 const variableStorage = new Map();
+// TODO: create file ouput for variable similar to stack output
 // clear file and overwrite if it exists
 // update as needed (easiest to overwrite file each time?)
 // also likely a method for clean output of a map which would simplify

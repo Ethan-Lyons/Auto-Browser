@@ -1,7 +1,5 @@
 import {
-  getPath,
-  runBrowser,
-  main
+  getPath
 } from '../RoutineInterpreter.js';
 
 describe('getPath', () => {

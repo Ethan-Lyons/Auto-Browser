@@ -1,8 +1,7 @@
 import * as WebHelpers from '../WebHelpers/WebHelpers.js'; 
 import { test, expect } from '@jest/globals';
-
 /*
-    npm run test:js -- --runTestsByPath Interpreter/__tests__/name.Test.js
+    npm run test:js -- --runTestsByPath Interpreter/__tests__/
 */
 
 let browser;
@@ -11,15 +10,15 @@ let page;
 
 beforeAll(async () => {
     try {
-            browser = await WebHelpers.browserConnect();
-        } catch (err) {
-            console.error('Error connecting to Puppeteer:\n', err);
-            process.exit(1);
-        }
+        browser = await WebHelpers.getBrowser();
+    } catch (err) {
+        console.error('Error connecting to Puppeteer:\n', err);
+        process.exit(1);
+    }
 });
 
 beforeEach(async () => {
-    context = await WebHelpers.createNewContext(browser);
+    context = await WebHelpers.getContext(browser, true);
 });
 
 afterEach(async () => {

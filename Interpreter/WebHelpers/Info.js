@@ -3,7 +3,8 @@ import { getTabCount } from './WebHelpers.js';
 
 export async function info(context, infoStep) {
     const selected = infoStep.selected
-    const name = selected.name.toLowerCase()
+    const name = selected.name.toLowerCase()    // TODO: fix this, name is not showing up
+
     if (name === "url") {
         const page = await getActivePage(context);
         return await getUrl(page);

@@ -4,6 +4,8 @@ import { test, expect } from '@jest/globals';
 let browser;
 let context;
 
+// TODO: create function for new tab + page nav
+
 const url = { value: 'google.com' };
 const navAction = { name: 'URL_NAV', args: [url] };
 
@@ -17,8 +19,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-    context = await WebHelpers.createNewContext(browser);
-    await WebHelpers.newTab(context);
+    context = await WebHelpers.getContext(browser, true);
 });
 
 afterEach(async () => {
@@ -39,6 +40,7 @@ test('Find Link Fail', async () => {
 
     const findAction = { name: 'FIND', selected: linkAction };
 
+    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
     const locator = await WebHelpers.find(context, findAction);
     await expect(locator.waitHandle()).rejects.toThrow();
@@ -54,6 +56,7 @@ test('Find Link Contains', async () => {
 
     const findAction = { name: 'FIND', selected: linkAction };
 
+    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
     const locator = await WebHelpers.find(context, findAction);
     expect(await locator.waitHandle()).toBeDefined();
@@ -72,6 +75,7 @@ test('Find Link Is', async () => {
 
     const findAction = { name: 'FIND', selected: linkAction };
 
+    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
     const locator = await WebHelpers.find(context, findAction);
     expect(await locator.waitHandle()).toBeDefined();
@@ -85,6 +89,7 @@ test('Find Xpath', async () => {
 
     const findAction = { name: 'FIND', selected: xpath };
 
+    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
     const locator = await WebHelpers.find(context, findAction);
     expect(await locator.waitHandle()).toBeDefined();
@@ -95,6 +100,7 @@ test('Find Text', async () => {
 
     const findAction = { name: 'FIND', selected: text };
 
+    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
     const locator = await WebHelpers.find(context, findAction);
     expect(await locator.waitHandle()).toBeDefined();
@@ -105,6 +111,7 @@ test('Find CSS', async () => {
 
     const findAction = { name: 'FIND', selected: css };
 
+    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
     const locator = await WebHelpers.find(context, findAction);
     expect(await locator.waitHandle()).toBeDefined();
@@ -115,6 +122,7 @@ test('Find Aria', async () => {
 
     const findAction = { name: 'FIND', selected: aria };
 
+    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
     const locator = await WebHelpers.find(context, findAction);
     expect(await locator.waitHandle()).toBeDefined();

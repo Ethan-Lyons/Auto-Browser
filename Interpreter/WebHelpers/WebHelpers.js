@@ -5,6 +5,7 @@ export * from './FindAlt.js';
 export * from './Info.js';
 export * from './Click.js';
 export * from './Tab.js';
+export * from './TabNav.js';
 export * from './Group.js';
 export * from './Browser.js';
 export * from './Page.js';
@@ -16,50 +17,9 @@ export * from './Conditionals.js';
 export * from './Browser.js'
 
 // Maps each browser context to its active page
-const contextToPage = new WeakMap();
+export const contextToPage = new WeakMap();
 
 export const defaultOutputDir = "./OutputFiles/"
-
-/**
- * Returns a puppeteer browser context.
- * @param {boolean} newContext Whether to connect to current context
- *  or start a new one.
- * @returns {Promise<puppeteer.BrowserContext>} A promise that resolves
- *  with a Puppeteer browser context instance.
- * @throws Will throw an error if the connection to the browser context
- * cannot be established.
- */
-export async function getContext(browser, newContext = false) {
-    let context;
-    //const browser = await getBrowser();
-    if (newContext){
-        context = createNewContext(browser);
-    }
-    else {
-       context = await browser.defaultBrowserContext();
-    }
-
-    return context;
-}
-
-/**
- * Creates a new browser context instance.
- * @param {puppeteer.Browser} browser The browser instance to use.
- * @returns {Promise<puppeteer.BrowserContext>} A promise that resolves with
- *  a new browser context instance.
- */
-export async function createNewContext(browser) {
-    const context = await browser.createBrowserContext();
-    return context;
-}
-
-/**
- * Closes the given browser context and all of its pages.
- * @param {puppeteer.BrowserContext} context The browser context instance to close.
- */
-export async function closeContext(context) {
-    await context.close();
-}
 
 /**
  * Sets the active page in the given context.

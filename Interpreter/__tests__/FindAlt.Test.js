@@ -17,8 +17,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-    context = await WebHelpers.createNewContext(browser);
-    await WebHelpers.newTab(context);
+    context = await WebHelpers.getContext(browser, true);
 });
 
 afterEach(async () => {
@@ -41,6 +40,7 @@ test('Can Find False', async () => {
 
     const canFind = { name: 'can_find', args: [findAction]}
 
+    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
     const result = await WebHelpers.canFind(context, canFind)
     expect(result).toBe(false)
@@ -58,6 +58,7 @@ test('Can Find True', async () => {
 
     const canFind = { name: 'can_find', args: [findAction]}
 
+    await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
     const result = await WebHelpers.canFind(context, canFind)
     expect(result).toBe(true)

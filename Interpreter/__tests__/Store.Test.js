@@ -1,8 +1,9 @@
-import * as WebHelpers from '../WebHelpers/WebHelpers.js';
+import * as WebHelpers from '../WebHelpers/WebHelpers.js'; 
 import { test, expect } from '@jest/globals';
 
 let browser;
 let context;
+let page;
 
 beforeAll(async () => {
     try {
@@ -14,8 +15,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-    context = await WebHelpers.createNewContext(browser);
-    WebHelpers.clearVariables();
+    context = await WebHelpers.getContext(browser, true);
 });
 
 afterEach(async () => {
@@ -109,10 +109,9 @@ test('Store Info Var URL', async () => {
     const variable = { name: 'variable', value: storeName };
 
     const urlArg = { name: 'url', value: null };
-    const infoSelect = { name: 'info_select', selected: urlArg };
-    const infoAction = { name: 'INFO', args: [infoSelect] };
+    const infoStep = { name: 'info', selected: urlArg };
 
-    const storable = { name: 'storable', selected: infoAction };
+    const storable = { name: 'storable', selected: infoStep };
     const storeStep = { name: 'STORE', args: [storable, variable] };
 
     await WebHelpers.newTab(context);

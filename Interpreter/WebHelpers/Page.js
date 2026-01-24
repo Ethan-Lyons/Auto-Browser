@@ -1,7 +1,5 @@
 import { defaultOutputDir, getActivePage } from './WebHelpers.js';
 
-import ( defaultOutputDir );
-
 /**
  * Navigates to a URL.  Use the await keyword to ensure proper execution.
  * @param {puppeteer.BrowserContext} context The browser context instance to use.
@@ -59,14 +57,16 @@ export async function screenshot(context, screenshotStep) {
             "Name: " + name);
     }
 
-    let outPath = match[1];
+    let outName = match[1];
     const extension = match[2];
     if (!extension) {
-        outPath += ".png";
+        outName += ".png";
     }
 
+    outName = defaultOutputDir + outName
+
     await page.screenshot({
-        path: outPath,
+        path: outName,
         fullPage: true
     });
 }

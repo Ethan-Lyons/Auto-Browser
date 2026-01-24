@@ -28,6 +28,7 @@ export async function store(context, storeAction) {
         await storeFindText(context, selectedStep, endVar)
     }
     else if (selectedName === "info"){
+        console.log("Info step: " + selectedStep.name + "  [" + selectedStep.type + "]");
         await storeInfo(context, selectedStep, endVar)
     }
     else {
@@ -54,6 +55,7 @@ async function storeFindText (context, findStep, endVarStep){
  *  has been stored under the new variable name.
  */
 async function storeInfo (context, infoStep, endVarStep){
+    //console.log("Info step: " + infoStep.name + "  [" + infoStep.type + "]" + "  [" + infoStep.selected.name + "]");
     const recieveName = endVarStep.value;
     const infoReturn = await info(context, infoStep)
 

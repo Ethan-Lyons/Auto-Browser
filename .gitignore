@@ -11,6 +11,7 @@ venv/
 # User
 Creator/Routines/
 stack.log
+TestData/
 
 # OS
 .DS_Store

@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer-core';
 const debugPort = 9222;
 
-const contextToPage = new WeakMap();
+import { contextToPage } from './WebHelpers.js';
 
 let browserInstance = null;
 let disconnectFlag = false;
@@ -74,4 +74,44 @@ export async function browserDisconnectContext(context) {
     let browser;
     browser = context.browser();
     await browserDisconnect(browser);
+}
+
+/**
+ * Returns a puppeteer browser context.
+ * @param {boolean} newContext Whether to connect to current context
+ *  or start a new one.
+ * @returns {Promise<puppeteer.BrowserContext>} A promise that resolves
+ *  with a Puppeteer browser context instance.
+ * @throws Will throw an error if the connection to the browser context
+ * cannot be established.
+ */
+export async function getContext(browser, newContext = false) {
+    let context;
+    if (newContext){
+        context = createNewContext(browser);
+    }
+    else {
+       context = await browser.defaultBrowserContext();
+    }
+
+    return context;
+}
+
+/**
+ * Creates a new browser context instance.
+ * @param {puppeteer.Browser} browser The browser instance to use.
+ * @returns {Promise<puppeteer.BrowserContext>} A promise that resolves with
+ *  a new browser context instance.
+ */
+export async function createNewContext(browser) {
+    const context = await browser.createBrowserContext();
+    return context;
+}
+
+/**
+ * Closes the given browser context and all of its pages.
+ * @param {puppeteer.BrowserContext} context The browser context instance to close.
+ */
+export async function closeContext(context) {
+    await context.close();
 }
