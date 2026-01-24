@@ -13,42 +13,84 @@ import puppeteer from 'puppeteer-core';
  * @throws Will throw an error if the selection method is not supported
  */
 export async function find(context, findStep) {
-    let page, selectorType;
-    selectorType = findStep.selected;
-    page = await getActivePage(context);
+    const parsed = parseFind(findStep);
+    const spec = resolveFindSpec(parsed);
+    return await exeFind(context, spec);
+}
 
-    if (selectorType.name == "xpath") {     // Xpath
-        const target = resolveString(selectorType.value);
-        const locator = await findByXPath(page, target);
-        return locator;
+export function parseFind(findStep) {
+    if (!findStep || findStep.name?.toUpperCase() !== "FIND") {
+        throw new Error("parseFind: input is not a FIND action. Input: " + findStep);
     }
-    else if (selectorType.name == "text"){  // text content
-        const target = resolveString(selectorType.value);
-        const locator = await findByText(page, target)
-        return locator;
-    }
-    else if (selectorType.name == "aria") { // Aria
-        const target = resolveString(selectorType.value);
-        const locator = await findByAria(page, target);
-        return locator;
-    }
-    else if (selectorType.name == "css") {  // CSS
-        const target = resolveString(selectorType.value);
-        const locator = await page.locator(target);
-        return locator;
-    }
-    else if (selectorType.name == "link") { // link content
-        const [textArg, strictGroup] = selectorType.args;
-        const strictVal = resolveBoolean(strictGroup.selected.value);
-        const textVal = resolveString(textArg.value);
 
-        const locator = await findByLinkAddress(page, textVal, strictVal);
-        return locator;
+    const selector = findStep.selected;
+    if (!selector || !selector.name) {
+        throw new Error("parseFind: missing selector");
     }
-    else {
-        throw new Error ("Error: Unknown find type: " + selectorType.name);
+
+    return {
+        type: selector.name.toLowerCase(),
+        value: selector.value,
+        args: selector.args ?? []
+    };
+}
+
+export function resolveFindSpec(parsed) {
+    const { type, value, args } = parsed;
+
+    switch (type) {
+        case "xpath":
+        case "text":
+        case "aria":
+        case "css":
+            return {
+                type: type,
+                target: resolveString(value)
+            };
+
+        case "link": {
+            const [textArg, strictGroup] = args;
+            if (!textArg || !strictGroup?.selected) {
+                throw new Error("resolveFindSpec: invalid link args");
+            }
+
+            return {
+                type: "link",
+                text: resolveString(textArg.value),
+                strict: resolveBoolean(strictGroup.selected.value)
+            };
+        }
+
+        default:
+            throw new Error(`resolveFindSpec: unknown find type: ${type}`);
     }
 }
+
+
+export async function exeFind(context, spec) {
+    const page = await getActivePage(context);
+
+    switch (spec.type) {
+        case "xpath":
+            return await findByXPath(page, spec.target);
+
+        case "text":
+            return await findByText(page, spec.target);
+
+        case "aria":
+            return await findByAria(page, spec.target);
+
+        case "css":
+            return await page.locator(spec.target);
+
+        case "link":
+            return await findByLinkAddress(page, spec.text, spec.strict);
+
+        default:
+            throw new Error(`exeFind: unsupported spec kind: ${spec.kind}`);
+    }
+}
+
 
 /**
  * Helper to find an element by its link address.
@@ -102,12 +144,10 @@ async function findByXPath(page, xPath) {
 async function findByText(page, text) {
   try { // Check using aria names
     return await page.locator( `::-p-aria([name="${text}"])`);
-
   } catch {}   // Ignore on failure
 
   try { // If aria fails check using text locator
     return await page.locator(`text/${text}`, { exact:false });
-
   } catch {}   // Ignore on failure
 
   // If aria and text fail, check using xpath

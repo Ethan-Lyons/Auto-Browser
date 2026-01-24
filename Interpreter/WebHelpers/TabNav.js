@@ -6,22 +6,26 @@ import * as Webhelpers from "./WebHelpers.js";
  *  to navigate to.
  * @param {puppeteer.BrowserContext} context The browser context
  *  instance to use.
- * @param {Object} navAction An object for a tab nav action.
+ * @param {Object} navStep An object for a tab nav action.
  *  This step should be of type action with the name value
  *  of "tab" and a tab value in its args list.
  * @throws {Error} If the tab field is invalid or there
  *  is an error navigating to the tab.
  */
-export async function tabNav(context, navAction) {
-    const targetTab = parseTabNav(navAction);
+export async function tabNav(context, navStep) {
+    const targetTab = parseTabNav(navStep);
     await exeTabNav(context, targetTab);
 }
 
-export function parseTabNav(navAction) {
-    const [tabStep] = navAction.args;
+export function parseTabNav(navStep) {
+    if (!navStep || navStep.name?.toUpperCase() !== "TAB_NAV") {
+        throw new Error("parseTabNav: input is not a TAB_NAV action");
+    }
+
+    const [tabStep] = navStep.args;
 
     if (!tabStep || typeof tabStep.value !== "string") {
-        throw new Error("Tab navigation requires a string argument");
+        throw new Error("ParseTabNav: missing tab value or invalid tab value. Tab: " + tabStep);
     }
 
     return tabStep.value.trim().toLowerCase();

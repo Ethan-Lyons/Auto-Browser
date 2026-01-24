@@ -11,18 +11,21 @@ import puppeteer from 'puppeteer-core';
  *  'CLICK' and a 'FIND' action in its args list.
  * @throws {Error} Error during execution of action.
  */
+
 export async function click(context, clickStep) {
     const page = await getActivePage(context);
-    const [findStep] = clickStep.args;  // Extract click args
+    const findStep = parseClick(clickStep);
     const locator = await find(context, findStep);
-    await waitForNavClick(page, locator);
-    if (locator) {
-        
+    await exeClick(page, locator);
+}
+
+export function parseClick(clickStep) {
+    if(!clickStep || clickStep.name?.toUpperCase() != "CLICK") {
+        throw new Error("ParseClick: input is not a click action. Input: " + clickStep);
     }
-    else {
-        throw new Error("Error: Click element not found: " +
-            clickStep.name + " " + clickStep.selectedArg);
-    }
+
+    const [findStep] = clickStep.args;
+    return findStep;
 }
 
 /**
@@ -32,7 +35,7 @@ export async function click(context, clickStep) {
  * @param {puppeteer.ElementHandle} locator The element locator
  *  of the element to click.
  */
-async function waitForNavClick(page, locator) {
+export async function exeClick(page, locator) {
     await Promise.allSettled([
         page.waitForNavigation({ waitUntil: 'networkidle0'}),
         locator.click(),
