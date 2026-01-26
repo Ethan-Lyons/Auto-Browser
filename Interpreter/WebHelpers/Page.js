@@ -27,16 +27,16 @@ export async function urlNav(context, navStep) {
 }
 
 export async function history(context, historyStep) {
-    const page = await getActivePage(context)
-    const [historyMode] = historyStep.args
-    const selectedMode = historyMode.selected
-    const name = selectedMode.value
+    const page = await getActivePage(context);
+    const [historyMode] = historyStep.args;
+    const selectedMode = historyMode.selected;
+    const name = selectedMode.value;
     
     if (name === 'go_forward') {
-        await page.goForward()
+        await page.goForward();
     }
     else if (name === 'go_backward') {
-        await page.goBack()
+        await page.goBack();
     }
     else {
         throw new Error('Unsupported history mode. Step: ' +
@@ -45,11 +45,11 @@ export async function history(context, historyStep) {
 }
 
 export async function screenshot(context, screenshotStep) {
-    const page = await getActivePage(context)
+    const page = await getActivePage(context);
    
     const regex = /^([a-zA-Z0-9_.-])+(\.(jpg|jpeg|png|gif|bmp))?$/i;
     const [fileName] = screenshotStep.args;
-    const name = fileName.value
+    const name = fileName.value;
     
     const match = name.match(regex);
     if (!match) {
@@ -63,7 +63,7 @@ export async function screenshot(context, screenshotStep) {
         outName += ".png";
     }
 
-    outName = defaultOutputDir + outName
+    outName = defaultOutputDir + outName;
 
     await page.screenshot({
         path: outName,

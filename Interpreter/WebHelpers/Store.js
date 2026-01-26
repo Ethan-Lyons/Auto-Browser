@@ -1,4 +1,4 @@
-import { find, findText, info } from './WebHelpers.js';
+import { findText, info } from './WebHelpers.js';
 import * as Variables from './StoreVariables.js';
 
 /**
@@ -28,7 +28,6 @@ export async function store(context, storeAction) {
         await storeFindText(context, selectedStep, endVar)
     }
     else if (selectedName === "info"){
-        console.log("Info step: " + selectedStep.name + "  [" + selectedStep.type + "]");
         await storeInfo(context, selectedStep, endVar)
     }
     else {

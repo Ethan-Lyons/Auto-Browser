@@ -29,22 +29,22 @@ export function parseFind(findStep) {
     }
 
     return {
-        type: selector.name.toLowerCase(),
+        mode: selector.name.toLowerCase(),
         value: selector.value,
         args: selector.args ?? []
     };
 }
 
 export function resolveFindSpec(parsed) {
-    const { type, value, args } = parsed;
+    const { mode, value, args } = parsed;
 
-    switch (type) {
+    switch (mode) {
         case "xpath":
         case "text":
         case "aria":
         case "css":
             return {
-                type: type,
+                mode: mode,
                 target: resolveString(value)
             };
 
@@ -55,14 +55,14 @@ export function resolveFindSpec(parsed) {
             }
 
             return {
-                type: "link",
+                mode: "link",
                 text: resolveString(textArg.value),
                 strict: resolveBoolean(strictGroup.selected.value)
             };
         }
 
         default:
-            throw new Error(`resolveFindSpec: unknown find type: ${type}`);
+            throw new Error(`resolveFindSpec: unknown find mode: ${mode}`);
     }
 }
 
@@ -70,7 +70,7 @@ export function resolveFindSpec(parsed) {
 export async function exeFind(context, spec) {
     const page = await getActivePage(context);
 
-    switch (spec.type) {
+    switch (spec.mode) {
         case "xpath":
             return await findByXPath(page, spec.target);
 

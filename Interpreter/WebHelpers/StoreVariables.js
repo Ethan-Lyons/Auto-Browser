@@ -105,8 +105,11 @@ export function resolveString(input) {
 }
 
 export function resolveNumber(input) {
-    if (typeof input !== 'string') {
+    if (typeof input == 'number') {
         return input;
+    }
+    else if (typeof input !== 'string') {
+        throw new Error(`Cannot resolve input type to int. Type: ${typeof input}`);
     }
 
     const resolveVars = resolveString(input);
@@ -123,8 +126,11 @@ export function resolveNumber(input) {
 }
 
 export function resolveBoolean(input) {
-    if (typeof input !== 'string') {
+    if (typeof input == 'boolean') {
         return input;
+    }
+    else if (typeof input !== 'string') {
+        throw new Error(`Cannot resolve input type to boolean. Type: ${typeof input}`);
     }
 
     const resolveVars = resolveString(input);

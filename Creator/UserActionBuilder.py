@@ -50,7 +50,7 @@ class UserActionBuilder:
             [find],
             "If an element can be found, return true, else false"
         )
-        condition = r.group("condition", [canFind, text])
+        condition = r.group("condition", [canFind, text], "Able to return either value true or false")
 
         # ---------- Actions ----------
         find_text = r.action(

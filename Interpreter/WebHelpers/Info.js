@@ -2,8 +2,8 @@ import { getActivePage, getActiveIndex } from './WebHelpers.js';
 import { getTabCount } from './WebHelpers.js';
 
 export async function info(context, infoStep) {
-    const selected = infoStep.selected
-    const name = selected.name.toLowerCase()    // TODO: fix this, name is not showing up
+    const selected = infoStep.selected;
+    const name = selected.name.toLowerCase();
 
     if (name === "url") {
         const page = await getActivePage(context);
@@ -14,10 +14,10 @@ export async function info(context, infoStep) {
         return await getTitle(page);
     }
     else if (name === "tab_count") {
-        return await getTabCount(context)
+        return await getTabCount(context);
     }
     else if (name === "currentIndex") {
-        return await getActiveIndex(context)
+        return await getActiveIndex(context);
     }
     else {
         throw new Error("Unknown info step type recieved. Type: " + name);
