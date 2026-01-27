@@ -13,7 +13,10 @@ export * from './WebHelpers.js';
 export * from './StepsHandler.js'
 export * from './Store.js'
 export * from './StoreVariables.js'
-export * from './Conditionals.js';
+export * from './If.js'
+export * from './While.js'
+export * from './For.js'
+export * from './Condition.js'
 export * from './Browser.js'
 
 // Maps each browser context to its active page

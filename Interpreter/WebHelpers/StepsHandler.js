@@ -7,19 +7,28 @@ export async function handleRoutine(context, routine) {
   }
 }
 
-async function handleStep(context, step, routine) {
-  let selectedStep;
-  if (step.name !== "USER_ACTIONS")
-  console.log("Step: " + step.name + "  [" + step.type + "]");
+export async function handleStep(context, step, routine) {
+  if (step.name !== "USER_ACTIONS") {
+    console.log("Step: " + step.name + "  [" + step.type + "]");
+  }
 
-  if (step.type == "ActionGroup") {
-    selectedStep = step.selected;
-    await handleStep(context, selectedStep, routine);
+  type = step.type.toUpperCase();
+  switch (type) {
+    case "ACTIONGROUP":       //TODO: change naming style
+      const selectedStep = step.selected;
+      await handleStep(context, selectedStep, routine);
+      break;
+
+    case "ACTION":
+      await handleAction(context, step, routine);
+      break;
+
+    case "ARGUMENT":
+      break;
+
+    default:
+      throw new Error("Unknown step type: " + step.type);
   }
-  else if (step.type == "Action") {
-    await handleAction(context, step,routine);
-  }
-  //else if (step.type == "Argument") {}  //ignore
 }
 
 /**
@@ -36,37 +45,49 @@ async function handleStep(context, step, routine) {
  * @throws {Error} Error during execution of action.
  */
 export async function handleAction(context, currentStep, routine) {
-  currentStep.name = currentStep.name.toUpperCase()
+  //currentStep.name = currentStep.name.toUpperCase()
+  const stepName = currentStep.name.toUpperCase();
+  
+  switch (stepName) {
+    case "FOR":
+      WebHelpers.routineFor(currentStep, routine);
+      break;
 
-  if (currentStep.name == "FOR") {                    // FOR
-    WebHelpers.routineFor(currentStep, routine)
-  }
-  else if (currentStep.name == "IF") {                // IF
-    await WebHelpers.routineIf(currentStep, routine)
-  }
-  else if (currentStep.name == "WHILE") {             // WHILE
-    WebHelpers.routineWhile(currentStep, routine)
-  }
-  else if(currentStep.name == "CLICK") {              // CLICK
-    await WebHelpers.click(context, currentStep);
-  }
-  else if (currentStep.name == "URL_NAV") {           // URL_NAV
-    await WebHelpers.urlNav(context, currentStep);
-  }
-  else if (currentStep.name == "TAB_NAV") {           // TAB_NAV
-    await WebHelpers.tabNav(context, currentStep);
-  }
-  else if (currentStep.name == "NEW_TAB") {           // NEW_TAB
-    await WebHelpers.newTab(context);
-  }
-  else if (currentStep.name == "STORE") {             // STORE
-    await WebHelpers.store(context, currentStep);
-  }
-  else if (currentStep.name == "WAIT") {              // WAIT
-    await WebHelpers.wait(currentStep)
-  }
-  else {
-    throw new Error('\"' + currentStep.name +
-      '\" is not defined under StepsHandler.');
+    case "IF":
+      await WebHelpers.routineIf(context, currentStep, routine)
+      break;
+
+    case "WHILE":
+      WebHelpers.routineWhile(context, currentStep, routine)
+      break;
+
+    case "STORE":
+      await WebHelpers.store(context, currentStep);
+      break;
+
+    case "CLICK":
+      await WebHelpers.click(context, currentStep);
+      break;
+    
+    case "URL_NAV":
+      await WebHelpers.urlNav(context, currentStep);
+      break;
+    
+    case "TAB_NAV":
+      await WebHelpers.tabNav(context, currentStep);
+      break;
+    
+    case "NEW_TAB":
+      await WebHelpers.newTab(context);
+      break;
+    
+    case "WAIT":
+      await WebHelpers.wait(currentStep)
+      break;
+
+    default:
+      throw new Error('\"' + currentStep.name +
+        '\" is not defined under StepsHandler.');
+  
   }
 }

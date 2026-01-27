@@ -16,6 +16,11 @@ export function routineFor(forStep, routine) {
 }
 
 export function parseFor(forStep) {
+  if (!forStep || forStep.name?.toUpperCase() !== "FOR") {
+    throw new Error(`parseFor: input is not a FOR action.
+      Input: ${forStep}, Name: ${forStep.name}`);
+  }
+  
   let [start, end] = forStep.args;
   const forName = forStep.name
 
@@ -26,6 +31,13 @@ export function parseFor(forStep) {
 
 }
 
+/**
+ * Que the body of a FOR loop block n times, where n is the difference between
+ * the end and start index of a FOR loop.
+ * @param {Routine} routine - The routine object
+ * @param {Number} loopCount - The number of times to repeat the block
+ * @param {String} forName - The name of the FOR loop step (used for matching the end marker)
+ */
 export function exeFor(routine, loopCount, forName) {
     loopCount = Math.max(0, loopCount)
 

@@ -1,8 +1,14 @@
 import fs from "fs";
 
 export class Routine {
-  constructor(routineJSON) {
-    this.steps = routineJSON.steps;
+  constructor(routineJSON = null) {
+    if (routineJSON) {
+      this.steps = routineJSON.steps ?? [];
+    } else {
+      // If no JSON path is provided, create an empty routine
+      this.steps = [];
+    }
+
     this.stack = [...this.steps].reverse();
     this.filePath = null;
     
@@ -73,6 +79,7 @@ export class Routine {
   }
 
   // Returns a stack ordered sequence
+  // Assumes the step associated with startToken has already been popped
   popBlock(startToken, endToken, splitToken = null) {
     this._logStack("POP_BLOCK_START", `\"${startToken} -> ${endToken}\"`);
     let depth = 1;
@@ -126,7 +133,6 @@ export class Routine {
     
     const returnBody = before.reverse()
     const returnPost = after.length > 0 ? after.reverse() : null
-    // Return post body: [" + returnPost.map(a => a.name) + "]"
     this._logStack("POP_BLOCK_END");
     return {
         body: returnBody,

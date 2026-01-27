@@ -1,19 +1,19 @@
-import { resolveBoolean } from "./StoreVariables.js";
+import { condition } from "./Condition";
 
-// TODO: check if can_find can just be put under resolveBoolean and be used for general (maybe a bool file)
-
-export function routineWhile(whileStep, routine) {
-    whileSpec = parseWhile(whileStep)
+export function routineWhile(context, whileStep, routine) {
+    whileSpec = parseWhile(whileStep);
+    conResult = condition(context, whileSpec.condition)
     exeWhile(routine, whileSpec.condition, whileStep)
 }
 
 export function parseWhile(whileStep) {
+    if (!whileStep || whileStep.name?.toUpperCase() !== "WHILE") {
+        throw new Error(`parseWhile: input is not a WHILE action.
+        Input: ${whileStep}, Name: ${whileStep.name}`);
+    }
+
     let [condition] = whileStep.args;
-    const value = condition.selected.value;
     const whileName = whileStep.name;
-
-    condition = resolveBoolean(value);  // Resolve value to boolean
-
     return { name: whileName, condition: condition }
 }
 
