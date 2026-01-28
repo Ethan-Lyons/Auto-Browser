@@ -43,7 +43,7 @@ test('loadUrlNav', async () => {
 
 test('urlNav', async () => {
     await WebHelpers.newTab(context);
-    url = {value : 'google.com'}
+    url = {name: 'url', value : 'google.com'}
     navAction = {name : 'URL_NAV', args: [url]}
     await WebHelpers.urlNav(context, navAction);
 });

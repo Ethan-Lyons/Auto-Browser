@@ -71,10 +71,13 @@ export class Routine {
   }
 
   popControlBlock(type) {
+    type = type.toUpperCase();
     switch (type) {
       case "FOR": return this.popBlock("FOR", "END_FOR");
       case "IF": return this.popBlock("IF", "END_IF", "ELSE");
       case "WHILE": return this.popBlock("WHILE", "END_WHILE");
+      default:
+        throw new Error(`popControlBlock: unsupported control block type: ${type}`);
     }
   }
 
@@ -93,6 +96,9 @@ export class Routine {
     while (this.stack.length > 0) {
         const nextAg = this.stack.pop();
         const next = nextAg.selected;
+        if(!next) {
+          throw new Error(`popBlock: missing selected step under step: ${nextAg}, name ${nextAg.name}`);
+        }
 
         if (next.name === startToken) {
             depth++;
@@ -131,8 +137,8 @@ export class Routine {
     }
     
     
-    const returnBody = before.reverse()
-    const returnPost = after.length > 0 ? after.reverse() : null
+    const returnBody = before.reverse();
+    const returnPost = after.reverse();
     this._logStack("POP_BLOCK_END");
     return {
         body: returnBody,

@@ -22,7 +22,8 @@ class Action:
         for arg in self.args:
             if str(arg).lower() == argName.lower():
                 return arg
-        return None
+        raise Exception("Argument [" + argName + "] not found in action: " + self.name)
+        
     def getDescription(self):
         """Returns the description of the action"""
         return self.description
@@ -62,7 +63,7 @@ class ActionGroup:
         for action in self.args:
             if str(action).lower() == actionName.lower():
                 return action
-        return None
+        raise Exception("Action [" + actionName + "] not found in action group: " + self.name)
 
 class Argument(str):
     def __new__(cls, name, value=None, description=None):

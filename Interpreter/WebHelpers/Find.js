@@ -1,4 +1,5 @@
 import { getActivePage, resolveString, resolveBoolean } from "./WebHelpers.js";
+import { assertStep } from "./Assert.js";
 import puppeteer from 'puppeteer-core';
 
 /**
@@ -6,88 +7,103 @@ import puppeteer from 'puppeteer-core';
  * @param {puppeteer.BrowserContext} context The browser context
  *  instance to use.
  * @param {Object} findStep An object containing the information
- *  for the find action. This object should have a selector
- *  action group with a selected type and its value.
+ *  for the find action.
  * @returns {Promise<puppeteer.locator>} A promise that resolves with
  *  the element locator found.
  * @throws Will throw an error if the selection method is not supported
  */
 export async function find(context, findStep) {
-    const parsed = parseFind(findStep);
-    const spec = resolveFindSpec(parsed);
-    return await exeFind(context, spec);
+    const findSpec = parseFind(findStep);
+    return await exeFind(context, findSpec.mode, findSpec.step);
 }
 
 export function parseFind(findStep) {
-    if (!findStep || findStep.name?.toUpperCase() !== "FIND") {
-        throw new Error("parseFind: input is not a FIND action. Input: " + findStep);
-    }
+    assertStep(findStep, "FIND", "parseFind");
 
-    const selector = findStep.selected;
-    if (!selector || !selector.name) {
-        throw new Error("parseFind: missing selector");
-    }
+    const modeStep = findStep.selected;
 
     return {
-        mode: selector.name.toLowerCase(),
-        value: selector.value,
-        args: selector.args ?? []
+        mode: modeStep.name,
+        step: modeStep
     };
 }
 
-export function resolveFindSpec(parsed) {
-    const { mode, value, args } = parsed;
+export async function exeFind(context, mode, step) {
+    const page = await getActivePage(context);
+    const modeName = mode.toUpperCase();
 
-    switch (mode) {
-        case "xpath":
-        case "text":
-        case "aria":
-        case "css":
-            return {
-                mode: mode,
-                target: resolveString(value)
-            };
+    switch (modeName) {
+        case "XPATH":
+            const xpathSpec = parseXpath(step);
+            return await findByXPath(page, xpathSpec.value);
 
-        case "link": {
-            const [textArg, strictGroup] = args;
-            if (!textArg || !strictGroup?.selected) {
-                throw new Error("resolveFindSpec: invalid link args");
-            }
+        case "TEXT":
+            const textSpec = parseText(step);
+            return await findByText(page, textSpec.value);
 
-            return {
-                mode: "link",
-                text: resolveString(textArg.value),
-                strict: resolveBoolean(strictGroup.selected.value)
-            };
-        }
+        case "ARIA":
+            const ariaSpec = parseAria(step);
+            return await findByAria(page, ariaSpec.value);
+
+        case "CSS":
+            const cssSpec = parseCSS(step);
+            return await findByCSS(page, cssSpec.value);
+
+        case "LINK":
+            const linkSpec = parseLink(step);
+            return await findByLinkAddress(page, linkSpec.text, linkSpec.strict);
 
         default:
-            throw new Error(`resolveFindSpec: unknown find mode: ${mode}`);
+            throw new Error(`exeFind: unsupported find mode: ${modeName}`);
     }
 }
 
+function parseXpath(xpathStep) {
+    assertStep(xpathStep, "XPATH", "parseXpath");
+    return {value: xpathStep.value};
+}
 
-export async function exeFind(context, spec) {
-    const page = await getActivePage(context);
+function parseText(textStep) {
+    assertStep(textStep, "TEXT", "parseText");
+    return {value: textStep.value};
+}
 
-    switch (spec.mode) {
-        case "xpath":
-            return await findByXPath(page, spec.target);
+function parseAria(ariaStep) {
+    assertStep(ariaStep, "ARIA", "parseAria");
+    return {value: ariaStep.value};
+}
 
-        case "text":
-            return await findByText(page, spec.target);
+function parseCSS(cssStep) {
+    assertStep(cssStep, "CSS", "parseCSS");
+    return {value: cssStep.value};
+}
 
-        case "aria":
-            return await findByAria(page, spec.target);
+function parseLink(linkStep) {
+    assertStep(linkStep, "LINK", "parseLink");
 
-        case "css":
-            return await page.locator(spec.target);
+    const [textArg, strictGroup] = linkStep.args;
+    assertStep(textArg, "TEXT", "parseLink");
+    assertStep(strictGroup, "STRICT", "parseLink");
 
-        case "link":
-            return await findByLinkAddress(page, spec.text, spec.strict);
+    let textValue = textArg.value;
+    if(!textValue) {
+        throw new Error('parseLink: text value is missing.');
+    }
 
-        default:
-            throw new Error(`exeFind: unsupported spec kind: ${spec.kind}`);
+    let strictMode = strictGroup.selected;
+    if (!strictMode) {
+        throw new Error('parseLink: strict mode selected is missing.');
+    }
+    let boolValue = strictMode.value;
+    if(!boolValue) {
+        throw new Error('parseLink: strict mode value is missing.');
+    }
+
+    boolValue = resolveBoolean(boolValue);
+
+    return {
+        text: textValue,
+        strict: boolValue
     }
 }
 

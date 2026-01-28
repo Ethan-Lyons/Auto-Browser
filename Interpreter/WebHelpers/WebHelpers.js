@@ -8,7 +8,7 @@ export * from './Tab.js';
 export * from './TabNav.js';
 export * from './Group.js';
 export * from './Browser.js';
-export * from './Page.js';
+export * from './Ouput.js';
 export * from './WebHelpers.js';
 export * from './StepsHandler.js'
 export * from './Store.js'
@@ -18,6 +18,7 @@ export * from './While.js'
 export * from './For.js'
 export * from './Condition.js'
 export * from './Browser.js'
+export * from './UrlNav.js'
 
 // Maps each browser context to its active page
 export const contextToPage = new WeakMap();

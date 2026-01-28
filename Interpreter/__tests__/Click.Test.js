@@ -26,7 +26,7 @@ afterAll(async () => {
 });
 
 test('Click Link', async () => {
-    const url = { value: 'https://google.com' };
+    const url = { name: 'url', value: 'https://google.com' };
     const navAction = { name: 'URL_NAV', args: [url] };
 
     const textArg = {
@@ -65,7 +65,7 @@ test('Click Link', async () => {
 });
 
 test('Click Xpath', async () => {
-    const url = { value: 'google.com' };
+    const url = { name: 'url', value: 'google.com' };
     const navAction = { name: 'URL_NAV', args: [url] };
 
     const xpath = {

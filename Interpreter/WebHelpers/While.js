@@ -1,16 +1,14 @@
 import { condition } from "./Condition";
+import { assertStep } from "./Assert";
 
-export function routineWhile(context, whileStep, routine) {
+export async function routineWhile(context, whileStep, routine) {
     whileSpec = parseWhile(whileStep);
-    conResult = condition(context, whileSpec.condition)
+    conResult = await condition(context, whileSpec.condition)
     exeWhile(routine, whileSpec.condition, whileStep)
 }
 
 export function parseWhile(whileStep) {
-    if (!whileStep || whileStep.name?.toUpperCase() !== "WHILE") {
-        throw new Error(`parseWhile: input is not a WHILE action.
-        Input: ${whileStep}, Name: ${whileStep.name}`);
-    }
+    assertStep(whileStep, "WHILE", "parseWhile");
 
     let [condition] = whileStep.args;
     const whileName = whileStep.name;

@@ -28,6 +28,11 @@ afterAll(async () => {
     await browserDisconnect(browser);
 });
 
+test('Click', async () => {
+    const routine = await getRoutine('./TestData/test_click.json');
+    await runRoutine(browser, routine, true, true);
+});
+
 test('FOR loop basic', async () => {
   const routine = await getRoutine('./TestData/test_for_loop.json');
   await runRoutine(browser, routine, true, true)

@@ -32,7 +32,7 @@ function openTabWithUrl(context, url) {
 
 test('url return', async () => {
     const target = 'google.com'
-    const url = { value: target }
+    const url = { name: 'url', value: target }
     const navAction = { name: 'URL_NAV', args: [url]} // Navigate action
     page = await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);
@@ -49,7 +49,7 @@ test('url return blank', async () => {
 
 test('title return', async () => {
     const target = 'Google'
-    const url = { value: 'google.com' }
+    const url = { name: 'url', value: 'google.com' }
     const navAction = { name: 'URL_NAV', args: [url]} // Navigate action
     page = await WebHelpers.newTab(context);
     await WebHelpers.urlNav(context, navAction);

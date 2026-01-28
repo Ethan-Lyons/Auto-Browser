@@ -76,7 +76,7 @@ test('Store Find Var', async () => {
     const expected = 'Privacy';
     const storeName = 'TestVar';
 
-    const url = { value: 'google.com' };
+    const url = { name: 'url', value: 'google.com' };
     const navAction = { name: 'URL_NAV', args: [url] };
 
     const variable = { name: 'variable', value: storeName };
@@ -103,7 +103,7 @@ test('Store Info Var URL', async () => {
     const storeName = 'TestVar';
     const target = 'google.com';
 
-    const url = { value: target };
+    const url = { name: 'url', value: target };
     const navAction = { name: 'URL_NAV', args: [url] };
 
     const variable = { name: 'variable', value: storeName };

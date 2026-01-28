@@ -1,4 +1,5 @@
 import { resolveNumber } from "./StoreVariables.js";
+import { assertStep } from "./Assert.js";
 
 /**
  * Repeats a block of actions n times, where n is the difference between
@@ -16,10 +17,7 @@ export function routineFor(forStep, routine) {
 }
 
 export function parseFor(forStep) {
-  if (!forStep || forStep.name?.toUpperCase() !== "FOR") {
-    throw new Error(`parseFor: input is not a FOR action.
-      Input: ${forStep}, Name: ${forStep.name}`);
-  }
+  assertStep(forStep, "FOR", "parseFor");
   
   let [start, end] = forStep.args;
   const forName = forStep.name

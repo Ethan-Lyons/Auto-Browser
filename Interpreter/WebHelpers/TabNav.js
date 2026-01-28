@@ -1,4 +1,5 @@
 import * as Webhelpers from "./WebHelpers.js";
+import { assertStep } from "./Assert.js";
 
 /**
  * Navigate to a tab in the browser context.
@@ -18,9 +19,7 @@ export async function tabNav(context, navStep) {
 }
 
 export function parseTabNav(navStep) {
-    if (!navStep || navStep.name?.toUpperCase() !== "TAB_NAV") {
-        throw new Error("parseTabNav: input is not a TAB_NAV action");
-    }
+    assertStep(navStep, "TAB_NAV", "parseTabNav");
 
     const [tabStep] = navStep.args;
 

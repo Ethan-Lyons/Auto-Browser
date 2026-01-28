@@ -37,6 +37,11 @@ export async function handleStep(context, step, routine) {
  *   - URL_NAV: Navigates to the given url.
  *   - TAB_NAV: Navigates to the given tab.
  *   - NEW_TAB: Opens a new tab.
+ *   - WAIT: Waits for the given amount of time.
+ *   - STORE: Stores the result of an action under a new variable name.
+ *   - FOR: Executes a for loop.
+ *   - IF: Executes an if statement.
+ *   - WHILE: Executes a while loop.
  * 
  * 
  * @param {puppeteer.BrowserContext} context The browser context instance to use.

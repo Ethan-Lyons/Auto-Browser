@@ -60,7 +60,7 @@ class UserActionBuilder:
         )
         storable = r.group(
             "storable",
-            [find_text, text, variable, info]
+            [find_text, text, info]
         )
         store = r.userAction(
             "STORE",

@@ -1,4 +1,5 @@
 import { findText, info } from './WebHelpers.js';
+import { assertStep } from './Assert.js';
 import * as Variables from './StoreVariables.js';
 
 /**
@@ -13,33 +14,54 @@ import * as Variables from './StoreVariables.js';
  * @throws {Error} Error: Unknown store type if the type of
  *  storableType is unknown.
  */
-export async function store(context, storeAction) {
-    const [storableType, endVar] = storeAction.args;
-    const selectedStep = storableType.selected;
-    const selectedName = selectedStep.name.toLowerCase();
+export async function store(context, storeStep) {
+    const storeSpec = parseStore(storeStep);
+    await exeStore(context, storeSpec.mode, storeSpec.step, storeSpec.storeName);
+}
 
-    if (selectedName === "text"){
-        storeText(selectedStep, endVar);
-    }
-    else if (selectedName === "variable"){
-        storeVar(selectedStep, endVar);
-    }
-    else if (selectedName === "find_text"){
-        await storeFindText(context, selectedStep, endVar)
-    }
-    else if (selectedName === "info"){
-        await storeInfo(context, selectedStep, endVar)
-    }
-    else {
-        throw new Error ("Error: Unknown store type: " + selectedName);
+export function parseStore(storeStep) {
+    assertStep(storeStep, "STORE", "parseStore");
+
+    const [storableStep, varStep] = storeStep.args;
+
+    const storableSpec = parseStorable(storableStep);
+
+    const varSpec = parseVar(varStep);
+
+    return { mode: storableSpec.mode, step: storableSpec.step,
+        storeName: varSpec.value };
+}
+
+export async function exeStore(context, mode, step, storeName) {
+    mode = mode.toUpperCase();
+    switch (mode) {
+        case "TEXT":
+            return storeText(step, storeName);
+        case "FIND_TEXT":
+            return await storeFindText(context, step, storeName);
+        case "INFO":
+            return await storeInfo(context, step, storeName);
+        default:
+            throw new Error(`exeStore: unsupported store mode: ${mode}`);
     }
 }
 
-async function storeFindText (context, findStep, endVarStep){
-    const recieveName = endVarStep.value;
-    const findReturn = await findText(context, findStep)
+function parseStorable(storableStep) {
+    assertStep(storableStep, "STORABLE", "parseStorable");
 
-    Variables.setVariable(recieveName, findReturn);
+    const selected = storableStep.selected;
+    return { mode: selected.name, step: selected };
+}
+
+function parseVar(varStep) {
+    assertStep(varStep, "VARIABLE", "parseVar");
+
+    return { value: varStep.value };
+}
+
+async function storeFindText (context, findTextStep, varStoreName){
+    const textReturn = await findText(context, findTextStep)
+    Variables.setVariable(varStoreName, textReturn);
 }
 
 /**
@@ -48,45 +70,23 @@ async function storeFindText (context, findStep, endVarStep){
  *  instance to use.
  * @param {Object} infoStep A step object with a single argument,
  *  the info action to store from.
- * @param {Object} endVarStep A step object with a single argument,
- *  the new variable name to store under.
+ * @param {String} varStoreName - The new variable name to store under.
  * @returns {Promise<void>} - A promise that resolves when the value
  *  has been stored under the new variable name.
  */
-async function storeInfo (context, infoStep, endVarStep){
-    //console.log("Info step: " + infoStep.name + "  [" + infoStep.type + "]" + "  [" + infoStep.selected.name + "]");
-    const recieveName = endVarStep.value;
+async function storeInfo (context, infoStep, varStoreName){
     const infoReturn = await info(context, infoStep)
-
-    Variables.setVariable(recieveName, infoReturn);
-}
-
-/**
- * Stores the value of a variable under a (new) variable name.
- * @param {Object} varStep - A step object with a single argument,
- *  the variable name to store from.
- * @param {Object} endVarStep - A step object with a single argument,
- *  the new variable name to store under.
- */
-function storeVar(varStep, endVarStep){
-    const sendingVar = varStep.value;
-    const recieveName = endVarStep.value;
-
-    const newVal = Variables.getVariableValue(sendingVar);
-
-    Variables.setVariable(recieveName, newVal);
+    Variables.setVariable(varStoreName, infoReturn);
 }
 
 /**
  * Stores a user input text value under a (new) variable name.
  * @param {Object} textStep - A step object with a single argument,
  *  the text value to store from.
- * @param {Object} endVarStep - A step object with a single argument,
- *  the new variable name to store under.
+ * @param {String} varStoreName - The new variable name to store under.
  */
-function storeText(textStep, endVarStep){
+function storeText(textStep, varStoreName){
+    assertStep(textStep, "TEXT", "storeText");
     const newVal = textStep.value;
-    const recieveName = endVarStep.value;
-
-    Variables.setVariable(recieveName, newVal);
+    Variables.setVariable(varStoreName, newVal);
 }

@@ -9,13 +9,17 @@ def saveRoutine(routine, name):
 def newRoutine():
     return Routine(inputOutput=InputOutput)
 
+def openPage(routine, urlValue):
+    addNewTabStep(routine)
+    addNavStep(routine, urlValue)
+
 def addNavStep(routine, urlValue):
     ag = routine.createDefaultAG()
     nav = ag.get("URL_NAV")
     ag.setSelected(nav)
 
-    url_arg = nav.get("url")
-    url_arg.setValue(urlValue)
+    urlArg = nav.get("url")
+    urlArg.setValue(urlValue)
 
 def addClickXpathStep(routine, xpathValue):
     ag = routine.createDefaultAG()
@@ -43,9 +47,11 @@ def addClickLinkStep(routine, linkValue, strictValue=False):
     strict = link.get("strict")
     if strictValue == True:
         true = strict.get("true")
+        true.setValue("true")
         strict.setSelected(true)
     else:
         false = strict.get("false")
+        false.setValue("false")
         strict.setSelected(false)    # strict action group
 
 
@@ -54,13 +60,13 @@ def addNewTabStep(routine):
     newTab = ag.get("NEW_TAB")
     ag.setSelected(newTab)
 
-def addStoreAction(routine, storeName, varValue):
+def addStoreTextAction(routine, storeName, varValue):
     ag = routine.createDefaultAG()
     store = ag.get("STORE")
 
     storable = store.get("storable")
     text = storable.get("text")
-    storable.setSelected(text)    # select the text node
+    storable.setSelected(text)
     text.setValue(varValue)
 
     variable = store.get("variable")
@@ -73,13 +79,13 @@ def testBlank():
 
 def testNav():
     routine = newRoutine()
-    addNavStep(routine, "https://www.google.com")
+    openPage(routine, "https://www.google.com")
     saveRoutine(routine, "test_nav")
 
 def testClick():
     routine = newRoutine()
 
-    addNavStep(routine, "https://www.google.com")
+    openPage(routine, "https://www.google.com")
 
     addClickXpathStep(
         routine,
@@ -109,10 +115,7 @@ def testForLoop():
     end.setValue(2)
 
     # Loop body: NAV
-    addNavStep(routine, "https://example.com")
-
-    # Loop body: CLICK
-    addClickLinkStep(routine, "example")
+    addNewTabStep(routine)
 
     # END_FOR
     endAG = routine.createDefaultAG()
@@ -127,8 +130,8 @@ def testForLoopWithStore():
     addNewTabStep(routine)
 
     # First, store the start and end values
-    addStoreAction(routine, "startIndex", "0")
-    addStoreAction(routine, "endIndex", "2")
+    addStoreTextAction(routine, "startIndex", "0")
+    addStoreTextAction(routine, "endIndex", "2")
 
     # FOR i = {startIndex}..{endIndex}
     ag = routine.createDefaultAG()
@@ -141,7 +144,7 @@ def testForLoopWithStore():
     end.setValue("{endIndex}")       # reference stored variable
 
     # Loop body: NAV
-    addNavStep(routine, "https://example.com")
+    openPage(routine, "https://example.com")
 
     # Loop body: CLICK
     addClickLinkStep(routine, "example")
@@ -170,7 +173,7 @@ def testIfTrue():
     text.setValue("true")  # literal value
 
     # If body: NAV
-    addNavStep(routine, "https://example.com")
+    openPage(routine, "https://example.com")
 
     # If body: CLICK
     addClickLinkStep(routine, "example")
@@ -183,6 +186,32 @@ def testIfTrue():
     saveRoutine(routine, "test_if_true")
 
 
+"""def testIfFalse():
+    routine = newRoutine()
+    addNewTabStep(routine)
+
+    # IF
+    ag = routine.createDefaultAG()
+    ifAction = ag.get("IF")
+    ag.setSelected(ifAction)
+
+    condition = ifAction.get("condition")
+    text = condition.get("text")
+    condition.setSelected(text)
+    text.setValue("false")  # literal value
+
+    # If body: NAV
+    openPage(routine, "https://example.com")
+
+    # If body: CLICK
+    addClickLinkStep(routine, "example")
+
+    # END_IF
+    endAG = routine.createDefaultAG()
+    endifAction = endAG.get("END_IF")
+    endAG.setSelected(endifAction)
+
+    saveRoutine(routine, "test_if_false")"""
 def testIfFalse():
     routine = newRoutine()
     addNewTabStep(routine)
@@ -198,7 +227,7 @@ def testIfFalse():
     text.setValue("false")  # literal value
 
     # If body: NAV
-    addNavStep(routine, "https://example.com")
+    openPage(routine, "https://example.com")
 
     # If body: CLICK
     addClickLinkStep(routine, "example")
@@ -217,10 +246,10 @@ def testIfFalse():
 def testIfTrueStore():
     routine = newRoutine()
     storeName = "boolToCheck"
-    addNewTabStep(routine)
+    #addNewTabStep(routine)
 
     # Store the value
-    addStoreAction(routine, storeName, "true")
+    addStoreTextAction(routine, storeName, "true")
 
     # IF
     ag = routine.createDefaultAG()
@@ -233,7 +262,7 @@ def testIfTrueStore():
     text.setValue("{" + storeName + "}")  # reference the stored variable
 
     # If body: NAV
-    addNavStep(routine, "https://example.com")
+    openPage(routine, "https://example.com")
 
     # If body: CLICK
     addClickLinkStep(routine, "example")
@@ -249,10 +278,10 @@ def testIfTrueStore():
 def testIfFalseStore():
     routine = newRoutine()
     storeName = "boolToCheck"
-    addNewTabStep(routine)
+    #addNewTabStep(routine)
 
     # Store the value
-    addStoreAction(routine, storeName, "false")
+    addStoreTextAction(routine, storeName, "false")
 
     # IF
     ag = routine.createDefaultAG()
@@ -265,7 +294,7 @@ def testIfFalseStore():
     text.setValue("{" + storeName + "}")  # reference the stored variable
 
     # If body: NAV
-    addNavStep(routine, "https://example.com")
+    openPage(routine, "https://example.com")
 
     # If body: CLICK
     addClickLinkStep(routine, "example")
@@ -283,7 +312,7 @@ def testWhileFalse():
     storeName = "boolToCheck"
     addNewTabStep(routine)
 
-    addStoreAction(routine, storeName, "false")
+    addStoreTextAction(routine, storeName, "false")
 
     # IF
     ag = routine.createDefaultAG()
@@ -293,11 +322,11 @@ def testWhileFalse():
     condition = ifAction.get("condition")
     text = condition.get("text")
     condition.setSelected(text)
-    text.setValue("{" + storeName + "}")
+    text.setValue("false")
     
 
     # If body: NAV
-    addNavStep(routine, "https://example.com")
+    openPage(routine, "https://example.com")
 
     # If body: CLICK
     addClickLinkStep(routine, "example")
@@ -312,9 +341,9 @@ def testWhileFalse():
 def testWhileFalseStore():
     routine = newRoutine()
     storeName = "boolToCheck"
-    addNewTabStep(routine)
+    #addNewTabStep(routine)
 
-    addStoreAction(routine, storeName, "false")
+    addStoreTextAction(routine, storeName, "false")
 
     # WHILE
     ag = routine.createDefaultAG()
@@ -327,7 +356,7 @@ def testWhileFalseStore():
     text.setValue("{" + storeName + "}")
 
     # While body (should NOT execute)
-    addNavStep(routine, "https://example.com")
+    openPage(routine, "https://example.com")
     addClickLinkStep(routine, "example")
 
     # END_WHILE

@@ -1,6 +1,7 @@
 import { find } from './Find.js';
 import { getActivePage } from './WebHelpers.js';
 import puppeteer from 'puppeteer-core';
+import { assertStep } from './Assert.js';
 
 /**
  * Clicks on an element matching the given selector.
@@ -13,16 +14,16 @@ import puppeteer from 'puppeteer-core';
  */
 
 export async function click(context, clickStep) {
-    const page = await getActivePage(context);
     const findStep = parseClick(clickStep);
+
     const locator = await find(context, findStep);
+    const page = await getActivePage(context);
+    
     await exeClick(page, locator);
 }
 
 export function parseClick(clickStep) {
-    if(!clickStep || clickStep.name?.toUpperCase() != "CLICK") {
-        throw new Error("ParseClick: input is not a click action. Input: " + clickStep);
-    }
+    assertStep(clickStep, 'CLICK', 'parseClick');
 
     const [findStep] = clickStep.args;
     return findStep;

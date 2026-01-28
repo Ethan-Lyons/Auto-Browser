@@ -4,7 +4,7 @@ import { test, expect } from '@jest/globals';
 let browser;
 let context;
 
-const url = { value: 'google.com' };
+const url = { name: 'url', value: 'google.com' };
 const navAction = { name: 'URL_NAV', args: [url] };
 
 beforeAll(async () => {

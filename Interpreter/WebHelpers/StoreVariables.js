@@ -1,58 +1,48 @@
+import fs from "fs";
+import path from "path";
+
 const variableStorage = new Map();
-// TODO: create file ouput for variable similar to stack output
-// clear file and overwrite if it exists
-// update as needed (easiest to overwrite file each time?)
-// also likely a method for clean output of a map which would simplify
+const logPath = path.join(process.cwd(), "variables.log");
 
-/*this.stackLogPath = "stack.log";
-    fs.writeFileSync(this.stackLogPath,
-      "=== STACK TRACE START ===\n");
+// Initialize or clear the log file
+fs.writeFileSync(logPath, "=== VARIABLE LOG START ===\n\n");
 
-    this._logStack("INIT");
-
-  _logStack(op, detail = "") {
-  const snapshot = this._formatStack();
-  fs.appendFileSync(
-    this.stackLogPath,
-    `[${op}] ${detail}\n` +
-    `TOP → ${snapshot.join(" | ")}\n\n`
-  );
-  }
-
-  _formatStack() {
-    return this.stack
-      .slice()
-      .reverse()
-      .map(s => s.selected?.name ?? s.name ?? "<unknown>");
-  }*/
+function logVariable(action, name, value) {
+    const timestamp = new Date().toISOString();
+    fs.appendFileSync(
+        logPath,
+        `[${timestamp}] [${action}] ${name} = ${JSON.stringify(value)}\n`
+    );
+}
 
 // Removes optional variable bracket markers
 function normalizeVariableName(name) {
+    if (typeof name !== "string") return String(name);
     const match = name.match(/^\{(.+)\}$/);
-    if (match !== null) {
-        return match[1];
-    } else {
-        return name;
-    }
+    return match ? match[1] : name;
 }
 
 /**
  * Sets a value under a custom variable name.
- * @param {string} name - The variable name to store the value under.
- * @param {*} value - The value to store.
  */
 export function setVariable(name, value) {
     const normalized = normalizeVariableName(name);
     variableStorage.set(normalized, value);
+    logVariable("SET", normalized, value);
 }
 
 /**
  * Gets a value under a custom variable name.
- * @param {string} name - The variable name with the stored value.
+ * Throws if the variable is not defined.
  */
 export function getVariableValue(name) {
     const normalized = normalizeVariableName(name);
-    return variableStorage.get(normalized);
+    if (!variableStorage.has(normalized)) {
+        throw new Error(`Variable "${normalized}" is not defined`);
+    }
+    const value = variableStorage.get(normalized);
+    logVariable("GET", normalized, value);
+    return value;
 }
 
 /**
@@ -60,90 +50,72 @@ export function getVariableValue(name) {
  */
 export function clearVariables() {
     variableStorage.clear();
+    fs.appendFileSync(logPath, `\n=== VARIABLES CLEARED ===\n\n`);
 }
 
-// Replaces named variables inside brackets with their
-// associated values in place to create a new string
+/**
+ * Replaces named variables inside brackets with their values.
+ * Throws if a variable does not exist.
+ */
 export function resolveString(input) {
-    if (typeof input !== 'string') {    // input is not a string
-        try{
-            input = String(input);       // try to convert to string
-        }
-        catch{
-            throw new Error ('Invalid input for resolving string, ' +
-                'type: ' + typeof input)
+    if (input == null) throw new Error(`resolveString: input is null or undefined`);
+
+    if (typeof input !== "string") {
+        try {
+            input = String(input);
+        } catch {
+            throw new Error(`resolveString: cannot convert input of type ${typeof input} to string`);
         }
     }
 
-    const regex = /\{([^}]+)\}/g;   // matches characters between { and }
+    const regex = /\{([^}]+)\}/g;
 
-    /**
-     * Helper function for resolving named variables inside a string.
-     * If the variable exists in the variableStorage map, it will
-     * replace the full match with the associated value as a string.
-     * If the variable does not exist, it will return the full match
-     * unchanged.
-     * @param {string} fullMatch - The full match of the regex.
-     * @param {string} variableName - The name of the variable to resolve.
-     * @returns {string} The resolved string.
-     */
     function replacer(fullMatch, variableName) {
-        const exists = variableStorage.has(variableName);
-
-        if (exists === false) { // variable does not exist
-            return fullMatch;
+        if (!variableStorage.has(variableName)) {
+            throw new Error(`resolveString: variable "${variableName}" not defined`);
         }
-
         const value = variableStorage.get(variableName);
-        const valueAsString = String(value);    // convert value to string
-
-        return valueAsString;
+        logVariable("RESOLVE", variableName, value);
+        return String(value);
     }
 
-    const result = input.replace(regex, replacer);  // replace named variables
+    const result = input.replace(regex, replacer);
     return result.trim();
 }
 
+/**
+ * Resolves a numeric input.
+ * Throws if input is not a number or cannot be parsed.
+ */
 export function resolveNumber(input) {
-    if (typeof input == 'number') {
-        return input;
-    }
-    else if (typeof input !== 'string') {
-        throw new Error(`Cannot resolve input type to int. Type: ${typeof input}`);
+    if (typeof input === "number") return input;
+    if (input == null || typeof input !== "string") {
+        throw new Error(`Cannot resolve input type to number. Type: ${typeof input}, Input: ${input}`);
     }
 
-    const resolveVars = resolveString(input);
-    const matchString = resolveVars.replaceAll(" ", "").replaceAll(",", "");
-
-    const regex = /[0-9]+(\.[0-9]+)?/;
-    const match = matchString.match(regex);
-
-    if (!match) {
-        throw new Error(`No numeric value found in "${input}"`);
-    }
+    const resolved = resolveString(input);
+    const match = resolved.replace(/\s|,/g, "").match(/^[+-]?\d+(\.\d+)?$/);
+    if (!match) throw new Error(`No numeric value found in "${input}"`);
 
     return Number(match[0]);
 }
 
+/**
+ * Resolves a boolean input.
+ * Throws if input is not a boolean or cannot be parsed.
+ */
 export function resolveBoolean(input) {
-    if (typeof input == 'boolean') {
-        return input;
-    }
-    else if (typeof input !== 'string') {
-        throw new Error(`Cannot resolve input type to boolean. Type: ${typeof input}`);
+    if (typeof input === "boolean") return input;
+    if (input == null || typeof input !== "string") {
+        throw new Error(`Cannot resolve input type to boolean. Type: ${typeof input}, Input: ${input}`);
     }
 
-    const resolveVars = resolveString(input);
-    const matchString = resolveVars.replaceAll(" ", "")
-                                   .replaceAll(",", "")
-                                   .toLowerCase();
+    const resolved = resolveString(input);
+    const normalized = resolved.replace(/[\s,]/g, "").toLowerCase();
 
-    const regex = /^(true|false)$/;
-    const match = matchString.match(regex);
-
-    if (!match) {
+    if (normalized !== "true" && normalized !== "false") {
         throw new Error(`No boolean value found in "${input}"`);
     }
 
-    return match[1] === "true";
+    return normalized === "true";
 }

@@ -1,26 +1,40 @@
 import { getActivePage, getActiveIndex } from './WebHelpers.js';
 import { getTabCount } from './WebHelpers.js';
+import { assertStep } from './Assert.js';
 
 export async function info(context, infoStep) {
+    const infoSpec = await parseInfo(infoStep);
+    return await exeInfo(context, infoSpec.mode);
+}
+
+export async function parseInfo(infoStep) {
+    assertStep(infoStep, "INFO", "parseInfo");
+
     const selected = infoStep.selected;
     const name = selected.name.toLowerCase();
+    return { mode: name };
+}
 
-    if (name === "url") {
-        const page = await getActivePage(context);
-        return await getUrl(page);
-    }
-    else if (name === "title") {
-        const page = await getActivePage(context);
-        return await getTitle(page);
-    }
-    else if (name === "tab_count") {
-        return await getTabCount(context);
-    }
-    else if (name === "currentIndex") {
-        return await getActiveIndex(context);
-    }
-    else {
-        throw new Error("Unknown info step type recieved. Type: " + name);
+export async function exeInfo(context, mode) {
+    let page;
+    mode = mode.toUpperCase();
+    switch (mode) {
+        case "URL":
+            page = await getActivePage(context);
+            return await getUrl(page);
+
+        case "TITLE":
+            page = await getActivePage(context);
+            return await getTitle(page);
+
+        case "TAB_COUNT":
+            return await getTabCount(context);
+
+        case "CURRENT_INDEX":
+            return await getActiveIndex(context);
+
+        default:
+            throw new Error(`exeInfo: unsupported info mode: ${mode}`);
     }
 }
 

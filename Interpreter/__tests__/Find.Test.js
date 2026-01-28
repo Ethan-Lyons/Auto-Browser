@@ -6,7 +6,7 @@ let context;
 
 // TODO: create function for new tab + page nav
 
-const url = { value: 'google.com' };
+const url = { name: 'url', value: 'google.com' };
 const navAction = { name: 'URL_NAV', args: [url] };
 
 beforeAll(async () => {
