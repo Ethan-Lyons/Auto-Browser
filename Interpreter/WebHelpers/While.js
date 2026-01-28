@@ -1,10 +1,11 @@
 import { condition } from "./Condition";
 import { assertStep } from "./Assert";
+import { assert } from "puppeteer-core";
 
 export async function routineWhile(context, whileStep, routine) {
     whileSpec = parseWhile(whileStep);
     conResult = await condition(context, whileSpec.condition)
-    exeWhile(routine, whileSpec.condition, whileStep)
+    exeWhile(routine, conResult, whileStep)
 }
 
 export function parseWhile(whileStep) {
@@ -15,14 +16,15 @@ export function parseWhile(whileStep) {
     return { name: whileName, condition: condition }
 }
 
-export async function exeWhile(routine, condition, whileStep) {
+export async function exeWhile(routine, conResult, whileStep) {
+    assert(conResult == true || conResult == false,
+        "exeWhile: input condition is not boolean");
     // Block contains:
     //  body: actions to execute
     //  bodyPost: empty
     //  end: end marker
     const block = routine.popControlBlock(whileStep.name);
-
-    if (condition){
+    if (conResult == true && block.body.length > 0) {
         // Push actions to execute
         routine.pushManyStack(block.body);  
 

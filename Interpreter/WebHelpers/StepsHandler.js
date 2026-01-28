@@ -63,7 +63,7 @@ export async function handleAction(context, currentStep, routine) {
       break;
 
     case "WHILE":
-      WebHelpers.routineWhile(context, currentStep, routine)
+      await WebHelpers.routineWhile(context, currentStep, routine)
       break;
 
     case "STORE":
