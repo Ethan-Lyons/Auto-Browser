@@ -1,4 +1,4 @@
-import { getActivePage, resolveString, resolveBoolean } from "./WebHelpers.js";
+import { getActivePage, resolveBoolean } from "./WebHelpers.js";
 import { assertStep } from "./Assert.js";
 import puppeteer from 'puppeteer-core';
 
@@ -47,7 +47,8 @@ export async function exeFind(context, mode, step) {
 
         case "CSS":
             const cssSpec = parseCSS(step);
-            return await findByCSS(page, cssSpec.value);
+            const locator = await page.locator(cssSpec.value);
+            return locator;
 
         case "LINK":
             const linkSpec = parseLink(step);

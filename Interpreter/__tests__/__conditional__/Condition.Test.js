@@ -1,5 +1,5 @@
 import { test, expect, describe } from '@jest/globals';
-import { parseCondition, condition } from '../WebHelpers/WebHelpers';
+import { parseCondition, condition } from '../../WebHelpers/WebHelpers';
 
 describe('Condition', () => {
     test('Condition text true', async () => {

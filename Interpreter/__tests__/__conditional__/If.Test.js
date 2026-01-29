@@ -1,7 +1,5 @@
 import { test, expect, describe } from '@jest/globals';
-import { parseIf, exeIf } from '../WebHelpers/If.js';
-import { handleStep, handleRoutine } from '../WebHelpers/StepsHandler.js';
-import { Routine } from '../WebHelpers/Routine.js';
+import { parseIf, exeIf, routineIf, handleStep, Routine} from '../../WebHelpers/WebHelpers.js';
 
 describe("parseIf", () => {
   test("parseIf: invalid action", async () => {

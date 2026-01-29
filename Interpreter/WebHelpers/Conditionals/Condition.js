@@ -1,6 +1,6 @@
-import { canFind } from "./FindAlt";
-import { assertStep } from "./Assert";
-import { resolveBoolean } from "./WebHelpers";
+import { canFind } from "../FindAlt";
+import { assertStep } from "../Assert";
+import { resolveBoolean } from "../WebHelpers";
 
 export async function condition(context, conditionStep) {
     const conditionSpec = parseCondition(conditionStep)

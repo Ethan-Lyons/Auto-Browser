@@ -1,5 +1,5 @@
-import { condition } from "./Condition";
-import { assertStep } from "./Assert";
+import { condition } from "./Condition.js";
+import { assertStep } from "../Assert.js";
 import { assert } from "puppeteer-core";
 
 export async function routineWhile(context, whileStep, routine) {

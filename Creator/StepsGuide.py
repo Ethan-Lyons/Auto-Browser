@@ -1,13 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
 import re
-from Steps import Action
-from Steps import ActionGroup
-from Steps import Argument
-from UserActionBuilder import UserActionBuilder
-
 import os
 
+from RoutineMaker.Steps import Action
+from RoutineMaker.Steps import ActionGroup
+from RoutineMaker.Steps import Argument
+from RoutineMaker.UserActionBuilder import UserActionBuilder
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 jsHandlerPath = os.path.abspath(os.path.join(

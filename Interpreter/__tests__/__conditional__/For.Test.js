@@ -1,6 +1,5 @@
-import { parseFor, exeFor, routineFor } from '../WebHelpers/For.js';
-import { Routine } from '../WebHelpers/Routine.js';
-import { handleStep, handleRoutine } from '../WebHelpers/StepsHandler.js';
+import { test, expect, describe } from '@jest/globals';
+import { parseFor, exeFor, routineFor, Routine, handleStep, handleRoutine } from '../../WebHelpers/WebHelpers.js';
 
 function createForStep(start, end) {
     return { name: "FOR", type: "Action", args:

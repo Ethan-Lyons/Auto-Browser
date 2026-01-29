@@ -1,9 +1,9 @@
 import tkinter
 import pytest
 
-from Routine import Routine
-from RoutineFrame import RoutineFrame
-from ActionFrame import ActionFrame
+from RoutineMaker.Routine import Routine
+from RoutineMaker.RoutineFrame import RoutineFrame
+from RoutineMaker.ActionFrame import ActionFrame
 
 @pytest.fixture
 def routineEnv():

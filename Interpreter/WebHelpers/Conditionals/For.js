@@ -1,5 +1,5 @@
-import { resolveNumber } from "./StoreVariables.js";
-import { assertStep } from "./Assert.js";
+import { resolveNumber } from "../StoreVariables.js";
+import { assertStep } from "../Assert.js";
 
 /**
  * Repeats a block of actions n times, where n is the difference between

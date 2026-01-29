@@ -1,5 +1,5 @@
 import { condition } from "./Condition.js";
-import { assertStep } from "./Assert.js";
+import { assertStep } from "../Assert.js";
 
 export async function routineIf(context, ifStep, routine) {
   ifSpec = parseIf(ifStep);

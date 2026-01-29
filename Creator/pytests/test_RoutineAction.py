@@ -1,7 +1,9 @@
-from Routine import Routine
-from Steps import ActionGroup
-from Steps import Action
-from Steps import Argument
+from RoutineMaker.Routine import Routine
+from RoutineMaker.Steps import ActionGroup
+from RoutineMaker.Steps import Action
+from RoutineMaker.Steps import Argument
+
+import pytest as pytest
 
 def test_init():
     routine = Routine()
@@ -79,7 +81,9 @@ def test_find_action_in_group():
     testAction = Action(name=testName, args=[Argument("testArg")], description="Action Description")
     actionGroup = ActionGroup(name="GroupName", args=[testAction], description="Group Description")
 
-    assert actionGroup.get("WrongName") == None
+    with pytest.raises(KeyError):
+        actionGroup.get("Wrong_Name")
+
     assert str(actionGroup.get(testName)) == str(testAction)
     assert actionGroup.get(testName) == testAction
 

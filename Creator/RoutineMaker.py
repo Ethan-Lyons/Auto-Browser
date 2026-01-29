@@ -1,7 +1,8 @@
 import tkinter
-from RoutineFrame import RoutineFrame
-from Routine import Routine
-import InputOutput
+
+from RoutineMaker.RoutineFrame import RoutineFrame
+from RoutineMaker.Routine import Routine
+import RoutineMaker.InputOutput as InputOutput
 
 def createWindow():
     """

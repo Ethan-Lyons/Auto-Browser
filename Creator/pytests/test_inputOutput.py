@@ -1,8 +1,9 @@
-from Routine import Routine
-from Steps import ActionGroup
-from Steps import Action
-from Steps import Argument
-import InputOutput
+from RoutineMaker.Routine import Routine
+from RoutineMaker.Steps import ActionGroup
+from RoutineMaker.Steps import Action
+from RoutineMaker.Steps import Argument
+import RoutineMaker.InputOutput as InputOutput
+
 import os
 
 FOLDER_NAME = "tmp"
