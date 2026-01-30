@@ -1,5 +1,5 @@
-import InputOutput
-from Routine import Routine
+import RoutineMaker.InputOutput as InputOutput
+from RoutineMaker.Routine import Routine
 
 TEST_OUTPUT_DIR = "./TestData"
 

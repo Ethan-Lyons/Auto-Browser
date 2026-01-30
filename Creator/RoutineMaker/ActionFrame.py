@@ -1,8 +1,8 @@
 import tkinter as tk
-from ButtonFrame import ButtonFrame
-from Steps import Action
-from Steps import ActionGroup
-from Steps import Argument
+from RoutineMaker.ButtonFrame import ButtonFrame
+from RoutineMaker.Steps import Action
+from RoutineMaker.Steps import ActionGroup
+from RoutineMaker.Steps import Argument
 
 class ActionFrame:
     def __init__(self, routineFrame, action, parent):

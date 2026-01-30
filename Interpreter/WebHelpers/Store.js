@@ -22,13 +22,13 @@ export async function store(context, storeStep) {
 export function parseStore(storeStep) {
     assertStep(storeStep, "STORE", "parseStore");
 
-    const [storableStep, varStep] = storeStep.args;
+    const [storableStep, varNameStep] = storeStep.args;
 
     const storableSpec = parseStorable(storableStep);
 
-    const varSpec = parseVar(varStep);
+    const varSpec = parseVar(varNameStep);
 
-    return { mode: storableSpec.mode, step: storableSpec.step,
+    return { name: storeStep.name, mode: storableSpec.mode, step: storableSpec.step,
         storeName: varSpec.value };
 }
 
@@ -46,20 +46,20 @@ export async function exeStore(context, mode, step, storeName) {
     }
 }
 
-function parseStorable(storableStep) {
+export function parseStorable(storableStep) {
     assertStep(storableStep, "STORABLE", "parseStorable");
 
     const selected = storableStep.selected;
     return { mode: selected.name, step: selected };
 }
 
-function parseVar(varStep) {
-    assertStep(varStep, "VARIABLE", "parseVar");
+export function parseVar(varNameStep) {
+    assertStep(varNameStep, "VARIABLE", "parseVar");
 
-    return { value: varStep.value };
+    return { value: varNameStep.value };
 }
 
-async function storeFindText (context, findTextStep, varStoreName){
+export async function storeFindText (context, findTextStep, varStoreName){
     const textReturn = await findText(context, findTextStep)
     Variables.setVariable(varStoreName, textReturn);
 }
@@ -74,7 +74,7 @@ async function storeFindText (context, findTextStep, varStoreName){
  * @returns {Promise<void>} - A promise that resolves when the value
  *  has been stored under the new variable name.
  */
-async function storeInfo (context, infoStep, varStoreName){
+export async function storeInfo (context, infoStep, varStoreName){
     const infoReturn = await info(context, infoStep)
     Variables.setVariable(varStoreName, infoReturn);
 }
@@ -85,7 +85,7 @@ async function storeInfo (context, infoStep, varStoreName){
  *  the text value to store from.
  * @param {String} varStoreName - The new variable name to store under.
  */
-function storeText(textStep, varStoreName){
+export function storeText(textStep, varStoreName){
     assertStep(textStep, "TEXT", "storeText");
     const newVal = textStep.value;
     Variables.setVariable(varStoreName, newVal);

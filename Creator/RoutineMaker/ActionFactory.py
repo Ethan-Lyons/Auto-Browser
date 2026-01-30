@@ -1,6 +1,6 @@
-from Steps import Action
-from Steps import ActionGroup
-from Steps import Argument
+from RoutineMaker.Steps import Action
+from RoutineMaker.Steps import ActionGroup
+from RoutineMaker.Steps import Argument
 
 def createAction(name, args=[], description=""):
     """Creates a new action object and adds it to the list of actions

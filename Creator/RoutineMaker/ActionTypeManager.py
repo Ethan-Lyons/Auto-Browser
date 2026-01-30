@@ -1,4 +1,4 @@
-from Steps import Action
+from RoutineMaker.Steps import Action
 class ActionBuilderManager:
     VAR = "variable"
     SELECTOR_TYPES = ["xpath", "css", "text", VAR]

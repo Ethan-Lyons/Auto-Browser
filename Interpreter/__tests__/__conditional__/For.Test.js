@@ -1,14 +1,6 @@
 import { test, expect, describe } from '@jest/globals';
 import { parseFor, exeFor, routineFor, Routine, handleStep, handleRoutine } from '../../WebHelpers/WebHelpers.js';
-
-function createForStep(start, end) {
-    return { name: "FOR", type: "Action", args:
-        [{ value: start, type: "argument" }, { value: end, type: "argument" }] };
-}
-
-function createNewTabStep() {
-    return { name: "NEW_TAB", type: "Action", args: [null] };
-}
+import { createForStep, createNewTabStep } from '../StepFactory.js';
 
 describe("parseFor", () => {
   test("parseFor: invalid action", async () => {
