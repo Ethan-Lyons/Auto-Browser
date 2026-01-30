@@ -1,6 +1,6 @@
 import { test, expect, describe } from '@jest/globals';
 import { parseFor, exeFor, routineFor, Routine, handleStep, handleRoutine } from '../../WebHelpers/WebHelpers.js';
-import { createForStep, createNewTabStep } from '../StepFactory.js';
+import { newTab, endForStep, forStep, userAction } from '../StepFactory.js';
 
 describe("parseFor", () => {
   test("parseFor: invalid action", async () => {
@@ -9,10 +9,8 @@ describe("parseFor", () => {
   });
 
   test("parseFor: valid action", async () => {
-    const start = { value: "1" };
-    const end = { value: "2" };
-    const forStep = { name: "FOR", args: [start, end] };
-    const result = parseFor(forStep);
+    const fStep = forStep("1", "2");
+    const result = parseFor(fStep);
     expect(result).toEqual({ name: "FOR", start: 1, end: 2 });
   });
 
@@ -23,33 +21,29 @@ describe("exeFor", () => {
   test("exeFor: valid loop two", async () => {
     const remainingRoutine = new Routine();
 
-    const forStep = createForStep("1", "2");
+    const fStep = forStep("1", "2");
 
-    const userNewTab = { name: "USER_ACTION", selected: createNewTabStep() };
-    
-    const endForStep = { name: "END_FOR", args: [null] };
-    const userEndFor = { name: "USER_ACTION", selected: endForStep };
+    const userNewTab = userAction(newTab());
+    const userEndFor = userAction(endForStep());
 
     remainingRoutine.pushManyList([userNewTab, userEndFor]);
 
-    exeFor(remainingRoutine, 2, forStep.name);
+    exeFor(remainingRoutine, 2, fStep.name);
     expect(remainingRoutine.getStack().length).toBe(2);
   });
 
   test("exeFor: valid loop zero", async () => {
-    const remainingRoutine = new Routine();
+  const remainingRoutine = new Routine();
 
-    const forStep = createForStep("1", "2");
+  const fStep = forStep("1", "2");
 
-    const userNewTab = { name: "USER_ACTION", selected: createNewTabStep() };
-    
-    const endForStep = { name: "END_FOR", args: [null] };
-    const userEndFor = { name: "USER_ACTION", selected: endForStep };
+  const userNewTab = userAction(newTab());
+  const userEndFor = userAction(endForStep());
 
-    remainingRoutine.pushManyList([userNewTab, userEndFor]);
+  remainingRoutine.pushManyList([userNewTab, userEndFor]);
 
-    exeFor(remainingRoutine, 0, forStep.name);
-    expect(remainingRoutine.getStack().length).toBe(0);
+  exeFor(remainingRoutine, 0, fStep.name);
+  expect(remainingRoutine.getStack().length).toBe(0);
   });
 });
 
@@ -57,42 +51,34 @@ describe ("routineFor: handleRoutine, handleStep", () => {
     test("routineFor: valid loop", async () => {
         const remainingRoutine = new Routine();
 
-        const forStep = createForStep("1", "3");
+        const fStep = forStep("1", "3");
         
-        const userNewTab = { name: "USER_ACTIONS", type: "ActionGroup", selected: createNewTabStep() };
-
-        const endForStep = { name: "END_FOR", type: "Action", args: [null] };
-        const userEndFor = { name: "USER_ACTIONS", type: "ActionGroup", selected: endForStep };
+        const userNewTab = userAction(newTab());
+        const userEndFor = userAction(endForStep());
 
         remainingRoutine.pushManyList([userNewTab, userEndFor]);
 
-        routineFor(forStep, remainingRoutine);
+        routineFor(fStep, remainingRoutine);
         expect(remainingRoutine.getStack().length).toBe(2);
     })
 
     test("handleRoutine: valid loop", async () => {
-        const fullRoutine = new Routine();
+        const routine = new Routine();
 
-        const userFor = { name: "USER_ACTIONS", type: "ActionGroup", selected: createForStep("1", "2") };
-        
-        const endForStep = { name: "END_FOR", type: "Action", args: [null] };
-        const userEndFor = { name: "USER_ACTIONS", type: "ActionGroup", selected: endForStep };
+        const userFor = forStep("1", "2");
+        const userEndFor = userAction(endForStep());
 
-        fullRoutine.pushManyList([userFor, userEndFor]);
-
-        handleRoutine(context="", fullRoutine);
-        expect(fullRoutine.getStack().length).toBe(0);
+        routine.pushManyList([userFor, userEndFor]);
+        handleRoutine(context="", routine);
+        expect(routine.getStack().length).toBe(0);
     })
 
     test("routineFor: handleStep simple", async () => {
         const remainingRoutine = new Routine();
 
-        const userFor = { name: "USER_ACTIONS", type: "ActionGroup", selected: createForStep("1", "3") };
-        
-        const userNewTab = { name: "USER_ACTIONS", type: "ActionGroup", selected: createNewTabStep() };
-
-        const endForStep = { name: "END_FOR", type: "Action", args: [null] };
-        const userEndFor = { name: "USER_ACTIONS", type: "ActionGroup", selected: endForStep };
+        const userFor = userAction(forStep("1", "3"));
+        const userNewTab = userAction(newTab());
+        const userEndFor = userAction(endForStep());
 
         remainingRoutine.pushManyList([userNewTab, userEndFor]);
 
@@ -103,17 +89,13 @@ describe ("routineFor: handleRoutine, handleStep", () => {
     test("routineFor: handleStep nested", async () => {
         const remainingRoutine = new Routine();
 
-        const userForOuter = { name: "USER_ACTIONS", type: "ActionGroup", selected: createForStep("0", "2") };
-
-        const userForInner = { name: "USER_ACTIONS", type: "ActionGroup", selected: createForStep("0", "0") };  // 1 * 2 count
+        const userForOuter = userAction(forStep("0", "2"));
+        const userForInner = userAction(forStep("0", "0")); // 1 * 2 count
         
-        const userNewTab = { name: "USER_ACTIONS", type: "ActionGroup", selected: createNewTabStep() };  // 1 * 2 count
+        const userNewTab = userAction(newTab());  // 1 * 2 count
 
-        const endForStepInner = { name: "END_FOR", type: "Action", args: [null] };
-        const userEndForInner = { name: "USER_ACTIONS", type: "ActionGroup", selected: endForStepInner };   // 1 * 2 count
-
-        const endForStepOuter = { name: "END_FOR", type: "Action", args: [null] };                  
-        const userEndForOuter = { name: "USER_ACTIONS", type: "ActionGroup", selected: endForStepOuter };   // Removed after step
+        const userEndForInner = userAction(endForStep());   // 1 * 2 count
+        const userEndForOuter = userAction(endForStep());   // Removed after step
 
         remainingRoutine.pushManyList([userForInner, userNewTab, userEndForInner, userEndForOuter]);
 

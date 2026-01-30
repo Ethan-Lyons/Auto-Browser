@@ -1,16 +1,17 @@
 import { test, expect, describe } from '@jest/globals';
 import { parseIf, exeIf, routineIf, handleStep, Routine} from '../../WebHelpers/WebHelpers.js';
+import { ifStep, elseStep, endIfStep, userAction, conditionStep, blankStep, textStep } from '../StepFactory.js';
 
 describe("parseIf", () => {
   test("parseIf: invalid action", async () => {
-    const ifStep = { name: "FOO", args: [null] };
-    expect(() => parseIf(ifStep)).toThrow();
+    const iStep = { name: "FOO", args: [null] };
+    expect(() => parseIf(iStep)).toThrow();
   });
 
   test("parseIf: valid action", async () => {
-    const ifStep = { name: "IF", args: ["condition"] };
-    const result = parseIf(ifStep);
-    expect(result).toEqual({ name: "IF", condition: "condition" });
+    const iStep = ifStep(conditionStep(blankStep()));
+    const result = parseIf(iStep);
+    expect(result).toEqual({ name: "IF", condition: conditionStep(blankStep()) });
   });
 
 });
@@ -19,11 +20,10 @@ describe("exeIf", () => {
   test("exeIf: valid action, true", async () => {
     const routine = new Routine();
 
-    const userAction = { name: "USER_ACTION", selected: { name: "BLANK" } };
-    const endIfStep = { name: "END_IF", args: [null] };
-    const userEndIf = { name: "USER_ACTION", selected: endIfStep };
+    const userBlank = userAction(blankStep());
+    const userEndIf = userAction(endIfStep());
     
-    routine.pushManyList([userAction, userEndIf]);
+    routine.pushManyList([userBlank, userEndIf]);
 
     exeIf(routine, true, "IF");
     expect(routine.getStack().length).toBe(1);
@@ -32,11 +32,10 @@ describe("exeIf", () => {
   test("exeIf: valid action, false", async () => {
     const routine = new Routine();
 
-    const userAction = { name: "USER_ACTION", selected: { name: "BLANK" } };
-    const endIfStep = { name: "END_IF", args: [null] };
-    const userEndIf = { name: "USER_ACTION", selected: endIfStep };
+    const userBlank = userAction(blankStep());
+    const userEndIf = userAction(endIfStep());
     
-    routine.pushManyList([userAction, userEndIf]);
+    routine.pushManyList([userBlank, userEndIf]);
 
     exeIf(routine, false, "IF");
     expect(routine.getStack().length).toBe(0);
@@ -46,48 +45,43 @@ describe("exeIf", () => {
 describe("routineIf", () => {
   test("routineIf: handleStep true", async () => {
     const routine = new Routine();
-    const condition = { name: "CONDITION", selected: { name: "text", value: "true" } };
-    const ifStep = { name: "IF", type: "Action", args: [condition] };
+    const iStep = ifStep(conditionStep(textStep("true")));
+    const userBlank = userAction(blankStep());
+    const userEndIf = userAction(endIfStep());
+    
+    routine.pushManyList([userBlank, userEndIf]);
 
-    const userAction = { name: "USER_ACTION", type: "ActionGroup", selected: { name: "BLANK" } };
-    const endIfStep = { name: "END_IF", type: "Action", args: [null] };
-    const userEndIf = { name: "USER_ACTION", type: "ActionGroup", selected: endIfStep };
-
-    routine.pushManyList([userAction, userEndIf]);
-    await handleStep("", ifStep, routine);
+    await handleStep("", iStep, routine);
     expect(routine.getStack().length).toBe(1);
   });
 
   test("routineIf: handleStep false", async () => {
     const routine = new Routine();
-    const condition = { name: "CONDITION", selected: { name: "text", value: "false" } };
-    const ifStep = { name: "IF", type: "Action", args: [condition] };
+    const iStep = ifStep(conditionStep(textStep("false")));
+    const userBlank = userAction(blankStep());
+    const userEndIf = userAction(endIfStep());
+    
+    routine.pushManyList([userBlank, userEndIf]);
 
-    const userAction = { name: "USER_ACTION", type: "ActionGroup", selected: { name: "BLANK" } };
-    const endIfStep = { name: "END_IF", type: "Action", args: [null] };
-    const userEndIf = { name: "USER_ACTION", type: "ActionGroup", selected: endIfStep };
-
-    routine.pushManyList([userAction, userEndIf]);
-    await handleStep("", ifStep, routine);
+    await handleStep("", iStep, routine);
     expect(routine.getStack().length).toBe(0);
   });
 
   test("routineIf: handleStep nested", async () => {
     const routine = new Routine();
 
-    const outerIf = { name: "IF", type: "Action", args: [{ name: "CONDITION", selected: { name: "text", value: "true" } }] };
-    const userIfOuter = { name: "USER_ACTIONS", type: "ActionGroup", selected: outerIf };
+    const outerCon = conditionStep(textStep("true"));
+    const userIfOuter = userAction(ifStep(outerCon));
 
-    const innerIf = { name: "IF", type: "Action", args: [{ name: "CONDITION", selected: { name: "text", value: "true" } }] };
-    const userIfInner = { name: "USER_ACTIONS", type: "ActionGroup", selected: innerIf };
+    const innerCon = conditionStep(textStep("true"));
+    const userIfInner = userAction(ifStep(innerCon));
 
-    const userNewTab = { name: "USER_ACTIONS", type: "ActionGroup", selected: { name: "BLANK"} };
+    const userBlank = userAction(blankStep());
 
-    const userEndIfOuter = { name: "USER_ACTIONS", type: "ActionGroup", selected: { name: "END_IF", type: "Action", args: [null] } };
+    const userEndIfOuter = userAction(endIfStep());
+    const userEndIfInner = userAction(endIfStep());
 
-    const userEndIfInner = { name: "USER_ACTIONS", type: "ActionGroup", selected: { name: "END_IF", type: "Action", args: [null] } };
-
-    routine.pushManyList([userIfInner, userNewTab, userEndIfOuter, userEndIfInner]);
+    routine.pushManyList([userIfInner, userBlank, userEndIfOuter, userEndIfInner]);
     await handleStep("", userIfOuter, routine);
     expect(routine.getStack().length).toBe(3);
   })

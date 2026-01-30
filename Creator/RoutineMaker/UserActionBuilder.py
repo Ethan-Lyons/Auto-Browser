@@ -73,7 +73,9 @@ class UserActionBuilder:
         )
 
         screenshot = r.action("screenshot", [fileName])
-        canOutput = r.userAction("OUTPUT", [text, screenshot])
+        canOutput = r.group("can_output", [text, screenshot])
+        output = r.userAction("OUTPUT", [canOutput])
+
 
         urlNav = r.userAction("URL_NAV", [url], "Navigate to a URL")
         tabNav = r.userAction("TAB_NAV", [tab], "Navigate to a tab")
