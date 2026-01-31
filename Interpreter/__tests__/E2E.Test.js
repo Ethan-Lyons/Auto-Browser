@@ -10,8 +10,6 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-    //context = await WebHelpers.createNewContext(browser);
-    //clearVariables();
     try {
         browser = await getBrowser()
     } catch (err) {

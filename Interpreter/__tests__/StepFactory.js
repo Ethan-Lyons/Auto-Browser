@@ -2,6 +2,18 @@ export function blankStep() {
     return { name: "BLANK", type: "Action", args: [null] };
 }
 
+export function argumentStep(name, value) {
+    return { name: name, type: "Argument", value: value };
+}
+
+export function findTextStep(selectedFindMode) {
+    return { name: "FIND_TEXT", type: "Action", args: [findStep(selectedFindMode)] };
+}
+
+export function infoStep(selectedInfoStep) {
+    return { name: "INFO", type: "ActionGroup", selected: selectedInfoStep };
+}
+
 export function waitStep(ms) {
     const msStep = { name: "milliseconds", type: "Argument", value: ms };
     return { name: "WAIT", type: "Action", args: [msStep] };
