@@ -6,6 +6,30 @@ export function argumentStep(name, value) {
     return { name: name, type: "Argument", value: value };
 }
 
+export function strictStep(selectedStrictStep) {
+    return { name: name, type: "ActionGroup", selected: selectedStrictStep}
+}
+
+export function trueStep() {
+    return argumentStep("true", "true")
+}
+
+export function falseStep() {
+    return argumentStep("false", "false")
+}
+
+export function falseStep() {
+
+}
+
+export function urlNavStep(targetURL) {
+    return { name: "URL_NAV", type: "Action", args: [urlStep(targetURL)]};
+}
+
+export function urlStep(targetURL) {
+    return argumentStep("url", targetURL)
+}
+
 export function findTextStep(selectedFindMode) {
     return { name: "FIND_TEXT", type: "Action", args: [findStep(selectedFindMode)] };
 }
@@ -89,22 +113,23 @@ export function findStep(selectedStep) {
 
 export function storeStep(modeName, modeValue, varName) {
     return { name: "STORE", type: "Action", args:
-        [storableGroup(modeName, modeValue), variable(varName)] }
+        [storableGroupStep(modeName, modeValue), variableStep(varName)] }
 }
 
 export function storableStep(modeName, modeValue) {
     return { name: modeName, value: modeValue}
 }
 
-export function storableGroup(modeName, modeValue) {
+
+export function storableGroupStep(modeName, modeValue) {
     return { name: "storable", type: "ActionGroup", selected: storableStep(modeName, modeValue)}
 }
 
-export function variable(varName) {
+export function variableStep(varName) {
     return { name: "variable", type: "Argument", value: varName}
 }
 
-export function newTab() {
+export function newTabStep() {
     return { name: "NEW_TAB", type: "Action", args: [null] };
 }
 

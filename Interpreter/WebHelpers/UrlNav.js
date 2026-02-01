@@ -9,19 +9,19 @@ import { assertStep } from './Assert.js';
  *  and a url value in its args list.
  */
 export async function urlNav(context, navStep) {
-    const urlNavSpec = urlNavParse(navStep);
-    await urlNavExe(context, urlNavSpec.url);
+    const urlNavSpec = parseUrlNav(navStep);
+    await exeUrlNav(context, urlNavSpec.url);
 }
 
-export function urlNavParse(navStep) {
+export function parseUrlNav(navStep) {
     assertStep(navStep, "URL_NAV", "urlNavParse");
 
     const [urlStep] = navStep.args;
-    const urlSpec = urlParse(urlStep);
+    const urlSpec = parseUrl(urlStep);
     return { url: urlSpec.url }
 }
 
-export async function urlNavExe(context, url) {
+export async function exeUrlNav(context, url) {
     const page = await getActivePage(context);
 
     if (!page) {
@@ -35,7 +35,7 @@ export async function urlNavExe(context, url) {
 }
 
 
-export function urlParse(urlStep) {
+export function parseUrl(urlStep) {
     assertStep(urlStep, "URL", "urlParse");
 
     let url = urlStep.value;

@@ -1,0 +1,8 @@
+Add regular epxression matching to conditions
+Add group handling (open all in new tab, save all texts, ?)
+Add a menu type for user activated repeatable code blocks
+    (runs a new routine for each button press?, check that only 1 routine can run at a time)
+Once menu creation is finished it should just run a listener which run routines and only exits when told by user
+
+Change it so true and false arguments do not try to access value and just use the name
+    (no value argument, similar to how new tab doesnt need extra info)

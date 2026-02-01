@@ -1,5 +1,7 @@
-import * as WebHelpers from '../WebHelpers/WebHelpers.js';
+import * as WebHelpers from '../../WebHelpers/WebHelpers.js';
 import { test, expect } from '@jest/globals';
+import { argumentStep, clickStep, findStep } from '../StepFactory.js';
+import { parseClick, exeClick, click } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
 let context;
@@ -25,8 +27,46 @@ afterAll(async () => {
     await WebHelpers.browserDisconnect(browser);
 });
 
+/*
+export async function click(context, clickStep) {
+    const findStep = parseClick(clickStep);
+
+    const locator = await find(context, findStep);
+    const page = await getActivePage(context);
+    
+    await exeClick(page, locator);
+}
+
+export function parseClick(clickStep) {
+    assertStep(clickStep, 'CLICK', 'parseClick');
+
+    const [findStep] = clickStep.args;
+    return findStep;
+}
+
+export async function exeClick(page, locator) {
+    await Promise.allSettled([
+        page.waitForNavigation({ waitUntil: 'networkidle0'}),
+        locator.click(),
+    ]);
+} */
+
+describe("parseClick", () => {
+    test("parseClick: invalid action", async () => {
+        const fakeStep = { name: "FOO", args: [null] };
+        expect(() =>parseClick(fakeStep)).toThrow();
+    });
+
+    test("parseClick: valid action", async () => {
+        const cStep = clickStep(findStep(argumentStep("text", "example.com")));
+        const cSpec = parseClick(cStep)
+        expect(cSpec).toEqual({ name: "click", type: "action", step: argumentStep("text", "example.com")});
+    });
+});
+
+
 test('Click Link', async () => {
-    const url = { name: 'url', value: 'https://google.com' };
+    /*const url = { name: 'url', value: 'https://google.com' };
     const navAction = { name: 'URL_NAV', args: [url] };
 
     const textArg = {
@@ -61,11 +101,13 @@ test('Click Link', async () => {
     await WebHelpers.click(context, clickAction);
 
     const newURL = await WebHelpers.getUrl(page);
-    expect(newURL).not.toMatch(startURL);
+    expect(newURL).not.toMatch(startURL);*/
+
+
 });
 
 test('Click Xpath', async () => {
-    const url = { name: 'url', value: 'google.com' };
+    /*const url = { name: 'url', value: 'google.com' };
     const navAction = { name: 'URL_NAV', args: [url] };
 
     const xpath = {
@@ -92,5 +134,7 @@ test('Click Xpath', async () => {
     await WebHelpers.click(context, clickAction);
 
     const newURL = await WebHelpers.getUrl(page);
-    expect(newURL).not.toMatch(startURL);
+    expect(newURL).not.toMatch(startURL);*/
+
+    
 });

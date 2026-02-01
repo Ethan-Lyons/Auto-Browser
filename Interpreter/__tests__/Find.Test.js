@@ -4,8 +4,6 @@ import { test, expect } from '@jest/globals';
 let browser;
 let context;
 
-// TODO: create function for new tab + page nav
-
 const url = { name: 'url', value: 'google.com' };
 const navAction = { name: 'URL_NAV', args: [url] };
 
