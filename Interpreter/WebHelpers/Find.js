@@ -87,17 +87,24 @@ function parseLink(linkStep) {
     assertStep(strictGroup, "STRICT", "parseLink");
 
     let textValue = textArg.value;
-    if(!textValue) {
-        throw new Error('parseLink: text value is missing.');
+    if (!textValue) {
+        throw new Error(`parseLink: text value is missing.
+            Link Step:\n${JSON.stringify(linkStep)}`);
+    }
+    if (typeof textValue !== 'string') {
+        throw new Error(`parseLink: text value is not a string.
+            Link Step:\n${JSON.stringify(linkStep)}`);
     }
 
     let strictMode = strictGroup.selected;
     if (!strictMode) {
-        throw new Error('parseLink: strict mode selected is missing.');
+        throw new Error(`parseLink: strict mode is missing.
+            Link Step:\n${JSON.stringify(linkStep)}`);
     }
-    let boolValue = strictMode.value;
+    let boolValue = strictMode.name;
     if(!boolValue) {
-        throw new Error('parseLink: strict mode value is missing.');
+        throw new Error(`parseLink: strict mode name is missing.
+            Link Step:\n${JSON.stringify(linkStep)}`);
     }
 
     boolValue = resolveBoolean(boolValue);
@@ -124,8 +131,8 @@ async function findByLinkAddress(page, linkAddress, strict = false) {
     }
     // Check linkAddress type
     if (typeof linkAddress !== 'string' || linkAddress.length === 0) {  
-        throw new TypeError('findByLinkAddress: linkAddress' + 
-            'must be a non-empty string');
+        throw new TypeError(`findByLinkAddress: linkAddress must be a non-empty string, but got: ${linkAddress}
+            Link Step:\n${JSON.stringify(linkStep)}`);
     }
 
     // Look for partial or exact match based on strict value
@@ -144,7 +151,7 @@ async function findByLinkAddress(page, linkAddress, strict = false) {
  * @returns {Promise<puppeteer.locator>} The locator for the element.
  */
 async function findByXPath(page, xPath) {
-    const fullXPath = '::-p-xpath(' + xPath + ")";
+    const fullXPath = `::-p-xpath(${xPath})`;
     const locator = await page.locator(fullXPath);
     return locator;
 }
@@ -159,17 +166,8 @@ async function findByXPath(page, xPath) {
  * @throws Will throw an error if the selection method is not supported
  */
 async function findByText(page, text) {
-  try { // Check using aria names
-    return await page.locator( `::-p-aria([name="${text}"])`);
-  } catch {}   // Ignore on failure
-
-  try { // If aria fails check using text locator
-    return await page.locator(`text/${text}`, { exact:false });
-  } catch {}   // Ignore on failure
-
-  // If aria and text fail, check using xpath
-  return await page.locator(
-    `::-p-xpath(//*[contains(normalize-space(.), "${text}")])`,);
+    const locator = await page.locator(`::-p-text(${text})`);
+    return locator;
 }
 
 /**
@@ -179,7 +177,7 @@ async function findByText(page, text) {
  * @returns {Promise<puppeteer.locator>} The locator for the element.
  */
 async function findByAria(page, aria){
-    const fullXPath = '::-p-aria(' + aria + ')';
+    const fullXPath = `::-p-aria(${aria})`;
     const locator = await page.locator(fullXPath);
     return locator;
 }

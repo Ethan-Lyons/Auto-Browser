@@ -23,9 +23,12 @@ export function parseUrlNav(navStep) {
 
 export async function exeUrlNav(context, url) {
     const page = await getActivePage(context);
-
     if (!page) {
         throw new Error("urlNavExe: no available pages in context.");
+    }
+
+    if (!/^https?:\/\//i.test(url)) {   // add url prefix if needed
+        url = "https://" + url;
     }
 
     await Promise.all([
@@ -37,11 +40,7 @@ export async function exeUrlNav(context, url) {
 
 export function parseUrl(urlStep) {
     assertStep(urlStep, "URL", "urlParse");
-
     let url = urlStep.value;
-    if (!/^https?:\/\//i.test(url)) {   // add url prefix if needed
-        url = "https://" + url;
-    }
 
     return { url : url }
 }
