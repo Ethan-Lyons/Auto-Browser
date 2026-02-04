@@ -1,6 +1,10 @@
-import { urlNavStep } from "../StepFactory";
+import { urlNavStep } from "../../StepFactory.js";
 import { parseUrlNav, exeUrlNav, urlNav }  from '../../WebHelpers/WebHelpers.js';
 import { test, expect } from '@jest/globals';
+
+test ('blank test', async () => {
+    
+});
 
 /*test('loadUrlNav', async () => {
     await WebHelpers.newTab(context);

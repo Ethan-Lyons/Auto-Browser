@@ -14,9 +14,9 @@ import { assertStep } from './Assert.js';
  */
 
 export async function click(context, clickStep) {
-    const findStep = parseClick(clickStep);
+    const clickSpec = parseClick(clickStep);
 
-    const locator = await find(context, findStep);
+    const locator = await find(context, clickSpec.findStep);
     const page = await getActivePage(context);
     
     await exeClick(page, locator);
@@ -26,7 +26,7 @@ export function parseClick(clickStep) {
     assertStep(clickStep, 'CLICK', 'parseClick');
 
     const [findStep] = clickStep.args;
-    return findStep;
+    return { findStep: findStep };
 }
 
 /**

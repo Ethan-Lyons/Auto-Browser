@@ -3,7 +3,7 @@ import { Routine } from '../WebHelpers/Routine.js';
 import { getVariableValue } from '../WebHelpers/StoreVariables.js';
 import { handleStep } from '../WebHelpers/StepsHandler.js';
 import { store, parseStore, exeStore, parseStorable, parseVar, storeFindText, storeInfo, storeText} from '../WebHelpers/Store.js'
-import { createStorableGroup, createStorableStep, createVariableStep, createStoreStep } from './StepFactory.js';
+import { storableGroupStep, storableStep, variableStep, storeStep } from '../StepFactory.js';
 
 describe("parse store", () => {
   test("parseStore: invalid action", async () => {
@@ -12,23 +12,23 @@ describe("parse store", () => {
   });
 
   test("parseStore: valid action", async () => {
-    const storeStep = createStoreStep("modeName", "modeValue", "varName")
-    const storeSpec = parseStore(storeStep)
+    const sStep = storeStep("modeName", "modeValue", "varName")
+    const storeSpec = parseStore(sStep)
     expect(storeSpec).toEqual({ name: "STORE", mode: "modeName",
-        step: createStorableStep("modeName", "modeValue"), storeName: "varName"});
+        step: storableStep("modeName", "modeValue"), storeName: "varName"});
   });
 });
 
-describe("parse store arguments", () => {
+describe("parse store: validating storable args", () => {
   test("parseStorable: invalid action", async () => {
     const fakeStep = { name: "FOO", selected: null};
     expect(() =>parseStorable(fakeStep)).toThrow();
   });
 
   test("parseStorable: valid action", async () => {
-    const storable = createStorableGroup("modeName", "modeValue")
+    const storable = storableGroupStep("modeName", "modeValue")
     const storableSpec = parseStorable(storable)
-    expect(storableSpec).toEqual({ mode: "modeName", step: createStorableStep("modeName", "modeValue")});
+    expect(storableSpec).toEqual({ mode: "modeName", step: storableStep("modeName", "modeValue")});
   });
 
   test("parseVar: invalid action", async () => {
@@ -37,18 +37,18 @@ describe("parse store arguments", () => {
   });
 
   test("parseVar: valid action", async () => {
-    const varStep = createVariableStep("varName")
+    const varStep = variableStep("varName")
     const varSpec = parseVar(varStep)
     expect(varSpec).toEqual({ value: "varName"});
   });
 });
 
 describe("store: text", () => {
-  test("store", async () => {
+  test("store: valid mode", async () => {
     const expectedValue = "modeValue";
     const expectedName = "varName";
-    const storeStep = createStoreStep("text", expectedValue, expectedName)
-    await store("context", storeStep);
+    const sStep = storeStep("text", expectedValue, expectedName)
+    await store("context", sStep);
 
     const recieved = await getVariableValue(expectedName);
     expect(recieved).toBe(expectedValue);
@@ -57,18 +57,18 @@ describe("store: text", () => {
   test("store: invalid mode", async () => {
     const expectedValue = "modeValue";
     const expectedName = "varName";
-    const storeStep = createStoreStep("FOO", expectedValue, expectedName)
-    await expect(store("context", storeStep)).rejects.toThrow();
+    const sStep = storeStep("FOO", expectedValue, expectedName)
+    await expect(store("context", sStep)).rejects.toThrow();
   });
 
   test("store: handleStep", async () => {
     const expectedValue = "modeValue";
     const expectedName = "varName";
     const routine = new Routine();
-    const storeStep = createStoreStep("text", expectedValue, expectedName)
+    const sStep = storeStep("text", expectedValue, expectedName)
     
     routine.pushManyList([]);
-    await handleStep("context", storeStep, routine);
+    await handleStep("context", sStep, routine);
     expect(routine.getStack().length).toBe(0);
     const recieved = await getVariableValue(expectedName);
     expect(recieved).toBe(expectedValue);

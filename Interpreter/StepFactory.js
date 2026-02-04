@@ -30,8 +30,8 @@ export function urlStep(urlVal) {
     return argumentStep("url", urlVal)
 }
 
-export function findTextStep(selectedFindMode) {
-    return { name: "FIND_TEXT", type: "Action", args: [findStep(selectedFindMode)] };
+export function findTextStep(findStep) {
+    return { name: "FIND_TEXT", type: "Action", args: [findStep] };
 }
 
 export function infoStep(selectedInfoStep) {
@@ -77,8 +77,8 @@ export function conditionStep(selectedStep) {
     return { name: "CONDITION", type: "ActionGroup", selected: selectedStep };
 }
 
-export function canFindStep(findModeStep) {
-    return { name: "CAN_FIND", type: "Action", args: [findStep(findModeStep)] };
+export function canFindStep(findStep) {
+    return { name: "CAN_FIND", type: "Action", args: [findStep] };
 }
 
 export function textStep(textVal) {

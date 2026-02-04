@@ -1,8 +1,8 @@
-import * as WebHelpers from '../WebHelpers/WebHelpers.js';
+import * as WebHelpers from '../../WebHelpers/WebHelpers.js';
 import { test, expect } from '@jest/globals';
 import { findStep, argumentStep, blankStep, textStep,
-    strictStep, linkStep, trueStep, falseStep } from './StepFactory.js';
-import { parseFind, exeFind, find, newTab, exeUrlNav } from '../WebHelpers/WebHelpers.js';
+    strictStep, linkStep, trueStep, falseStep } from '../../StepFactory.js';
+import { parseFind, exeFind, find, newTab, exeUrlNav } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
 let context;
@@ -118,7 +118,7 @@ describe("Find: text", () => {
         await expect(locator.waitHandle()).rejects.toThrow();
     })
 
-    test('Find Text: item not found, case sensitive', async () => {
+    test('Find Text: item not found, case not matching', async () => {
         const text = textStep('lEaRn mOrE');
         const findAction = findStep(text);
 
@@ -126,13 +126,21 @@ describe("Find: text", () => {
         await expect(locator.waitHandle()).rejects.toThrow();
     });
 
-    test('Find Text: item found, case sensitive', async () => {
+    test('Find Text: item found, case matching', async () => {
         const text = textStep('Learn more');
         const findAction = findStep(text);
 
         const locator = await find(context, findAction);
         expect(await locator.waitHandle()).toBeDefined();
     });
+
+    test('Find text: contains text', async () => {
+        const text = textStep('Learn');
+        const findAction = findStep(text);
+
+        const locator = await find(context, findAction);
+        expect(await locator.waitHandle()).toBeDefined();
+    })
 
     test('Find text: special characters', async () => {
         await WebHelpers.exeUrlNav(context,
@@ -153,6 +161,8 @@ describe("Find: text", () => {
         const locator = await find(context, findAction);
         expect(await locator.waitHandle()).toBeDefined();
     })
+
+    
 });
 
 describe("Find: CSS", () => {

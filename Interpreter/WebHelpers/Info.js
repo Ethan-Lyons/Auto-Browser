@@ -3,15 +3,15 @@ import { getTabCount } from './WebHelpers.js';
 import { assertStep } from './Assert.js';
 
 export async function info(context, infoStep) {
-    const infoSpec = await parseInfo(infoStep);
+    const infoSpec = parseInfo(infoStep);
     return await exeInfo(context, infoSpec.mode);
 }
 
-export async function parseInfo(infoStep) {
+export function parseInfo(infoStep) {
     assertStep(infoStep, "INFO", "parseInfo");
 
     const selected = infoStep.selected;
-    const name = selected.name.toLowerCase();
+    const name = selected.name
     return { mode: name };
 }
 
@@ -38,12 +38,20 @@ export async function exeInfo(context, mode) {
     }
 }
 
-export async function getUrl(page) {
+async function getUrl(page) {
+    if (!page) {
+        console.warn("Warning (getUrl): No active page in context.");
+        return null;
+    }
     const url = await page.url();
     return url;
 }
 
-export async function getTitle(page) {
+async function getTitle(page) {
+    if (!page) {
+        console.warn("Warning (getTitle): No active page in context.");
+        return null;
+    }
     const title = await page.title();
     return title;
 }

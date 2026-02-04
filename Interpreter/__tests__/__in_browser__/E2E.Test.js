@@ -1,6 +1,6 @@
-import { getRoutine, runRoutine } from "../RoutineInterpreter.js";
-import { browserDisconnect } from "../WebHelpers/Browser.js";
-import { getBrowser } from "../WebHelpers/Browser.js";
+import { getRoutine, runRoutine } from "../../RoutineInterpreter.js";
+import { browserDisconnect } from "../../WebHelpers/Browser.js";
+import { getBrowser } from "../../WebHelpers/Browser.js";
 
 let browser;
 let context;

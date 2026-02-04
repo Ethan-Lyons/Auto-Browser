@@ -1,6 +1,6 @@
 import { test, expect, describe } from '@jest/globals';
 import { parseWhile, exeWhile, routineWhile, handleStep, Routine } from '../../WebHelpers/WebHelpers.js';
-import { userAction, endWhileStep, whileStep, conditionStep, textStep } from '../StepFactory.js';
+import { userAction, endWhileStep, whileStep, conditionStep, textStep } from '../../StepFactory.js';
 
 describe("parseWhile", () => {
     test("parseWhile: invalid action", async () => {

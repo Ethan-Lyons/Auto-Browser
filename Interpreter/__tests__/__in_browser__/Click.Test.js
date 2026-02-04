@@ -1,6 +1,6 @@
 import * as WebHelpers from '../../WebHelpers/WebHelpers.js';
 import { test, expect } from '@jest/globals';
-import { argumentStep, clickStep, findStep } from '../StepFactory.js';
+import { argumentStep, clickStep, findStep } from '../../StepFactory.js';
 import { parseClick, exeClick, click } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
@@ -60,7 +60,7 @@ describe("parseClick", () => {
     test("parseClick: valid action", async () => {
         const cStep = clickStep(findStep(argumentStep("text", "example.com")));
         const cSpec = parseClick(cStep)
-        expect(cSpec).toEqual({ name: "click", type: "action", step: argumentStep("text", "example.com")});
+        expect(cSpec).toEqual({ findStep: { name: "FIND", type: "ActionGroup", selected: argumentStep("text", "example.com")}});
     });
 });
 

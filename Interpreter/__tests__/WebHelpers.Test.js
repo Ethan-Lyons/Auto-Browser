@@ -29,4 +29,4 @@ afterAll(async () => {
     await WebHelpers.browserDisconnect(browser);
 });
 
-test('connectToBrowser', async () => { });
+test('Connect / Disconnect from browser context', async () => { });

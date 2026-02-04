@@ -8,11 +8,7 @@ export async function handleRoutine(context, routine) {
 }
 
 export async function handleStep(context, step, routine) {
-  if (step.name !== "USER_ACTIONS") {
-    console.log("Step: " + step.name + "  [" + step.type + "]");
-  }
-
-  type = step.type.toUpperCase();
+  const type = step.type.toUpperCase();
   switch (type) {
     case "ACTIONGROUP":       //TODO: change naming style
       const selectedStep = step.selected;

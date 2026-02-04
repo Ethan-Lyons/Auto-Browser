@@ -1,6 +1,6 @@
 import { test, expect, describe } from '@jest/globals';
 import { parseCondition, condition } from '../../WebHelpers/WebHelpers';
-import { conditionStep, textStep} from '../StepFactory';
+import { conditionStep, textStep} from '../../StepFactory';
 
 describe('Condition', () => {
     test('Condition text true', async () => {
@@ -23,6 +23,6 @@ describe('parseCondition', () => {
     test('parseCondition: valid action', async () => {
         const conStep = conditionStep(textStep("true"));
         const result = parseCondition(conStep);
-        expect(result).toEqual({ mode: "text", step: textStep("true"), value: "true" });
+        expect(result).toEqual({ mode: "TEXT", step: textStep("true"), value: "true" });
     });
 });

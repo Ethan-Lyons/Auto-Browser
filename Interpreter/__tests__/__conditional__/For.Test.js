@@ -1,6 +1,6 @@
 import { test, expect, describe } from '@jest/globals';
 import { parseFor, exeFor, routineFor, Routine, handleStep, handleRoutine } from '../../WebHelpers/WebHelpers.js';
-import { newTab, endForStep, forStep, userAction } from '../StepFactory.js';
+import { newTabStep, endForStep, forStep, userAction } from '../../StepFactory.js';
 
 describe("parseFor", () => {
   test("parseFor: invalid action", async () => {
@@ -23,7 +23,7 @@ describe("exeFor", () => {
 
     const fStep = forStep("1", "2");
 
-    const userNewTab = userAction(newTab());
+    const userNewTab = userAction(newTabStep());
     const userEndFor = userAction(endForStep());
 
     remainingRoutine.pushManyList([userNewTab, userEndFor]);
@@ -37,7 +37,7 @@ describe("exeFor", () => {
 
   const fStep = forStep("1", "2");
 
-  const userNewTab = userAction(newTab());
+  const userNewTab = userAction(newTabStep());
   const userEndFor = userAction(endForStep());
 
   remainingRoutine.pushManyList([userNewTab, userEndFor]);
@@ -53,7 +53,7 @@ describe ("routineFor: handleRoutine, handleStep", () => {
 
         const fStep = forStep("1", "3");
         
-        const userNewTab = userAction(newTab());
+        const userNewTab = userAction(newTabStep());
         const userEndFor = userAction(endForStep());
 
         remainingRoutine.pushManyList([userNewTab, userEndFor]);
@@ -77,7 +77,7 @@ describe ("routineFor: handleRoutine, handleStep", () => {
         const remainingRoutine = new Routine();
 
         const userFor = userAction(forStep("1", "3"));
-        const userNewTab = userAction(newTab());
+        const userNewTab = userAction(newTabStep());
         const userEndFor = userAction(endForStep());
 
         remainingRoutine.pushManyList([userNewTab, userEndFor]);
@@ -92,7 +92,7 @@ describe ("routineFor: handleRoutine, handleStep", () => {
         const userForOuter = userAction(forStep("0", "2"));
         const userForInner = userAction(forStep("0", "0")); // 1 * 2 count
         
-        const userNewTab = userAction(newTab());  // 1 * 2 count
+        const userNewTab = userAction(newTabStep());  // 1 * 2 count
 
         const userEndForInner = userAction(endForStep());   // 1 * 2 count
         const userEndForOuter = userAction(endForStep());   // Removed after step
