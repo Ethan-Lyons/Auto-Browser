@@ -2,7 +2,7 @@ import { test, expect, describe } from '@jest/globals';
 import { Routine } from '../WebHelpers/Routine.js';
 import { getVariableValue } from '../WebHelpers/StoreVariables.js';
 import { handleStep } from '../WebHelpers/StepsHandler.js';
-import { store, parseStore, exeStore, parseStorable, parseVar, storeFindText, storeInfo, storeText} from '../WebHelpers/Store.js'
+import { store, parseStore, exeStore, parseStorable, parseVar, storeText} from '../WebHelpers/Store.js'
 import { storableGroupStep, storableStep, variableStep, storeStep } from '../StepFactory.js';
 
 describe("parse store", () => {

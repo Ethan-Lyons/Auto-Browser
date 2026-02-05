@@ -50,14 +50,14 @@ class UserActionBuilder:
         condition = r.group("condition", [canFind, text], "Able to return either value true or false")
 
         # ---------- Actions ----------
-        find_text = r.action(
+        findText = r.action(
             "find_text",
             [find],
             "Find an element and return its text content"
         )
         storable = r.group(
             "storable",
-            [find_text, text, info]
+            [findText, text, info, canFind]
         )
         store = r.userAction(
             "STORE",
@@ -80,8 +80,10 @@ class UserActionBuilder:
         urlNav = r.userAction("URL_NAV", [url], "Navigate to a URL")
         tabNav = r.userAction("TAB_NAV", [tab], "Navigate to a tab")
         newTab = r.userAction("NEW_TAB", [], "Open a new tab")
+        closeTab = r.userAction("CLOSE_TAB", [tab], "Close a specific tab, or the current tab if no tab is specified")
 
         click = r.userAction("CLICK", [find], "Click an element")
+
         typeA = r.userAction("TYPE", [find, text], "Type text into input")  # TODO: confirm this, does it need a find if click before
         wait = r.userAction("WAIT", [milliseconds], "Wait")
         history = r.userAction("HISTORY", [historyMode], "Go forward or backward in the page history")

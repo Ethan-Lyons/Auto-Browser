@@ -16,8 +16,8 @@ function logVariable(action, name, value) {
 }
 
 // Removes optional variable bracket markers
-function normalizeVariableName(name) {
-    if (typeof name !== "string") return String(name);
+function removeBrackets(name) {
+    if (typeof name !== "string") return removeBrackets(String(name));
     const match = name.match(/^\{(.+)\}$/);
     return match ? match[1] : name;
 }
@@ -26,7 +26,7 @@ function normalizeVariableName(name) {
  * Sets a value under a custom variable name.
  */
 export function setVariable(name, value) {
-    const normalized = normalizeVariableName(name);
+    const normalized = removeBrackets(name).toUpperCase();
     variableStorage.set(normalized, value);
     logVariable("SET", normalized, value);
 }
@@ -36,12 +36,13 @@ export function setVariable(name, value) {
  * Throws if the variable is not defined.
  */
 export function getVariableValue(name) {
-    const normalized = normalizeVariableName(name);
-    if (!variableStorage.has(normalized)) {
-        throw new Error(`Variable "${normalized}" is not defined`);
+    const targetVar = removeBrackets(name).toUpperCase();
+    if (!variableStorage.has(targetVar)) {
+        throw new Error(`Variable "${targetVar}" is not defined`);
     }
-    const value = variableStorage.get(normalized);
-    logVariable("GET", normalized, value);
+
+    const value = variableStorage.get(targetVar);
+    logVariable("GET", targetVar, value);
     return value;
 }
 
@@ -67,10 +68,11 @@ export function resolveString(input) {
             throw new Error(`resolveString: cannot convert input of type ${typeof input} to string`);
         }
     }
-
+    input = input.trim().toUpperCase();
     const regex = /\{([^}]+)\}/g;
 
     function replacer(fullMatch, variableName) {
+
         if (!variableStorage.has(variableName)) {
             throw new Error(`resolveString: variable "${variableName}" not defined`);
         }

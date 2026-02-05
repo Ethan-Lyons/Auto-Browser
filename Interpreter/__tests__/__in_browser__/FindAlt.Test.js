@@ -1,14 +1,16 @@
-import * as WebHelpers from '../WebHelpers/WebHelpers.js';
-import { parseCanFind, parseFindText, exeCanFind, exeFindText, canFind, findText } from '../WebHelpers/WebHelpers.js';
 import { test, expect } from '@jest/globals';
-import { findStep, argumentStep, canFindStep, findTextStep } from '../StepFactory.js';
+import { findStep, argumentStep, canFindStep, findTextStep } from '../../StepFactory.js';
+
+import { getBrowser, getContext, browserDisconnect, newTab,
+    getActiveIndex, getTabs, getActivePage, exeUrlNav } from '../../WebHelpers/WebHelpers.js';
+import { parseCanFind, parseFindText, exeCanFind, exeFindText, canFind, findText } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
 let context;
 
 beforeAll(async () => {
     try {
-        browser = await WebHelpers.getBrowser();
+        browser = await getBrowser();
     } catch (err) {
         console.error('Error connecting to Puppeteer:\n', err);
         process.exit(1);
@@ -16,9 +18,9 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-    context = await WebHelpers.getContext(browser, true);
-    await WebHelpers.newTab(context);
-    await WebHelpers.exeUrlNav(context, "example.com");
+    context = await getContext(browser, true);
+    await newTab(context);
+    await exeUrlNav(context, "example.com");
 });
 
 afterEach(async () => {
@@ -26,7 +28,7 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-    await WebHelpers.browserDisconnect(browser);
+    await browserDisconnect(browser);
 });
 
 

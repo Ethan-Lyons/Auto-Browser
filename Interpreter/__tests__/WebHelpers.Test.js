@@ -1,12 +1,12 @@
 import * as WebHelpers from '../WebHelpers/WebHelpers.js'; 
 import { test, expect } from '@jest/globals';
+
 /*
     npm run test:js -- --runTestsByPath Interpreter/__tests__/
 */
 
 let browser;
 let context;
-let page;
 
 beforeAll(async () => {
     try {

@@ -17,9 +17,9 @@ export async function click(context, clickStep) {
     const clickSpec = parseClick(clickStep);
 
     const locator = await find(context, clickSpec.findStep);
-    const page = await getActivePage(context);
     
-    await exeClick(page, locator);
+    
+    await exeClick(context, locator);
 }
 
 export function parseClick(clickStep) {
@@ -32,11 +32,14 @@ export function parseClick(clickStep) {
 /**
  * Helper function to navigate to a page by clicking on an element.
  *  Waits for the page to finish loading while navigating to the new page.
- * @param {puppeteer.Page} page The page to navigate from.
+ * @param {puppeteer.BrowserContext} context The browser context
+ *  instance to use.
  * @param {puppeteer.ElementHandle} locator The element locator
  *  of the element to click.
  */
-export async function exeClick(page, locator) {
+export async function exeClick(context, locator) {
+    const page = await getActivePage(context);
+
     await Promise.allSettled([
         page.waitForNavigation({ waitUntil: 'networkidle0'}),
         locator.click(),

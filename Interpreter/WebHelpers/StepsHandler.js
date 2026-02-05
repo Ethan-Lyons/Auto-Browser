@@ -82,6 +82,10 @@ export async function handleAction(context, currentStep, routine) {
       await WebHelpers.newTab(context);
       break;
     
+    case "CLOSE_TAB":
+      await WebHelpers.closeTab(context);
+      break;
+    
     case "WAIT":
       await WebHelpers.wait(currentStep)
       break;

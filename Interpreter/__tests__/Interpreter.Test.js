@@ -1,6 +1,4 @@
-import {
-  getPath
-} from '../RoutineInterpreter.js';
+import { getPath } from '../RoutineInterpreter.js';
 
 describe('getPath', () => {
   test('returns first CLI argument', () => {

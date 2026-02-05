@@ -1,14 +1,16 @@
-import * as WebHelpers from '../../WebHelpers/WebHelpers.js';
 import { test, expect } from '@jest/globals';
-import { argumentStep, clickStep, findStep } from '../../StepFactory.js';
-import { parseClick, exeClick, click } from '../../WebHelpers/WebHelpers.js';
+import { argumentStep, clickStep, findStep, linkStep, falseStep, trueStep } from '../../StepFactory.js';
+
+import { getBrowser, getContext, browserDisconnect, newTab,
+    getActiveIndex, getTabs, getActivePage, exeUrlNav } from '../../WebHelpers/WebHelpers.js';
+import { parseClick, exeClick, click, find } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
 let context;
 
 beforeAll(async () => {
     try {
-        browser = await WebHelpers.getBrowser();
+        browser = await getBrowser();
     } catch (err) {
         console.error('Error connecting to Puppeteer:\n', err);
         process.exit(1);
@@ -16,7 +18,9 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-    context = await WebHelpers.getContext(browser, true);
+    context = await getContext(browser, true);
+    await newTab(context);
+    await exeUrlNav(context, "example.com");
 });
 
 afterEach(async () => {
@@ -24,32 +28,8 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-    await WebHelpers.browserDisconnect(browser);
+    await browserDisconnect(browser);
 });
-
-/*
-export async function click(context, clickStep) {
-    const findStep = parseClick(clickStep);
-
-    const locator = await find(context, findStep);
-    const page = await getActivePage(context);
-    
-    await exeClick(page, locator);
-}
-
-export function parseClick(clickStep) {
-    assertStep(clickStep, 'CLICK', 'parseClick');
-
-    const [findStep] = clickStep.args;
-    return findStep;
-}
-
-export async function exeClick(page, locator) {
-    await Promise.allSettled([
-        page.waitForNavigation({ waitUntil: 'networkidle0'}),
-        locator.click(),
-    ]);
-} */
 
 describe("parseClick", () => {
     test("parseClick: invalid action", async () => {
@@ -65,76 +45,46 @@ describe("parseClick", () => {
 });
 
 
-test('Click Link', async () => {
-    /*const url = { name: 'url', value: 'https://google.com' };
-    const navAction = { name: 'URL_NAV', args: [url] };
+describe("exeClick", () => {
+    test("exeClick: link", async () => {
+        const fStep = findStep(linkStep("example", falseStep()));
+        const locator = await find(context, fStep);
 
-    const textArg = {
-        name: 'text',
-        value: 'https://policies.google.com/privacy?hl=en&fg=1'
-    };
+        await exeClick(context, locator);
 
-    const strictTrue = { name: 'true', value: 'true' };
-    const strictGroup = { name: 'strict', selected: strictTrue };
+        const page = await getActivePage(context);
+        const url = await page.url();
+        expect(url).toEqual("https://www.iana.org/help/example-domains");
+    });
 
-    const linkAction = {
-        name: 'link',
-        args: [textArg, strictGroup]
-    };
+    test("exeClick: text", async () => {
+        const fStep = findStep(argumentStep("text", "Learn more"));
+        const locator = await find(context, fStep);
 
-    const findAction = {
-        name: 'FIND',
-        selected: linkAction
-    };
+        await exeClick(context, locator);
 
-    const clickAction = {
-        name: 'CLICK',
-        args: [findAction]
-    };
-
-    await WebHelpers.newTab(context);
-    await WebHelpers.urlNav(context, navAction);
-
-    const page = await WebHelpers.getActivePage(context);
-    const startURL = await WebHelpers.getUrl(page);
-
-    await WebHelpers.click(context, clickAction);
-
-    const newURL = await WebHelpers.getUrl(page);
-    expect(newURL).not.toMatch(startURL);*/
-
-
+        const page = await getActivePage(context);
+        const url = await page.url();
+        expect(url).toEqual("https://www.iana.org/help/example-domains");
+    });
 });
 
-test('Click Xpath', async () => {
-    /*const url = { name: 'url', value: 'google.com' };
-    const navAction = { name: 'URL_NAV', args: [url] };
+describe("click", () => {
+    test("click: link", async () => {
+        const cStep = clickStep(findStep(linkStep("example", falseStep())));
+        await click(context, cStep);
 
-    const xpath = {
-        name: 'xpath',
-        value: '//a[@href="https://policies.google.com/privacy?hl=en&fg=1"]'
-    };
+        const page = await getActivePage(context);
+        const url = await page.url();
+        expect(url).toEqual("https://www.iana.org/help/example-domains");
+    });
 
-    const findAction = {
-        name: 'FIND',
-        selected: xpath
-    };
+    test("click: text", async () => {
+        const cStep = clickStep(findStep(argumentStep("text", "Learn more")));
+        await click(context, cStep);
 
-    const clickAction = {
-        name: 'CLICK',
-        args: [findAction]
-    };
-
-    await WebHelpers.newTab(context);
-    await WebHelpers.urlNav(context, navAction);
-
-    const page = await WebHelpers.getActivePage(context);
-    const startURL = await WebHelpers.getUrl(page);
-
-    await WebHelpers.click(context, clickAction);
-
-    const newURL = await WebHelpers.getUrl(page);
-    expect(newURL).not.toMatch(startURL);*/
-
-    
+        const page = await getActivePage(context);
+        const url = await page.url();
+        expect(url).toEqual("https://www.iana.org/help/example-domains");
+    });
 });

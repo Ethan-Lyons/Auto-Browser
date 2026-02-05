@@ -1,15 +1,17 @@
-import * as WebHelpers from '../../WebHelpers/WebHelpers.js';
 import { test, expect } from '@jest/globals';
 import { findStep, argumentStep, blankStep, textStep,
     strictStep, linkStep, trueStep, falseStep } from '../../StepFactory.js';
-import { parseFind, exeFind, find, newTab, exeUrlNav } from '../../WebHelpers/WebHelpers.js';
+
+import { getBrowser, getContext, browserDisconnect, newTab,
+    getActiveIndex, getTabs, getActivePage, exeUrlNav } from '../../WebHelpers/WebHelpers.js';
+import { parseFind, exeFind, find } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
 let context;
 
 beforeAll(async () => {
     try {
-        browser = await WebHelpers.getBrowser();
+        browser = await getBrowser();
     } catch (err) {
         console.error('Error connecting to Puppeteer:\n', err);
         process.exit(1);
@@ -17,9 +19,9 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-    context = await WebHelpers.getContext(browser, true);
-    await WebHelpers.newTab(context);
-    await WebHelpers.exeUrlNav(context, "example.com");
+    context = await getContext(browser, true);
+    await newTab(context);
+    await exeUrlNav(context, "example.com");
 });
 
 afterEach(async () => {
@@ -27,7 +29,7 @@ afterEach(async () => {
 });
 
 afterAll(async () => {
-    await WebHelpers.browserDisconnect(browser);
+    await browserDisconnect(browser);
 });
 
 describe("parseFind", () => {
@@ -143,7 +145,7 @@ describe("Find: text", () => {
     })
 
     test('Find text: special characters', async () => {
-        await WebHelpers.exeUrlNav(context,
+        await exeUrlNav(context,
             "https://www.iana.org/assignments/ipv4-address-space/ipv4-address-space.xhtml");
         const text = textStep('https://rdap.apnic.net/');
         const findAction = findStep(text);
@@ -153,7 +155,7 @@ describe("Find: text", () => {
     });
 
     test('Find text: backslash', async () => {
-        await WebHelpers.exeUrlNav(context,
+        await exeUrlNav(context,
             "https://en.wikipedia.org/wiki/List_of_typographical_symbols_and_punctuation_marks");
         const text = textStep('\\');
         const findAction = findStep(text);

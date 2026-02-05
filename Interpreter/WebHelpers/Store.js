@@ -1,4 +1,4 @@
-import { findText, info } from './WebHelpers.js';
+import { canFind, findText, info } from './WebHelpers.js';
 import { assertStep } from './Assert.js';
 import * as Variables from './StoreVariables.js';
 
@@ -39,6 +39,8 @@ export async function exeStore(context, mode, step, storeName) {
             return storeText(step, storeName);
         case "FIND_TEXT":
             return await storeFindText(context, step, storeName);
+        case "CAN_FIND":
+            return await canFind(context, step, storeName);
         case "INFO":
             return await storeInfo(context, step, storeName);
         default:
@@ -89,4 +91,9 @@ export function storeText(textStep, varStoreName){
     assertStep(textStep, "TEXT", "storeText");
     const newVal = textStep.value;
     Variables.setVariable(varStoreName, newVal);
+}
+
+export async function storeCanFind(context, findTextStep, varStoreName) {
+    const result = await canFind(context, findTextStep);
+    Variables.setVariable(varStoreName, result);
 }

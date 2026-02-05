@@ -133,6 +133,14 @@ export function newTabStep() {
     return { name: "NEW_TAB", type: "Action", args: [null] };
 }
 
+export function closeTabStep(tabVal) {
+    return { name: "CLOSE_TAB", type: "Action", args: [argumentStep("TAB", tabVal)] };
+}
+
+export function tabNavStep(tabVal) {
+    return { name: "TAB_NAV", type: "Action", args: [argumentStep("TAB", tabVal)] };
+}
+
 export function userAction(step) {
     return { name: "USER_ACTION", type: "ActionGroup", selected: step };
 }
