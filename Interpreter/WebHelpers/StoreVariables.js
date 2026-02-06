@@ -8,10 +8,10 @@ const logPath = path.join(process.cwd(), "variables.log");
 fs.writeFileSync(logPath, "=== VARIABLE LOG START ===\n\n");
 
 /**
- * 
- * @param {*} action 
- * @param {*} name 
- * @param {*} value 
+ * Updates the variable log file.
+ * @param {String} action The action that triggered the log.
+ * @param {String} name The variable name.
+ * @param {String} value The variable value.
  */
 function logVariable(action, name, value) {
     const timestamp = new Date().toISOString();
@@ -23,8 +23,8 @@ function logVariable(action, name, value) {
 
 /**
  * 
- * @param {*} name 
- * @returns 
+ * @param {String} name 
+ * @returns {String}
  */
 function removeBrackets(name) {
     if (typeof name !== "string") return removeBrackets(String(name));
@@ -34,8 +34,8 @@ function removeBrackets(name) {
 
 /**
  * 
- * @param {*} name 
- * @param {*} value 
+ * @param {String} name The name of the variable to set, with or without brackets.
+ * @param {String} value The value to set the variable to.
  */
 export function setVariable(name, value) {
     const normalized = removeBrackets(name).toUpperCase();
@@ -45,9 +45,9 @@ export function setVariable(name, value) {
 
 /**
  *  Gets a value under a custom variable name.
- *  @param {*} name 
+ *  @param {String} name The name of the variable to get from, with or without brackets.
  *  @throws If the variable has not been defined.
- *  @returns 
+ *  @returns {String} The value of the variable.
  */
 export function getVariableValue(name) {
     const targetVar = removeBrackets(name).toUpperCase();
@@ -71,21 +71,20 @@ export function clearVariables() {
 /**
  *  Replaces named variables inside brackets with their values.
  *  Throws if a variable does not exist.
- *  @param {*} input 
- *  @returns 
+ *  @param {*} input
+ *  @returns {String} The resolved string.
  */
 export function resolveString(input) {
-    if (input == null) throw new Error(`resolveString: input is null or undefined`);
-
     if (typeof input !== "string") {
         try {
             input = String(input);
+            return resolveString(input);
         } catch {
-            throw new Error(`resolveString: cannot convert input of type ${typeof input} to string`);
+            throw new Error(`Cannot resolve input type to string.
+                Type: ${typeof input}, Input: ${input}`);
         }
     }
     input = input.trim().toUpperCase();
-    const regex = /\{([^}]+)\}/g;
 
     function replacer(fullMatch, variableName) {
 
@@ -97,6 +96,7 @@ export function resolveString(input) {
         return String(value);
     }
 
+    const regex = /\{([^}]+)\}/g;
     const result = input.replace(regex, replacer);
     return result.trim();
 }
@@ -104,39 +104,47 @@ export function resolveString(input) {
 /**
  *  Resolves a numeric input.
  *  Throws if input is not a number or cannot be parsed.
- *  @param {*} input 
- *  @returns 
+ *  @param {String|Number} input 
+ *  @returns {Number}
  */
 export function resolveNumber(input) {
+    // Return number values directly, otherwise ensure input is a string.
     if (typeof input === "number") return input;
-    if (input == null || typeof input !== "string") {
-        throw new Error(`Cannot resolve input type to number. Type: ${typeof input}, Input: ${input}`);
+    else if (typeof input !== "string") {
+        throw new Error(`Cannot resolve input type to number.
+            Type: ${typeof input}, Input: ${input}`);
     }
 
+    // Resolves named variables and ensure formatting.
     const resolved = resolveString(input);
-    const match = resolved.replace(/\s|,/g, "").match(/^[+-]?\d+(\.\d+)?$/);
-    if (!match) throw new Error(`No numeric value found in "${input}"`);
+    const normalized = resolved.replace(/[\s,$%~]/g, "");
 
-    return Number(match[0]);
+    const matchResult = normalized.match(/^[+-]?\d+(\.\d+)?$/);
+    if (!matchResult) throw new Error(`No numeric value found in "${input}"`);
+
+    return Number(matchResult[0]);
 }
 
 /**
  *  Resolves a boolean input.
  *  Throws if input is not a boolean or cannot be parsed.
- *  @param {*} input 
- *  @returns 
+ *  @param {String|Boolean} input 
+ *  @returns {Boolean}
  */
 export function resolveBoolean(input) {
+    // Return boolean values directly, otherwise ensure input is a string.
     if (typeof input === "boolean") return input;
-    if (input == null || typeof input !== "string") {
-        throw new Error(`Cannot resolve input type to boolean. Type: ${typeof input}, Input: ${input}`);
+    else if (typeof input !== "string") {
+        throw new Error(`Cannot resolve input type to boolean.
+            Type: ${typeof input}, Input: ${input}`);
     }
 
+    // Resolves named variables and ensure formatting.
     const resolved = resolveString(input);
-    const normalized = resolved.replace(/[\s,]/g, "").toLowerCase();
+    const normalized = resolved.trim().toLowerCase();
 
     if (normalized !== "true" && normalized !== "false") {
-        throw new Error(`No boolean value found in "${input}"`);
+        throw new Error(`Boolean value not found. Input: "${input}"`);
     }
 
     return normalized === "true";

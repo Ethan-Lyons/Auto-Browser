@@ -2,6 +2,8 @@ import { assertStep } from "./Assert.js";
 import { setActivePage, getActiveIndex } from "./WebHelpers.js";
 import { resolveString } from "./WebHelpers.js";
 import { BrowserContext, Page } from "puppeteer-core";
+
+// Default timeout for pages
 const DEFAULT_TIMEOUT = 4000
 
 /**
@@ -51,9 +53,9 @@ export async function closeTab(context, closeTabStep) {
 }
 
 /**
- * 
- * @param {*} closeTabStep 
- * @returns 
+ * Obtains important values from a 'closeTabStep' input and returns them using an object.
+ * @param {{ name: "CLOSE_TAB", type: "Action", args: [Object]"}} closeTabStep 
+ * @returns {{ tab: String }}
  */
 export function parseCloseTab(closeTabStep) {
     assertStep(closeTabStep, "CLOSE_TAB", "parseCloseTab");
@@ -62,10 +64,10 @@ export function parseCloseTab(closeTabStep) {
 }
 
 /**
- * 
- * @param {*} context 
- * @param {*} tab 
- * @returns 
+ * Performs the action of closing a tab in the browser context.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {Number} tab The index of the tab to close
+ * @returns {Promise<void>} A promise that resolves when the tab is closed.
  */
 export async function exeCloseTab(context, tab){
     // If there are no tabs, do nothing
@@ -99,38 +101,41 @@ export async function exeCloseTab(context, tab){
  * @throws {Error} If the tab string is invalid.
  */
 export function resolveTabIndex(tabStr, currIndex, tabCount) {
-    tabStr = resolveString(tabStr);
-    tabStr = tabStr.trim().toUpperCase();
     const nReg = /^(NEXT|N)$/i;
     const pReg = /^(PREVIOUS|PREV|P)$/i;
     const lReg = /^(LAST|L)$/i;
     const fReg = /^(FIRST|F)$/i;
 
-    if (tabStr === "") {
+    // Replace named variables and ensure formatting
+    tabStr = resolveString(tabStr);
+    tabStr = tabStr.trim().toUpperCase();
+
+    if (tabStr === "") {    // current
         return { index: currIndex };
     }
 
-    if (pReg.test(tabStr)) {
+    if (pReg.test(tabStr)) {    // previous
         return { index: currIndex - 1 };
     }
 
-    if (nReg.test(tabStr)) {
+    if (nReg.test(tabStr)) {    // next
         return { index: currIndex + 1 };
     }
 
-    if (lReg.test(tabStr)) {
+    if (lReg.test(tabStr)) {    // last
         return { index: tabCount - 1 };
     }
 
-    if (fReg.test(tabStr)) {
+    if (fReg.test(tabStr)) {    // first
         return { index: 0 };
     }
 
-    let parsed = Number(tabStr);
+    let parsed = Number(tabStr);    // Try to parse as a number
     if (Number.isInteger(parsed)) {
         return { index: parsed };
     }
 
+    // Otherwise, input is invalid.
     throw new Error(`Invalid tab nav string: ${tabStr}`);
 }
 

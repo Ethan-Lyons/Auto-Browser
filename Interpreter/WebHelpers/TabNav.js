@@ -1,19 +1,17 @@
 import * as Webhelpers from "./WebHelpers.js";
 import { assertStep } from "./Assert.js";
-import { resolveTabIndex, clampTabIndex } from "./Tab.js";
-import { Browser, BrowserContext } from "puppeteer-core";
+import { resolveTabIndex } from "./Tab.js";
+import { BrowserContext } from "puppeteer-core";
 
 /**
- * Navigate to a tab in the browser context.
- * The action's tab field is used to determine which tab
- *  to navigate to.
+ * Navigates to a tab in the browser context.
  * @param {BrowserContext} context The browser context
  *  instance to use.
- * @param {*} navStep An object for a tab nav action.
- *  This step should be of type action with the name value
- *  of "tab" and a tab value in its args list.
+ * @param {{ name: "TAB_NAV", type: "Action", args: [Object]}} navStep An object
+ * containing the information for the tabNav action.
  * @throws {Error} If the tab field is invalid or there
  *  is an error navigating to the tab.
+ * @returns {Promise<void>} A promise that resolves when the tab navigation is complete.
  */
 export async function tabNav(context, navStep) {
     const navSpec = parseTabNav(navStep);
@@ -21,9 +19,9 @@ export async function tabNav(context, navStep) {
 }
 
 /**
- * 
- * @param {*} navStep 
- * @returns 
+ * Obtains important values from a 'tabNavStep' input and returns them using an object.
+ * @param {{ name: "TAB_NAV", type: "Action", args: [Object] }} navStep 
+ * @returns {{ tab: String }}
  */
 export function parseTabNav(navStep) {
     assertStep(navStep, "TAB_NAV", "parseTabNav");
@@ -38,10 +36,10 @@ export function parseTabNav(navStep) {
 }
 
 /**
- * 
- * @param {BrowserContext} context 
- * @param {String} tabStr 
- * @returns 
+ * Performs a tab navigation action.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {String} tabStr The String representation of the tab to navigate to.
+ * @returns {Promise<void>} A promise that resolves when the tab navigation is complete.
  */
 export async function exeTabNav(context, tabStr) {
     // If there are no tabs, do nothing

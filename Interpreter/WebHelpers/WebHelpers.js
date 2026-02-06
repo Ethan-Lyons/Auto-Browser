@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer-core';
+import { Browser, BrowserContext, Page } from 'puppeteer-core';
 import { resolveNumber } from './StoreVariables.js';
 export * from './Find.js';
 export * from './FindAlt.js';
@@ -27,12 +28,14 @@ export * from './UrlNav.js'
 // Maps each browser context to its active page
 export const contextToPage = new WeakMap();
 
+// Default directory for output actions
 export const defaultOutputDir = "./OutputFiles/"
 
 /**
  * Sets the active page in the given context.
- * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @param {puppeteer.Page} page The page to set as active.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {Page} page The page to set as active.
+ * @returns {Promise<void>} A promise that resolves when the page is set as active.
  */
 export async function setActivePage(context, page) {
     contextToPage.set(context, page);
@@ -44,8 +47,8 @@ export async function setActivePage(context, page) {
  * If there are no pages in the context, return null.
  * If the current active page is still open, return it.
  * Otherwise, set the first page in the context as the active page and return it.
- * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @returns {Promise<puppeteer.Page>} The active page in the browser context.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @returns {Promise<Page>} The active page in the browser context.
  */
 export async function getActivePage(context) {
     const page = contextToPage.get(context);
@@ -63,20 +66,21 @@ export async function getActivePage(context) {
 
 /**
  * Retrieves the index of the active page in the browser context.
- * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @returns {Promise<number>} The index of the active page in the browser context.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @returns {Promise<Number>} The index of the active page in the browser context.
 */
 export async function getActiveIndex(context) {
     const page = await getActivePage(context);
     const pages = await context.pages();
+
     return pages.indexOf(page);
 }
 
 /**
  * Waits for a specified amount of time.
- * @param {Object} waitStep An object for a wait action.
- *  This step should be of type action with the name value
- *  'WAIT' and a single argument for the milliseconds to wait.
+ * @param {{ name: "WAIT", type: "Action", args: [Object]}} waitStep An object
+ * containing the information for the wait action.
+ * @returns {Promise<void>} A promise that resolves when the wait is complete.
  */
 export async function wait(waitStep) {
     let [ms] = waitStep.args;

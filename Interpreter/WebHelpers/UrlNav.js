@@ -5,9 +5,8 @@ import { BrowserContext } from 'puppeteer-core';
 /**
  * Navigates to a URL.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {*} navStep An object for a url nav action.
- *  This step should be of type 'action' with the corresponding name 'URL_NAV'
- *  and a url value in its args list.
+ * @param {{ name: "URL_NAV", type: "Action", args: [Object] }} navStep An object
+ * containing the information for the urlNav action.
  */
 export async function urlNav(context, navStep) {
     const urlNavSpec = parseUrlNav(navStep);
@@ -15,9 +14,10 @@ export async function urlNav(context, navStep) {
 }
 
 /**
- * 
- * @param {*} navStep 
- * @returns 
+ * Obtains important values from a 'urlNavStep' input and returns them using an object.
+ * @param {{ name: "URL_NAV", type: "Action", args: [Object] }} navStep An object
+ * containing the information for the urlNav action.
+ * @returns {{ url: String }}
  */
 export function parseUrlNav(navStep) {
     assertStep(navStep, "URL_NAV", "urlNavParse");
@@ -28,9 +28,10 @@ export function parseUrlNav(navStep) {
 }
 
 /**
- * 
- * @param {BrowserContext} context 
- * @param {String} url 
+ * Performs the action of navigating to a URL.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {String} url The URL to navigate to.
+ * @returns {Promise<void>} A promise that resolves when the navigation is complete.
  */
 export async function exeUrlNav(context, url) {
     const page = await getActivePage(context);
@@ -49,9 +50,9 @@ export async function exeUrlNav(context, url) {
 }
 
 /**
- * 
- * @param {*} urlStep 
- * @returns 
+ * Obtains important values from a 'urlStep' input and returns them using an object.
+ * @param {{ name: "URL", type: "Argument", value: String}} urlStep 
+ * @returns {{ url: String }}
  */
 export function parseUrl(urlStep) {
     assertStep(urlStep, "URL", "urlParse");
