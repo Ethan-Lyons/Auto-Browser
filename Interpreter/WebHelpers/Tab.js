@@ -44,7 +44,7 @@ export async function newTab(context) {
 }
 
 /**
- * Close a tab in the browser context.
+ * Parse a 'closeTabStep' input and closes a tab in the browser context.
  * @param {Page} tab The tab to close
  */
 export async function closeTab(context, closeTabStep) {

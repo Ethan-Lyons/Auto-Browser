@@ -1,14 +1,14 @@
 import { resolveNumber } from "../StoreVariables.js";
 import { assertStep } from "../Assert.js";
+import { Routine } from "../Routine.js";
 
 /**
  * Repeats a block of actions n times, where n is the difference between
  * the end and start index of a FOR loop.
  * (Indexes can be resolved from string, variable, or number formats)
- * @param {Object} forStep - The 'FOR' loop step object. The step should have
- *  the name 'FOR', and two arguments, the start and end index. A matching
- *  'END_FOR' step is required to appear after.
- * @param {Object} routine - The routine object
+ * @param {{ name: "FOR", type: "Action", args: [Object, Object]}} forStep An object
+ * containing the information for the for action.
+ * @param {Routine} routine The routine object.
  */
 export function routineFor(forStep, routine) {
   forSpec = parseFor(forStep)
@@ -16,6 +16,12 @@ export function routineFor(forStep, routine) {
   exeFor(routine, loopCount, forSpec.name)
 }
 
+/**
+ * Obtains important values from a 'forStep' input and returns them using an object.
+ * @param {{ name: "FOR", type: "Action", args: [Object, Object]}} forStep An object
+ * containing the information for the for action.
+ * @returns {{ name: String, start: Number, end: Number}}
+ */
 export function parseFor(forStep) {
   assertStep(forStep, "FOR", "parseFor");
   
@@ -30,11 +36,11 @@ export function parseFor(forStep) {
 }
 
 /**
- * Que the body of a FOR loop block n times, where n is the difference between
+ * Push the body of a FOR loop block n times on the stack, where n is the difference between
  * the end and start index of a FOR loop.
- * @param {Routine} routine - The routine object
- * @param {Number} loopCount - The number of times to repeat the block
- * @param {String} forName - The name of the FOR loop step (used for matching the end marker)
+ * @param {Routine} routine The routine object.
+ * @param {Number} loopCount The number of times to repeat the block.
+ * @param {String} forName The name of the FOR loop step, used to identify the block.
  */
 export function exeFor(routine, loopCount, forName) {
     loopCount = Math.max(0, loopCount)

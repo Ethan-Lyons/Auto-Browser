@@ -3,7 +3,7 @@ import { assertStep } from './Assert.js';
 import { BrowserContext } from 'puppeteer-core';
 
 /**
- * Navigates to a URL.
+ * Parses a urlNavStep and performs a urlNav action.
  * @param {BrowserContext} context The browser context instance to use.
  * @param {{ name: "URL_NAV", type: "Action", args: [Object] }} navStep An object
  * containing the information for the urlNav action.

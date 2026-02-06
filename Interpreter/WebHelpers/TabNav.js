@@ -4,7 +4,7 @@ import { resolveTabIndex } from "./Tab.js";
 import { BrowserContext } from "puppeteer-core";
 
 /**
- * Navigates to a tab in the browser context.
+ * Parses a 'tabNavStep' input and performs a tab navigation action.
  * @param {BrowserContext} context The browser context
  *  instance to use.
  * @param {{ name: "TAB_NAV", type: "Action", args: [Object]}} navStep An object

@@ -4,7 +4,7 @@ import * as Variables from './StoreVariables.js';
 import { BrowserContext } from 'puppeteer-core';
 
 /**
- * Stores the result of an action under a new variable name.
+ * Parses a storeStep and performs a store action.
  * @param {BrowserContext} context The browser context
  *  instance to use.
  * @param {{ name: "STORE", type: "Action", args: [Object, Object] }} storeAction An object
