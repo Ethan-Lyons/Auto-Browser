@@ -1,3 +1,9 @@
+/**
+ * Attempts to convert objects to readable strings, if stringify fails,
+ * the default string is returned.
+ * @param {Object} obj The object to stringify.
+ * @returns A String describing the input object.
+ */
 function safeStringify(obj) {
   try {
     return JSON.stringify(obj, null, 2);
@@ -6,6 +12,12 @@ function safeStringify(obj) {
   }
 }
 
+/**
+ * Throws an error if input step does not have the expected name.
+ * @param {Object} step The step object.
+ * @param {String} expectedName The expected step name.
+ * @param {String} caller The name of the calling function.
+ */
 export function assertStep(step, expectedName, caller) {
     const actualName = step?.name;
 

@@ -1,5 +1,11 @@
 import { defaultOutputDir, getActivePage } from './WebHelpers.js';
+import { BrowserContext } from 'puppeteer-core';
 
+/**
+ * 
+ * @param {BrowserContext} context 
+ * @param {{ name: "SCREENSHOT", type: "Action", args: [Object] }} screenshotStep 
+ */
 export async function screenshot(context, screenshotStep) {
     const page = await getActivePage(context);
    
@@ -25,4 +31,12 @@ export async function screenshot(context, screenshotStep) {
         path: outName,
         fullPage: true
     });
+}
+
+export function parseScreenshot(scrStep) {
+
+}
+
+export function exeScreenshot (filePath) {
+    
 }

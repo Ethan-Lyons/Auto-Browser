@@ -5,21 +5,23 @@ let browser;
 let context;
 
 beforeAll(async () => {
-    
-});
-
-beforeEach(async () => {
     try {
-        browser = await getBrowser()
+        browser = await getBrowser();
     } catch (err) {
         console.error('Error connecting to Puppeteer:\n', err);
         process.exit(1);
     }
 });
 
-/*afterEach(async () => {
+beforeEach(async () => {
+    context = await getContext(browser, true);
+    await newTab(context);
+    await exeUrlNav(context, "example.com");
+});
+
+afterEach(async () => {
     await context.close();
-});*/
+});
 
 afterAll(async () => {
     await browserDisconnect(browser);

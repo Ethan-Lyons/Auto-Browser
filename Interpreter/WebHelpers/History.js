@@ -1,11 +1,24 @@
 import { getActivePage } from './WebHelpers.js';
 import { assertStep } from './Assert.js';
+import { BrowserContext } from 'puppeteer-core';
 
+/**
+ * Parses a historyStep and performs a history action.
+ * @param { BrowserContext } context 
+ * @param {{ name: "HISTORY", type: "Action", args: [Object] }} historyStep An object
+ * containing the information for the history action.
+ * @returns {Promise<void>} A promise that resolves when the history action is completed.
+ */
 export async function history(context, historyStep) {
     const historySpec = parseHistory(historyStep);
-    return await exeHistory(context, historySpec.mode);
+    await exeHistory(context, historySpec.mode);
 }
 
+/**
+ * Obtains important values from a 'historyStep' input and returns them using an object.
+ * @param {{ name: "HISTORY", type: "Action", args: [Object] }} historyStep 
+ * @returns {{ mode: String }}
+ */
 export function parseHistory(historyStep) {
     assertStep(historyStep, "HISTORY", "parseHistory");
 
@@ -16,6 +29,11 @@ export function parseHistory(historyStep) {
     return { mode: name };
 }
 
+/**
+ * Performs a history action based on the given history mode.
+ * @param { BrowserContext } context The browser context instance to use.
+ * @param {String} mode The history mode to use.
+ */
 export async function exeHistory(context, mode) {
     mode = mode.toUpperCase();
     const page = await getActivePage(context);

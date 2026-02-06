@@ -7,6 +7,12 @@ const logPath = path.join(process.cwd(), "variables.log");
 // Initialize or clear the log file
 fs.writeFileSync(logPath, "=== VARIABLE LOG START ===\n\n");
 
+/**
+ * 
+ * @param {*} action 
+ * @param {*} name 
+ * @param {*} value 
+ */
 function logVariable(action, name, value) {
     const timestamp = new Date().toISOString();
     fs.appendFileSync(
@@ -15,7 +21,11 @@ function logVariable(action, name, value) {
     );
 }
 
-// Removes optional variable bracket markers
+/**
+ * 
+ * @param {*} name 
+ * @returns 
+ */
 function removeBrackets(name) {
     if (typeof name !== "string") return removeBrackets(String(name));
     const match = name.match(/^\{(.+)\}$/);
@@ -23,7 +33,9 @@ function removeBrackets(name) {
 }
 
 /**
- * Sets a value under a custom variable name.
+ * 
+ * @param {*} name 
+ * @param {*} value 
  */
 export function setVariable(name, value) {
     const normalized = removeBrackets(name).toUpperCase();
@@ -32,8 +44,10 @@ export function setVariable(name, value) {
 }
 
 /**
- * Gets a value under a custom variable name.
- * Throws if the variable is not defined.
+ *  Gets a value under a custom variable name.
+ *  @param {*} name 
+ *  @throws If the variable has not been defined.
+ *  @returns 
  */
 export function getVariableValue(name) {
     const targetVar = removeBrackets(name).toUpperCase();
@@ -55,8 +69,10 @@ export function clearVariables() {
 }
 
 /**
- * Replaces named variables inside brackets with their values.
- * Throws if a variable does not exist.
+ *  Replaces named variables inside brackets with their values.
+ *  Throws if a variable does not exist.
+ *  @param {*} input 
+ *  @returns 
  */
 export function resolveString(input) {
     if (input == null) throw new Error(`resolveString: input is null or undefined`);
@@ -86,8 +102,10 @@ export function resolveString(input) {
 }
 
 /**
- * Resolves a numeric input.
- * Throws if input is not a number or cannot be parsed.
+ *  Resolves a numeric input.
+ *  Throws if input is not a number or cannot be parsed.
+ *  @param {*} input 
+ *  @returns 
  */
 export function resolveNumber(input) {
     if (typeof input === "number") return input;
@@ -103,8 +121,10 @@ export function resolveNumber(input) {
 }
 
 /**
- * Resolves a boolean input.
- * Throws if input is not a boolean or cannot be parsed.
+ *  Resolves a boolean input.
+ *  Throws if input is not a boolean or cannot be parsed.
+ *  @param {*} input 
+ *  @returns 
  */
 export function resolveBoolean(input) {
     if (typeof input === "boolean") return input;

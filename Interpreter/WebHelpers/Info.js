@@ -1,12 +1,24 @@
 import { getActivePage, getActiveIndex } from './WebHelpers.js';
 import { getTabCount } from './WebHelpers.js';
 import { assertStep } from './Assert.js';
+import { BrowserContext, Page } from 'puppeteer-core';
 
+/**
+ * Parses an infoStep and returns the result of the info action.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {{name: "INFO", type: "ActionGroup", selected: Object}} infoStep 
+ * @returns {Promise<String>} The result of the info action.
+ */
 export async function info(context, infoStep) {
     const infoSpec = parseInfo(infoStep);
     return await exeInfo(context, infoSpec.mode);
 }
 
+/**
+ * Obtains important values from an 'infoStep' input and returns them using an object.
+ * @param {{name: "INFO", type: "ActionGroup", selected: Object}} infoStep 
+ * @returns {{ mode: String }}
+ */
 export function parseInfo(infoStep) {
     assertStep(infoStep, "INFO", "parseInfo");
 
@@ -15,6 +27,12 @@ export function parseInfo(infoStep) {
     return { mode: name };
 }
 
+/**
+ * Performs an info action based on the given info mode.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {String} mode The info mode to use.
+ * @returns {Promise<String>} The result of the info mode action.
+ */
 export async function exeInfo(context, mode) {
     let page;
     mode = mode.toUpperCase();
@@ -38,6 +56,11 @@ export async function exeInfo(context, mode) {
     }
 }
 
+/**
+ * Obtains the URL from a puppeteer page.
+ * @param {Page} page The page to get the URL from.
+ * @returns {Promise<String>} The URL of the page.
+ */
 async function getUrl(page) {
     if (!page) {
         console.warn("Warning (getUrl): No active page in context.");
@@ -47,6 +70,11 @@ async function getUrl(page) {
     return url;
 }
 
+/**
+ * Obtains the title from a puppeteer page.
+ * @param {Page} page The page to get the title from.
+ * @returns {Promise<String>} The title of the page.
+ */
 async function getTitle(page) {
     if (!page) {
         console.warn("Warning (getTitle): No active page in context.");

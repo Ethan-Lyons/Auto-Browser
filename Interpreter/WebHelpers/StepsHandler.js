@@ -1,5 +1,13 @@
-import * as WebHelpers from './WebHelpers.js';
+import { Browser, BrowserContext } from 'puppeteer-core';
+import { routineIf, routineFor, routineWhile, store, click, urlNav,
+  tabNav, newTab, closeTab, wait, Routine } from './WebHelpers.js';
 
+/**
+ * Runs all steps in a given routine.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {Routine} routine 
+ * @returns {Promise<void>} A promise that resolves when the routine has executed.
+ */
 export async function handleRoutine(context, routine) {
   while (routine.hasNext()) {
     const step = routine.pop();
@@ -7,19 +15,27 @@ export async function handleRoutine(context, routine) {
   }
 }
 
+/**
+ * 
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {Object} step The step object.
+ * @param {Routine} routine The routine object.
+ * @throws {Error} Error during execution of step.
+ * @returns {Promise<void>} A promise that resolves when the step has executed.
+ */
 export async function handleStep(context, step, routine) {
   const type = step.type.toUpperCase();
   switch (type) {
-    case "ACTIONGROUP":       //TODO: change naming style
+    case "ACTIONGROUP": // extract selected step from groups
       const selectedStep = step.selected;
       await handleStep(context, selectedStep, routine);
       break;
 
-    case "ACTION":
+    case "ACTION":  // execute actions
       await handleAction(context, step, routine);
       break;
 
-    case "ARGUMENT":
+    case "ARGUMENT":  // ignore lone arguments
       break;
 
     default:
@@ -38,12 +54,12 @@ export async function handleStep(context, step, routine) {
  *   - FOR: Executes a for loop.
  *   - IF: Executes an if statement.
  *   - WHILE: Executes a while loop.
+ *   - CLOSE_TAB: Closes the current tab.
  * 
- * 
- * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @param {Object} currentStep A dictionary entry for a step.
- *  This step should have a single action and its corresponding arguments.
- * @throws {Error} Error during execution of action.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {Object} currentStep An object containing the information for the current step.
+ * @returns {Promise<void>} A promise that resolves when the step has executed.
+ * @throws {Error} If the step type is unknown.
  */
 export async function handleAction(context, currentStep, routine) {
   //currentStep.name = currentStep.name.toUpperCase()
@@ -51,48 +67,47 @@ export async function handleAction(context, currentStep, routine) {
   
   switch (stepName) {
     case "FOR":
-      WebHelpers.routineFor(currentStep, routine);
+      routineFor(currentStep, routine);
       break;
 
     case "IF":
-      await WebHelpers.routineIf(context, currentStep, routine)
+      await routineIf(context, currentStep, routine)
       break;
 
     case "WHILE":
-      await WebHelpers.routineWhile(context, currentStep, routine)
+      await routineWhile(context, currentStep, routine)
       break;
 
     case "STORE":
-      await WebHelpers.store(context, currentStep);
+      await store(context, currentStep);
       break;
 
     case "CLICK":
-      await WebHelpers.click(context, currentStep);
+      await click(context, currentStep);
       break;
     
     case "URL_NAV":
-      await WebHelpers.urlNav(context, currentStep);
+      await urlNav(context, currentStep);
       break;
     
     case "TAB_NAV":
-      await WebHelpers.tabNav(context, currentStep);
+      await tabNav(context, currentStep);
       break;
     
     case "NEW_TAB":
-      await WebHelpers.newTab(context);
+      await newTab(context);
       break;
     
     case "CLOSE_TAB":
-      await WebHelpers.closeTab(context);
+      await closeTab(context);
       break;
     
     case "WAIT":
-      await WebHelpers.wait(currentStep)
+      await wait(currentStep)
       break;
 
     default:
       throw new Error('\"' + currentStep.name +
         '\" is not defined under StepsHandler.');
-  
   }
 }

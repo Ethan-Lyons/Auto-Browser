@@ -1,14 +1,15 @@
 import * as Webhelpers from "./WebHelpers.js";
 import { assertStep } from "./Assert.js";
 import { resolveTabIndex, clampTabIndex } from "./Tab.js";
+import { Browser, BrowserContext } from "puppeteer-core";
 
 /**
  * Navigate to a tab in the browser context.
  * The action's tab field is used to determine which tab
  *  to navigate to.
- * @param {puppeteer.BrowserContext} context The browser context
+ * @param {BrowserContext} context The browser context
  *  instance to use.
- * @param {Object} navStep An object for a tab nav action.
+ * @param {*} navStep An object for a tab nav action.
  *  This step should be of type action with the name value
  *  of "tab" and a tab value in its args list.
  * @throws {Error} If the tab field is invalid or there
@@ -19,6 +20,11 @@ export async function tabNav(context, navStep) {
     await exeTabNav(context, navSpec.tab);
 }
 
+/**
+ * 
+ * @param {*} navStep 
+ * @returns 
+ */
 export function parseTabNav(navStep) {
     assertStep(navStep, "TAB_NAV", "parseTabNav");
 
@@ -31,6 +37,12 @@ export function parseTabNav(navStep) {
     return { tab: tabStep.value };
 }
 
+/**
+ * 
+ * @param {BrowserContext} context 
+ * @param {String} tabStr 
+ * @returns 
+ */
 export async function exeTabNav(context, tabStr) {
     // If there are no tabs, do nothing
     const tabs = await Webhelpers.getTabs(context);

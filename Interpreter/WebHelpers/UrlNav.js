@@ -1,10 +1,11 @@
 import { getActivePage } from './WebHelpers.js';
 import { assertStep } from './Assert.js';
+import { BrowserContext } from 'puppeteer-core';
 
 /**
  * Navigates to a URL.
- * @param {puppeteer.BrowserContext} context The browser context instance to use.
- * @param {Object} navStep An object for a url nav action.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {*} navStep An object for a url nav action.
  *  This step should be of type 'action' with the corresponding name 'URL_NAV'
  *  and a url value in its args list.
  */
@@ -13,6 +14,11 @@ export async function urlNav(context, navStep) {
     await exeUrlNav(context, urlNavSpec.url);
 }
 
+/**
+ * 
+ * @param {*} navStep 
+ * @returns 
+ */
 export function parseUrlNav(navStep) {
     assertStep(navStep, "URL_NAV", "urlNavParse");
 
@@ -21,6 +27,11 @@ export function parseUrlNav(navStep) {
     return { url: urlSpec.url }
 }
 
+/**
+ * 
+ * @param {BrowserContext} context 
+ * @param {String} url 
+ */
 export async function exeUrlNav(context, url) {
     const page = await getActivePage(context);
     if (!page) {
@@ -37,7 +48,11 @@ export async function exeUrlNav(context, url) {
     ]);
 }
 
-
+/**
+ * 
+ * @param {*} urlStep 
+ * @returns 
+ */
 export function parseUrl(urlStep) {
     assertStep(urlStep, "URL", "urlParse");
     let url = urlStep.value;

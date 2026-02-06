@@ -1,22 +1,29 @@
-import puppeteer from 'puppeteer-core';
-const debugPort = 9222;
+import puppeteer, { Browser, BrowserContext } from 'puppeteer-core';
+const debugPort = 9222; // port used for browser connection
 
 import { contextToPage } from './WebHelpers.js';
 
 let browserInstance = null;
-let disconnectFlag = false;
+let disconnectFlag = false; // used to prevent multiple running browser connections.
 
+/**
+ * Connects to and returns a Puppeteer browser instance.
+ * @returns {Promise<Browser>} A promise that resolves with a Puppeteer browser instance.
+ */
 export async function getBrowser() {
+    // check if browser is already connected
     if (browserInstance && browserInstance.connected) {
         return browserInstance;
     }
     try {
+        // connect to browser
         const browser = await puppeteer.connect({
             browserURL: 'http://localhost:' + debugPort,
             defaultViewport: null,
             headless: false
         });
 
+        // update contextToPage with new pages
         browser.on('targetcreated', async target => { 
             if (target.type() !== 'page') return;
 
@@ -27,7 +34,8 @@ export async function getBrowser() {
             contextToPage.set(context, page);
         });
 
-        browser.on('disconnected', () => {    // handle user exits
+        // handle browser disconnections
+        browser.on('disconnected', () => {
             if (!disconnectFlag){
                 throw new Error("Browser was closed unexpectedly.")
             }
@@ -40,18 +48,17 @@ export async function getBrowser() {
 
     } catch (err) {
         throw new Error(
-        'Puppeteer could not connect.\n' +
-        'Ensure browser instance and debug port are open.\n\n' +
-        err
+            `Puppeteer could not connect.
+            Ensure browser instance and debug port are open.
+            ${err}`
         );
     }
 }
 
 /**
  * Disconnects from a Puppeteer browser instance.
- * @param {puppeteer.Browser} browser The browser instance
+ * @param {Browser} browser The browser instance
  *  to disconnect from.
- * @throws Will throw an error if the disconnection fails.
  * @returns {Promise<void>} A promise that resolves when
  *  the disconnection is completed.
  */
@@ -64,9 +71,8 @@ export async function browserDisconnect(browser) {
 
 /**
  * Disconnects from a Puppeteer browser given a context instance.
- * @param {puppeteer.BrowserContext} context The browser context
+ * @param {BrowserContext} context The browser context
  *  instance to disconnect.
- * @throws Will throw an error if the disconnection fails.
  * @returns {Promise<void>} A promise that resolves when the
  *  disconnection is completed.
  */
@@ -78,9 +84,9 @@ export async function browserDisconnectContext(context) {
 
 /**
  * Returns a puppeteer browser context.
- * @param {boolean} newContext Whether to connect to current context
+ * @param {Boolean} newContext Whether to connect to current context
  *  or start a new one.
- * @returns {Promise<puppeteer.BrowserContext>} A promise that resolves
+ * @returns {Promise<BrowserContext>} A promise that resolves
  *  with a Puppeteer browser context instance.
  * @throws Will throw an error if the connection to the browser context
  * cannot be established.
@@ -99,8 +105,8 @@ export async function getContext(browser, newContext = false) {
 
 /**
  * Creates a new browser context instance.
- * @param {puppeteer.Browser} browser The browser instance to use.
- * @returns {Promise<puppeteer.BrowserContext>} A promise that resolves with
+ * @param {Browser} browser The browser instance to use.
+ * @returns {Promise<BrowserContext>} A promise that resolves with
  *  a new browser context instance.
  */
 export async function createNewContext(browser) {
@@ -110,7 +116,8 @@ export async function createNewContext(browser) {
 
 /**
  * Closes the given browser context and all of its pages.
- * @param {puppeteer.BrowserContext} context The browser context instance to close.
+ * @param {BrowserContext} context The browser context instance to close.
+ * @returns {Promise<void>} A promise that resolves when the context is closed.
  */
 export async function closeContext(context) {
     await context.close();
