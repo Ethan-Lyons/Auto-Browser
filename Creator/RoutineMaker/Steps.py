@@ -39,17 +39,28 @@ class ActionGroup:
     def __str__(self):
         return self.name
     def copy(self):
-        """Returns a deep copy of the action"""
+        """Returns a deep copy of the action group"""
         return fullCopy(self)
+    def setName(self, newName):
+        """Sets the name of the action group"""
+        self.name = newName
     def getName(self):
         """Returns the name of the action group"""
         return self.name
-    def getArgs(self):
-        """Returns the args in the action group"""
-        return self.args
+
+    def setDescription(self, newDesc):
+        """Sets the description of the action group"""
+        self.description = newDesc
     def getDescription(self):
         """Returns the description of the action group"""
         return self.description
+
+    def setArgs(self, newArgs):
+        """Sets the args of the action group"""
+        self.args = newArgs
+    def getArgs(self):
+        """Returns the args of the action group"""
+        return self.args
     
     def getSelected(self):
         """Returns the selected action from the action group"""
@@ -59,7 +70,8 @@ class ActionGroup:
         self.selected = action
     
     def get(self, actionName):
-        """Finds and returns an arg (action, actionGroup, or argument) in the action group by name string. Returns None if no action found"""
+        """Finds and returns an arg (action, actionGroup, or argument) in the
+        action group by its name string. Returns None if no action found"""
         for action in self.args:
             if str(action).lower() == actionName.lower():
                 return action
@@ -91,20 +103,23 @@ class Argument(str):
     def __str__(self):
         return self.name
     
+    def setName(self, newName):
+        """Sets the name of the argument"""
+        self.name = newName
     def getName(self):
         """Returns the name of the argument"""
         return self.name
 
-    def setDescription(self, description):
+    def setDescription(self, newDesc):
         """Sets the description of the argument"""
-        self.description = description
+        self.description = newDesc
     def getDescription(self):
         """Returns the description of the argument"""
         return self.description
 
-    def setValue(self, value):
+    def setValue(self, newValue):
         """Sets the value of the argument"""
-        self.value = value
+        self.value = newValue
     def getValue(self):
         """Returns the value of the argument"""
         return self.value
