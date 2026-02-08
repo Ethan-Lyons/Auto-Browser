@@ -25,6 +25,11 @@ export * from './Conditionals/Condition.js'
 export * from './Browser.js'
 export * from './UrlNav.js'
 
+export * from './Assert.js'
+export * from './Screenshot.js'
+export * from './TextFile.js'
+
+
 // Maps each browser context to its active page
 export const contextToPage = new WeakMap();
 

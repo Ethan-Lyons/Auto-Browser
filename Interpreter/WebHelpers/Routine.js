@@ -72,7 +72,7 @@ export class Routine {
   }
   
   /**
-   * Pushes multiple steps onto the stack. The steps are pushed assuming list ordering, i.e.
+   * Pushes multiple steps onto the stack. The steps are pushed assuming stack ordering, i.e.
    * the first step in the array is pushed first, then the second, and so on.
    * @param {Object[]} newElements The steps to push onto the stack.
    */
@@ -87,7 +87,7 @@ export class Routine {
   }
 
   /**
-   * Pushes multiple steps onto the stack. The steps are pushed assuming stack ordering, i.e.
+   * Pushes multiple steps onto the stack. The steps are pushed assuming list ordering, i.e.
    * the last step in the array is pushed first, then the second to last, and so on.
    * @param {Object[]} list The steps to push onto the stack.
    */
@@ -120,51 +120,51 @@ export class Routine {
   
   /**
    * Pops a control block from the stack based on the given type.
-   * The popped control block is returned as an object with three properties:
-   * - body: the steps before the given split token
-   * - bodyPost: the steps after the split token
-   * - end: the end marker of the popped control block
    * @param {String} startToken The name of the step that starts the control block
    * @param {String} endToken The name of the step that ends the control block
    * @param {String} splitToken (optional) The name of the step that splits the control block into two parts
-   * @returns {Object} The popped control block
+   * @returns {Object} The popped control block. Properties are return in stack order.
+   * Has the following properties:
+   * - body: the steps before the given split token
+   * - bodyPost: the steps after the split token
+   * - end: the end marker of the popped control block
    * @throws {Error} If the given type is not supported or if the popped control block is unmatched
    */
   popBlock(startToken, endToken, splitToken = null) {
     this._logStack("POP_BLOCK_START", `\"${startToken} -> ${endToken}\"`);
-    let depth = 1;
+    let depth = 1;  // Used to track nested control blocks
 
     const before = [];
     const after = [];
 
-    let collectPost = false;
-    let endStep = null;
+    let collectPost = false;  // Used to collect steps after the split token
+    let endStep = null;  // Used to store the ending step marker.
 
     while (this.stack.length > 0) {
-        const nextAg = this.stack.pop();
-        const next = nextAg.selected;
+        const nextAg = this.stack.pop();  // Pop the next user action group
+        const next = nextAg.selected; // Unwrap the selected step
         if(!next) {
           throw new Error(`popBlock: missing selected step under step: ${nextAg}, name ${nextAg.name}`);
         }
 
-        if (next.name === startToken) {
+        if (next.name === startToken) { // Indicates another nested control block, increase depth
             depth++;
         }
 
-        else if (next.name === endToken) {
+        else if (next.name === endToken) { // Indicates the end of a control block, decrease depth
             depth--;
 
-            if (depth === 0) {
+            if (depth === 0) {  // If depth is 0, this is the end of the control block
                 endStep = next;
                 break;
             }
         }
 
-        else if (
+        else if ( 
             splitToken !== null &&
             next.name === splitToken &&
             depth === 1
-        ) {
+        ) { // If the next step is the split token and we are at depth 1, switch to collecting post
             this._logStack("POP_BLOCK_SPLIT", splitToken);
             collectPost = true;
             continue;
@@ -177,15 +177,16 @@ export class Routine {
         }
     }
 
-    if (depth !== 0) {
+    if (depth !== 0) {  // If depth is not 0, the control block is not matched with an end marker
         throw new Error(
             `Unmatched ${startToken}/${endToken} block (depth: ${depth})`
         );
     }
     
-    
+    // Items are added in order of appearance, so reverse them to get the stack order
     const returnBody = before.reverse();
     const returnPost = after.reverse();
+
     this._logStack("POP_BLOCK_END");
     return {
         body: returnBody,

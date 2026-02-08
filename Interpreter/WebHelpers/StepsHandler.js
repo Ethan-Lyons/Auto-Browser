@@ -16,7 +16,7 @@ export async function handleRoutine(context, routine) {
 }
 
 /**
- * 
+ * Runs a single step in a routine.
  * @param {BrowserContext} context The browser context instance to use.
  * @param {Object} step The step object.
  * @param {Routine} routine The routine object.
@@ -55,6 +55,8 @@ export async function handleStep(context, step, routine) {
  *   - IF: Executes an if statement.
  *   - WHILE: Executes a while loop.
  *   - CLOSE_TAB: Closes the current tab.
+ *   - HISTORY: Navigates to the previous page.
+ *   - OUTPUT: Executes an output action.
  * 
  * @param {BrowserContext} context The browser context instance to use.
  * @param {Object} currentStep An object containing the information for the current step.
@@ -104,6 +106,14 @@ export async function handleAction(context, currentStep, routine) {
     
     case "WAIT":
       await wait(currentStep)
+      break;
+    
+    case "HISTORY":
+      await history(context, currentStep);
+      break;
+    
+    case "OUTPUT":
+      await output(context, currentStep);
       break;
 
     default:

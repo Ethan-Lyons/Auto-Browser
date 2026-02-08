@@ -1,42 +1,49 @@
-import { defaultOutputDir, getActivePage } from './WebHelpers.js';
+import { defaultOutputDir, getActivePage, assertStep, screenshot, textFile } from './WebHelpers.js';
 import { BrowserContext } from 'puppeteer-core';
 
 /**
- * 
- * @param {BrowserContext} context 
- * @param {{ name: "SCREENSHOT", type: "Action", args: [Object] }} screenshotStep 
+ * Parses and executes an output action.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {{ name: "OUTPUT", type: "Action", args: [Object] }} outputStep An object
+ * containing the information for the output action.
+ * @returns {Promise<void>} A promise that resolves when the output action is completed.
  */
-export async function screenshot(context, screenshotStep) {
+export async function output(context, outputStep) {
     const page = await getActivePage(context);
-   
-    const regex = /^([a-zA-Z0-9_.-])+(\.(jpg|jpeg|png|gif|bmp))?$/i;
-    const [fileName] = screenshotStep.args;
-    const name = fileName.value;
-    
-    const match = name.match(regex);
-    if (!match) {
-        throw new Error('Invalid file name for screenshot output: ' +
-            "Name: " + name);
-    }
-
-    let outName = match[1];
-    const extension = match[2];
-    if (!extension) {
-        outName += ".png";
-    }
-
-    outName = defaultOutputDir + outName;
-
-    await page.screenshot({
-        path: outName,
-        fullPage: true
-    });
+    const outputSpec = parseOutput(outputStep);
+    await exeOutput(page, outputSpec.name);
 }
 
-export function parseScreenshot(scrStep) {
+/**
+ * Obtains the important values from a 'outputStep' input and returns them using an object.
+ * @param {{ name: "OUTPUT", type: "Action", args: [Object] }} outputStep 
+ * @returns {{ name: String, step: Object }}
+ */
+export async function parseOutput(outputStep) {
+    assertStep(outputStep, "OUTPUT", "parseOutput");
 
+    const [canOutput] = outputStep.args;
+    assertStep(canOutput, "CAN_OUTPUT", "parseOutput");
+
+    const selected = canOutput.selected;
+    return { name: selected.name, step: selected };
 }
 
-export function exeScreenshot (filePath) {
-    
+/**
+ * Calls the correct output function based on the output mode.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {String} mode The output mode to use.
+ * @param {Object} subStep The substep for the given output mode.
+ * @returns {Promise<void>} A promise that resolves when the output action is completed.
+ */
+export async function exeOutput(context, mode, subStep) {
+    mode = mode.toUpperCase();
+    switch (mode) {
+        case "SCREENSHOT":
+            return await screenshot(context, subStep, defaultOutputDir);
+        case "TEXT_FILE":
+            return textFile(subStep, defaultOutputDir);
+        default:
+            throw new Error(`exeOutput: unsupported output mode: ${mode}`);
+    }
 }

@@ -16,6 +16,8 @@ class UserActionBuilder:
         milliseconds = r.arg("milliseconds")
         start = r.arg("start")
         end = r.arg("end")
+        write = r.arg("write")
+        append = r.arg("append")
 
         # Selector types
         xpath = r.arg("xpath")
@@ -65,15 +67,17 @@ class UserActionBuilder:
             "Store a value under a custom variable name"
         )
 
-        goForward = r.arg("go_forward")
-        goBackward = r.arg("go_backward")
+        goForward = r.arg("GO_FORWARD")
+        goBackward = r.arg("GO_BACKWARD")
         historyMode = r.group(
-            "history_mode",
+            "HISTORY_MODE",
             [goForward, goBackward]
         )
 
-        screenshot = r.action("screenshot", [fileName])
-        canOutput = r.group("can_output", [text, screenshot])
+        textMode = r.group("TEXT_MODE", [write, append])
+        textFile = r.action("TEXT_FILE", [text, fileName, textMode])
+        screenshot = r.action("SCREENSHOT", [fileName])
+        canOutput = r.group("CAN_OUTPUT", [textFile, screenshot])
         output = r.userAction("OUTPUT", [canOutput])
 
 
