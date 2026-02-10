@@ -1,24 +1,47 @@
-import tkinter
-import tkinter.filedialog
-from pathlib import Path
-import json
+from Creator.RoutineMaker.Routine import Routine
+from Creator.RoutineMaker.Steps import ActionGroup
+from Creator.RoutineMaker.Steps import Action
+from Creator.RoutineMaker.Steps import Argument
+import Creator.RoutineMaker.InputOutput as InputOutput
+
 import os
 
-from Creator.RoutineMaker.Routine import Routine
-from Creator.RoutineMaker.Steps import Action
-from Creator.RoutineMaker.Steps import ActionGroup
-from Creator.RoutineMaker.Steps import Argument
+FOLDER_NAME = "tmp"
+TMP_DIR = os.path.join(os.path.dirname(__file__), FOLDER_NAME)
 
-def saveRoutine(routine, filePath=None):
-    """
-    Save a routine to a file.
-    If a file path is not provided, a dialog box will appear to save the file.
+def test_save():
+    initialDir = TMP_DIR
+    filePath = os.path.join(initialDir, "testRoutine.json")
+    routine = Routine(inputOutput=InputOutput)
+    routine.createDefaultAG()
+    routine.saveRoutine(filePath)
+    assert os.path.exists(filePath)
+    os.remove(filePath)
 
-    Args:
-        routine (Routine): Routine to be saved.
-        fileName (str): String with the address and name of the file to save the routine to.
-            Defaults to None.
-    """
+def test_load():
+    testArg = Argument("test")
+    testArg.setValue("testValue")
+    testAction = Action(name="Action Name", args=[testArg], description="Action Description")
+    testGroup = ActionGroup(name="Group Name", args=[testAction], description="Group Description")
+
+    initialDir = TMP_DIR
+    filePath = os.path.join(initialDir, "testRoutine.json")
+    originalRoutine = Routine(inputOutput=InputOutput)
+    originalRoutine.addStep(testGroup)
+    originalRoutine.saveRoutine(filePath)
+
+    blankRoutine = Routine(inputOutput=InputOutput)
+    blankRoutine.loadRoutine(filePath)
+    
+    assert str(originalRoutine) == str(blankRoutine)
+
+    originalRoutine.createDefaultAG()
+    assert str(originalRoutine) != str(blankRoutine)
+
+    os.remove(filePath)
+
+"""def saveRoutine(routine, filePath=None):
+
     if not filePath:    # Prompt the user to select file output
         routineDir = os.path.join(os.path.dirname(__file__), "../Routines")
         routineDir = os.path.normpath(routineDir)
@@ -37,13 +60,7 @@ def saveRoutine(routine, filePath=None):
         print("Saved routine to " + filePath)
 
 def outputRoutine(routineData, addr):
-    """
-    Outputs a routine as a JSON file to the address provided.
-    
-    Args:
-        routineData (dict): The data dictionary of a Routine to be saved.
-        addr (str): The address of the file to save to.
-    """
+
     path = Path(addr)
     path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -51,16 +68,7 @@ def outputRoutine(routineData, addr):
         json.dump(routineData, outfile, indent=4)
 
 def loadRoutine(filePath=None):
-    """
-    Create a Routine from a JSON file.
-    If a file name is not provided, a dialog box will appear to select a file.
 
-    Args:
-        filePath (str): The path of the file to load the routine from. Defaults to None.
-
-    Returns:
-        Routine: The loaded routine.
-    """
     if not filePath:    # Prompt the user to select file
         filePath = tkinter.filedialog.askopenfilename(
             initialdir = os.path.join(os.path.dirname(__file__), "Routines"),
@@ -81,15 +89,7 @@ def loadRoutine(filePath=None):
         return output
 
 def actionsToDict(entry):
-    """
-    Recursively converts an Action or ActionGroup into a dictionary.
-    
-    Args:
-        entry (Action or ActionGroup): The object to be converted.
-    
-    Returns:
-        dict: The dictionary representation of the action or action group.
-    """
+
     if isinstance(entry, Argument):  # Argument
         return {
             "type": "Argument",
@@ -122,15 +122,7 @@ def actionsToDict(entry):
         raise TypeError(f"Unsupported type for actionToDict: {type(entry)}")
     
 def dictToActions(actionDict):
-    """
-    Recursively converts a dictionary into an Action or ActionGroup.
-    
-    Args:
-        actionDict (dict): The dictionary to be converted.
-    
-    Returns:
-        Action or ActionGroup: The converted action or action group.
-    """
+
     if not isinstance(actionDict, dict):    # Check if the input is a dictionary
         raise TypeError(f"Expected dict, got {type(actionDict)}")
 
@@ -160,4 +152,5 @@ def dictToActions(actionDict):
         return newRoutine
     
     else:   # Unknown type
-        raise TypeError(f"Unsupported type for dictToActions: {actionDict['type']}")
+        raise TypeError(f"Unsupported type for dictToActions: {actionDict['type']}")"""
+

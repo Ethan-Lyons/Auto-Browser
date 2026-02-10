@@ -1,10 +1,14 @@
-from RoutineMaker.UserActionBuilder import UserActionBuilder
+from Creator.RoutineMaker.UserStepBuilder import UserActionBuilder
+from Creator.RoutineMaker.Steps import Action
+from Creator.RoutineMaker.Steps import ActionGroup
+from Creator.RoutineMaker.Steps import Argument
 
 class Routine:
+    """A class for creating and editing a series of steps composed into a routine."""
     def __init__(self, inputOutput=None):
         self.inputOutput = inputOutput  # gives access to the InputOutput class functions
-        self.AB = UserActionBuilder()
-        self.userActionGroup = self.AB.getUserActionGroup()
+        self.UAB = UserActionBuilder()
+        self.userActionGroup = self.UAB.getUserActionGroup()
         self.steps = []
 
     def __str__(self):
@@ -34,13 +38,13 @@ class Routine:
             return True
         return False
 
-    def addStep(self, action):
-        """Adds an action to the routine step list."""
-        self.steps.append(action)
+    def addStep(self, step: Action | ActionGroup | Argument):
+        """Adds a step to the routine step list."""
+        self.steps.append(step)
     
-    def removeAction(self, action):
-        """Removes an action from the routine step list."""
-        self.steps.remove(action)
+    def removeStep(self, step: Action | ActionGroup | Argument):
+        """Removes a step from the routine step list."""
+        self.steps.remove(step)
 
     def createDefaultAG(self):
         """
@@ -57,47 +61,24 @@ class Routine:
         """Creates a copy of the default ActionGroup and returns it."""
         defaultType = self.userActionGroup.copy()
         return defaultType
-    
-    def getActionFromName(self, name):
-        """Returns the action with the given name from the routine."""
-        return self.AB.getActionFromName(name)
-    
-    def getIndex(self, action):
-        """
-        Returns the index of the given action in the routine.
-
-        Args:
-            action (Action): The action to find the index of.
-
-        Returns:
-            The index of the action in the routine, or -1 if not found.
-        """
-        if action not in self.steps:
-            print("Action not found in routine: " + str(action))
-            return -1
-        return self.steps.index(action)
 
     def getSteps(self):
         """Returns the list of steps in the routine."""
         return self.steps
     
-    def getActionFromIndex(self, index):
-        """Returns the action at the given index in the routine."""
-        return self.steps[index]
-    
-    def removeByIndex(self, index):
+    def removeByIndex(self, index: int):
         """Removes the action at the given index from the routine."""
         return self.steps.pop(index)
     
-    def moveAction(self, actionIndex, toIndex):
+    def moveAction(self, actionIndex: int, toIndex: int):
         """Move an action from one index to another in the routine."""
         moved_action = self.steps.pop(actionIndex)
         self.steps.insert(toIndex, moved_action)
 
-    def replaceAction(self, oldAction, newAction):
-        """Replace an action in the routine with a new action."""
+    def replaceStep(self, oldStep: Action | ActionGroup | Argument, newStep: Action | ActionGroup | Argument):
+        """Replace a step in the routine with a new step."""
         try:
-            index = self.steps.index(oldAction)
-            self.steps[index] = newAction
+            index = self.steps.index(oldStep)
+            self.steps[index] = newStep
         except ValueError:
-            print(f"Action {oldAction} not found in routine.")
+            print(f"Step \'{oldStep}\' not found in routine.")

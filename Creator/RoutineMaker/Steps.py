@@ -1,61 +1,110 @@
-import tkinter as tk
-
 class Action:
-    def __init__(self, name, args=[], description=""):
+    """
+    The Action class represents an action that can be performed in a routine.
+    It has a name, a list of arguments, and a description.
+    """
+    def __init__(self, name: str, args=[], description=""):
         self.name = name
         self.description = description
         self.args = args
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, Action)
+            and self.name == other.name
+            and self.args == other.args
+            and self.description == other.description
+        )
+    
+    def __hash__ (self):
+        return hash((self.name, tuple(self.args), self.description))
     
     def __str__(self):
-        return self.name
-    def copy(self):
-        """Returns a deep copy of the action"""
-        return fullCopy(self)
+        return "Action: " + str(self.name) + "\nArgs: " + str(self.args) + "\nDescription: " + str(self.description)
+    
+    def setName(self, newName: str):
+        """Sets the name of the action"""
+        self.name = newName
     def getName(self):
         """Returns the name of the action"""
         return self.name
+    
+    def setArgs(self, newArgs: list):
+        """Sets the arguments of the action"""
+        self.args = newArgs
     def getArgs(self):
         """Returns the arguments of the action"""
         return self.args
-    def get(self, argName):
-        """Finds and returns an argument in the action by name string. Returns None if no argument found"""
-        for arg in self.args:
-            if str(arg).lower() == argName.lower():
-                return arg
-        raise KeyError("Argument [" + argName + "] not found in action: " + self.name)
-        
+    
+    def setDescription(self, newDesc: str):
+        """Sets the description of the action"""
+        self.description = newDesc
     def getDescription(self):
         """Returns the description of the action"""
         return self.description
+    
+    def get(self, stepName: str):
+        """Finds and returns a step in the named action's arguments by name string. Returns None if no argument found"""
+        for step in self.args:
+            if step.getName().lower() == stepName.lower():
+                return step
+            
+        raise KeyError("Argument \'" + str(stepName) + "\' not found in action: " + str(self.name))
+    
+    def copy(self):
+        """Returns a deep copy of the action"""
+        return fullCopy(self)
 
 
 class ActionGroup:
-    def __init__(self, name, args=[], description=""):
+    """
+    The ActionGroup class represents a group of actions where only one action can be selected at a time.
+    It has a name, a selected action, a list of arguments, and a description.
+    """
+    def __init__(self, name: str, args=[], description=""):
         self.name = name
         self.args = args
         self.description = description
-        self.selected = args[0]
+        if len(args) > 0:
+            self.selected = args[0]
+        else:
+            self.selected = None
+    
+    def __eq__(self, other):
+        """
+        Compares two ActionGroups for equality.
+        Two ActionGroups are considered equal if they have the same name, selected action, arguments, and description.
+        """
+        return (
+            isinstance(other, ActionGroup)
+            and self.name == other.name
+            and self.selected == other.selected
+            and self.args == other.args
+            and self.description == other.description
+        )
+    
+    def __hash__(self):
+        """Returns a hash of the action group"""
+        return hash((self.name, self.selected or None, tuple(self.args), self.description))
 
     def __str__(self):
-        return self.name
-    def copy(self):
-        """Returns a deep copy of the action group"""
-        return fullCopy(self)
-    def setName(self, newName):
+        return "ActionGroup: " + str(self.name) + "\nSelected: " + str(self.selected) + "\nArgs: " + str(self.args) + "\nDescription: " + str(self.description)
+
+    def setName(self, newName: str):
         """Sets the name of the action group"""
         self.name = newName
     def getName(self):
         """Returns the name of the action group"""
         return self.name
 
-    def setDescription(self, newDesc):
+    def setDescription(self, newDesc: str):
         """Sets the description of the action group"""
         self.description = newDesc
     def getDescription(self):
         """Returns the description of the action group"""
         return self.description
 
-    def setArgs(self, newArgs):
+    def setArgs(self, newArgs: list):
         """Sets the args of the action group"""
         self.args = newArgs
     def getArgs(self):
@@ -65,70 +114,79 @@ class ActionGroup:
     def getSelected(self):
         """Returns the selected action from the action group"""
         return self.selected
-    def setSelected(self, action):
+    def setSelected(self, action: Action):
         """Sets the selected action for the action group"""
         self.selected = action
     
-    def get(self, actionName):
+    def get(self, stepName: str):
         """Finds and returns an arg (action, actionGroup, or argument) in the
         action group by its name string. Returns None if no action found"""
-        for action in self.args:
-            if str(action).lower() == actionName.lower():
-                return action
-        raise KeyError("Action [" + actionName + "] not found in action group: " + self.name)
-
-class Argument(str):
-    def __new__(cls, name, value=None, description=None):
-        """
-        Constructor for Argument class.
-
-        This is necessary because we subclass from str, and the str class
-        does not allow for additional arguments in its constructor.
-
-        Parameters:
-            name (str): The name of the argument used as the string value.
-            value: The stored value of the argument.
-            description (str): A description of the argument.
-        """
-        obj = super().__new__(cls, name)    # call the str constructor
-        obj.value = value
-        obj.description = description
-        return obj
+        for step in self.args:
+            if step.getName().upper() == stepName.upper():
+                return step
+        raise KeyError("Action \'" + str(stepName) + "\' not found in action group: " + str(self))
     
-    def __init__(self, name, value=None, description=None):
+    def copy(self):
+        """Returns a deep copy of the action group"""
+        return fullCopy(self)
+
+
+class Argument:
+    """
+    The Argument class represents an argument that can be passed to an action or action group.
+    It has a name, a value, and a description.
+    """
+    def __init__(self, name: str, value=None, description=""):
         self.name = name
         self.value = value
-        self.description = description
+        self.description = description or ""
+
+    def __eq__(self, other):
+        """
+        Compares two Argument objects for equality.
+        Two Argument objects are considered equal if they have the same name, value, and description.
+        """
+        return (
+            isinstance(other, Argument)
+            and self.name == other.name
+            and self.value == other.value
+            and self.description == other.description
+        )
     
+    def __hash__ (self):
+        """Returns a hash of the argument"""
+        return hash((self.name, self.value, self.description))
+
     def __str__(self):
-        return self.name
-    
-    def setName(self, newName):
+        return "Argument: " + str(self.name) + "\nValue: " + str(self.value) + "\nDescription: " + str(self.description)
+
+    def setName(self, newName: str):
         """Sets the name of the argument"""
         self.name = newName
     def getName(self):
         """Returns the name of the argument"""
         return self.name
 
-    def setDescription(self, newDesc):
+    def setDescription(self, newDesc: str):
         """Sets the description of the argument"""
-        self.description = newDesc
+        self.description = newDesc or ""
     def getDescription(self):
         """Returns the description of the argument"""
         return self.description
 
-    def setValue(self, newValue):
+    def setValue(self, newValue: str):
         """Sets the value of the argument"""
         self.value = newValue
     def getValue(self):
         """Returns the value of the argument"""
         return self.value
-    
+
     def copy(self):
         """Returns a deep copy of the argument"""
-        return fullCopy(self)
+        return Argument(self.name, self.value, self.description)
 
-def fullCopy(action):
+
+def fullCopy(step):
     """Returns a deep copy of the given Action, ActionGroup, or Argument.
 
     This function uses recursion to copy all the arguments of an Action,
@@ -142,16 +200,16 @@ def fullCopy(action):
     Returns:
         A deep copy of the given Action, ActionGroup, or Argument.
     """
-    if isinstance(action, ActionGroup): # ActionGroup
-        args = [fullCopy(arg) for arg in action.getArgs()]
-        return ActionGroup(name=action.getName(), args=args, description=action.getDescription())
+    if isinstance(step, ActionGroup): # ActionGroup
+        args = [fullCopy(arg) for arg in step.getArgs()]
+        return ActionGroup(name=step.getName(), args=args, description=step.getDescription())
     
-    elif isinstance(action, Action):    # Action
-        args = [fullCopy(arg) for arg in action.getArgs()]
-        return Action(name=action.getName(), args=args, description=action.getDescription())
+    elif isinstance(step, Action):    # Action
+        args = [fullCopy(arg) for arg in step.getArgs()]
+        return Action(name=step.getName(), args=args, description=step.getDescription())
     
-    elif isinstance(action, Argument):  # Argument
-        return Argument(action, value=action.value, description=action.description)
+    elif isinstance(step, Argument):  # Argument
+        return step.copy()
     
     else:                               # Unknown
-        print("Unknown action type in fullCopy: " + str(type(action)))
+        print("Unknown action type in fullCopy: " + str(type(step)))

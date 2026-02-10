@@ -14,6 +14,7 @@ def createWindow():
     root = tkinter.Tk()
     routine = Routine(inputOutput=InputOutput)
     root.title("Routine Maker")
+    
     root.routineFrame = RoutineFrame(parent=root, routine=routine)
     return root
 
@@ -21,6 +22,3 @@ if __name__ == "__main__":
     root = createWindow()
     routineName = 'placeholder.json'
     root.mainloop()
-
-# TODO
-# Add a toolbar for routine frame (delete duplicate add save etc.)

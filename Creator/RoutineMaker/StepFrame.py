@@ -1,15 +1,24 @@
 import tkinter as tk
-from RoutineMaker.ButtonFrame import ButtonFrame
-from RoutineMaker.Steps import Action
-from RoutineMaker.Steps import ActionGroup
-from RoutineMaker.Steps import Argument
+from Creator.RoutineMaker.ButtonFrame import ButtonFrame
+from Creator.RoutineMaker.Steps import Action
+from Creator.RoutineMaker.Steps import ActionGroup
+from Creator.RoutineMaker.Steps import Argument
 
-class ActionFrame:
-    def __init__(self, routineFrame, action, parent):
+class StepFrame:
+    """Represents a frame for a step inside a routine frame"""
+    def __init__(self, routineFrame, step: Action | ActionGroup | Argument, parent: tk.Frame):
+        """
+        Initializes an ActionFrame object.
+
+        Args:
+            routineFrame (RoutineFrame): The routine frame which contains this action frame
+            action (Action or ActionGroup): The action or action group for this action frame
+            parent (Frame): The parent frame for this action frame
+        """
         self.routine = routineFrame.getRoutine()
         self.routineFrame = routineFrame
         self.parent = parent
-        self.action = action
+        self.step = step
         self.buttonFrame = None
         self.groupFrames = {}
 
@@ -17,25 +26,25 @@ class ActionFrame:
         self._buildFrame()
     
     def __str__(self):
-        return "(Frame for action: " + str(self.action) + ")"
+        return "(Frame for step: " + str(self.step) + ")"
     
     def getFrame(self):
-        """Returns the tkinter frame associated with this action frame"""
+        """Returns the tkinter frame associated with this step frame"""
         return self.frame
 
-    def getAction(self):
-        """Returns the action associated with this action frame"""
-        return self.action
+    def getStep(self):
+        """Returns the step associated with this step frame"""
+        return self.step
 
     def _buildFrame(self):
         """Builds and places the argument frame and button frame"""
-        self.argsF = self.getArgsFrame(self.action, self.frame)
+        self.argsF = self.getStepFrame(self.step, self.frame)
         self.buttonFrame = self.getButtonFrame()
         
         self.argsF.grid(row=0, column=0, columnspan=2)
         self.buttonFrame.grid(row=0, column=2)
     
-    def getArgsFrame(self, currentAction, parent):
+    def getStepFrame(self, currentAction: Argument | Action | ActionGroup, parent: tk.Frame):
         """Builds and returns a frame containing the sub-entries for the given action.
 
         Args:
@@ -53,7 +62,7 @@ class ActionFrame:
             sFrame.grid(row=0, column=currentColumn)
             currentColumn += 1
         elif isinstance(currentAction, Action):         # Action
-            aFrame = self.buildActionFrame(argsFrame, currentAction)
+            aFrame = self.buildStepFrame(argsFrame, currentAction)
             aFrame.grid(row=0, column=currentColumn)
             currentColumn += 1
         elif isinstance(currentAction, ActionGroup):    # ActionGroup
@@ -65,7 +74,7 @@ class ActionFrame:
         
         return argsFrame
     
-    def buildArgumentFrame(self, parentFrame, argument):
+    def buildArgumentFrame(self, parentFrame: tk.Frame, argument: Argument):
         """Builds and returns a frame containing a single entry for the given argument.
         The frame contains a label and an entry for the argument.
 
@@ -92,7 +101,7 @@ class ActionFrame:
         return sFrame
 
 
-    def buildActionFrame(self, parentFrame, actionArg):
+    def buildStepFrame(self, parentFrame: tk.Frame, actionArg: Action | ActionGroup):
         
         """Builds and returns a frame containing a label with the action name and associated sub-frames for the action's arguments.
 
@@ -110,13 +119,13 @@ class ActionFrame:
         column = 1
         if argList is not None:
             for subArg in argList:
-                subFrame = self.getArgsFrame(subArg, aFrame)
+                subFrame = self.getStepFrame(subArg, aFrame)
                 subFrame.grid(row=0, column=column)
                 column += 1
 
         return aFrame
 
-    def buildGroupFrame(self, pFrame, group):
+    def buildGroupFrame(self, pFrame: tk.Frame, group: ActionGroup):
         """
         Builds and returns a frame containing a dropdown menu and a subframe for the currently
         selected action in the given action group.
@@ -139,7 +148,7 @@ class ActionFrame:
                                     initial=initial)
         groupDD.grid(row=0, column=0)
 
-        subFrame = self.getArgsFrame(group.getSelected(), gFrame)
+        subFrame = self.getStepFrame(group.getSelected(), gFrame)
         subFrame.grid(row=0, column=1)
 
         self.groupFrames[group] = subFrame
@@ -147,7 +156,7 @@ class ActionFrame:
         return gFrame
 
     
-    def updateActionGroupFrame(self, group, gFrame, newStrSelection):
+    def updateActionGroupFrame(self, group: ActionGroup, gFrame: tk.Frame, newStrSelection: str):
         """
         Updates the frame associated with a given action group when a
         new action is selected in the dropdown menu.
@@ -163,13 +172,13 @@ class ActionFrame:
         oldFrame = self.groupFrames[group]   # Destroy old args subframe
         oldFrame.destroy()
 
-        newFrame = self.getArgsFrame(group.getSelected(), gFrame)    # Build and grid new subframe
+        newFrame = self.getStepFrame(group.getSelected(), gFrame)    # Build and grid new subframe
         newFrame.grid(row=0, column=1)
 
         self.groupFrames[group] = newFrame  # Store frame reference for deletion operation
 
     
-    def getDropDown(self, entryList, pFrame, name="Type", callback=lambda: print("Default dropdown callback"), initial=None):
+    def getDropDown(self, entryList: list, pFrame: tk.Frame, name="Type", callback=lambda: print("Default dropdown callback"), initial=None):
         """
         Builds and returns a frame containing a dropdown menu (OptionMenu) and a label.
 
@@ -206,21 +215,32 @@ class ActionFrame:
         """Returns the frame containing the move and manage buttons for this action frame"""
         if not self.buttonFrame:
             newFrame = ButtonFrame(parent=self.frame, moveFunction=self.buttonMove, manageFunction=self.buttonManage)
-        return newFrame.getFrame()
+            return newFrame.getFrame()
+        else:
+            return self.buttonFrame
 
-    def buttonMove(self, moveType):
+    def buttonMove(self, moveType: str):
         """Handles the result of pressing a move button for this action frame"""
+        moveType = moveType.upper()
         offset = 0
+
         if moveType == "UP":
             offset = -1
         elif moveType == "DOWN":
             offset = 1
-        self.routineFrame.moveAction(actionFrame=self, offset=offset)
+        else:
+            raise Exception("Unknown move type: " + moveType)
+
+        self.routineFrame.moveStep(self, offset)
     
-    def buttonManage(self, manageType):
+    def buttonManage(self, manageType: str):
         """Handles the result of pressing a manage button for this action frame"""
+        manageType = manageType.upper()
+
         if manageType == "REMOVE":
-            self.routineFrame.removeActionFrame(self)
+            self.routineFrame.removeStepFrame(self)
+        else:
+            raise Exception("Unknown manage type: " + manageType)
 
     def destroy(self):
         """Destroys the tkinter frame associated with this action frame"""

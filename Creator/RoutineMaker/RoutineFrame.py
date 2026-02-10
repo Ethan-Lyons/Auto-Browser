@@ -1,13 +1,20 @@
-import tkinter
-from RoutineMaker.ActionFrame import ActionFrame
+import tkinter as tk
+from Creator.RoutineMaker.StepFrame import StepFrame
+from Creator.RoutineMaker.Routine import Routine
+from Creator.RoutineMaker.Steps import Action
+from Creator.RoutineMaker.Steps import ActionGroup
+from Creator.RoutineMaker.Steps import Argument
 
 class RoutineFrame():
-    def __init__(self, parent, routine):
+    """Class representing a frame for a routine. Manages the step frames for the routine."""
+    def __init__(self, parent: tk.Frame, routine: Routine):
         self.parent = parent
-        self.frame = tkinter.Frame(parent)
-        self.actionsFrameContainer = None
         self.routine = routine
-        self.actionFrames = []
+
+        self.frame = tk.Frame(parent)
+        self.stepFrameContainer = None
+        self.stepFrames = []
+        
         self.frame.grid(row=0, column=0)
         self._buildFrame()
 
@@ -17,16 +24,19 @@ class RoutineFrame():
         Builds and places the save, load, and add buttons, as well as the
         container for the action frames. Also adds a default branch to the routine object if empty.
         """
+        # Create frames
         if len(self.routine.getSteps()) == 0:
             self.routine.createDefaultAG()
-        self.actionsFrameContainer = self._buildAFContainer()   # create frames
+        self.stepFrameContainer = self._buildSFContainer()
 
-        self.addButton = tkinter.Button(self.frame, text="+",
+        # Create buttons
+        self.addButton = tk.Button(self.frame, text="+",
                                         command=self.addActionBranch)
-        self.saveButton = tkinter.Button(self.frame, text="Save", command=lambda: self.frameSave())
-        self.loadButton = tkinter.Button(self.frame, text="Load", command=lambda: self.frameLoad()) # create control buttons
+        self.saveButton = tk.Button(self.frame, text="Save", command=lambda: self.frameSave())
+        self.loadButton = tk.Button(self.frame, text="Load", command=lambda: self.frameLoad())
         
-        self.actionsFrameContainer.grid(row=0, column=0)    # place frames and buttons
+        # Arrange frame and buttons
+        self.stepFrameContainer.grid(row=0, column=0)
         self.addButton.grid(row=0, column=1)
         self.saveButton.grid(row=1, column=0)
         self.loadButton.grid(row=1, column=1)
@@ -42,39 +52,39 @@ class RoutineFrame():
         """
         needUpdate = self.routine.loadRoutine()  # load the routine from file and remove previous frames
         if needUpdate:
-            self.actionsFrameContainer.destroy()
-            self.actionFrames = []
+            self.stepFrameContainer.destroy()
+            self.stepFrames = []
 
-            self.actionsFrameContainer = self._buildAFContainer()   # re-build the frame
-            self.actionsFrameContainer.grid(row=0, column=0)
+            self.stepFrameContainer = self._buildSFContainer()   # re-build the frame
+            self.stepFrameContainer.grid(row=0, column=0)
 
-    def _buildAFContainer(self):
+    def _buildSFContainer(self):
         """
-        Builds and returns a frame containing all the action frames for the branches in the routine.
+        Builds and returns a frame containing all the step frames for the branches in the routine.
         """
-        actionsFrameContainer = tkinter.Frame(self.frame)
-        self.actionFrames = []
+        sfContainer = tk.Frame(self.frame)
+        self.stepFrames = []
         actionBranchList = self.routine.getSteps()
 
-        for currentBranch in actionBranchList:  # create each action frame
-            newFrame = self._createActionFrame(currentBranch, actionsFrameContainer)
-            self.actionFrames.append(newFrame)
+        for currentBranch in actionBranchList:  # create each step frame
+            newFrame = self._createStepFrame(currentBranch, sfContainer)
+            self.stepFrames.append(newFrame)
             
-        return actionsFrameContainer
+        return sfContainer
 
     def addActionBranch(self):
         """
-        Creates a new action branch in the routine and creates a new action frame for it.
+        Creates a new step branch in the routine and creates a new action frame for it.
         
         Returns:
-            The new ActionFrame object for the created action branch.
+            The new StepFrame object for the created action branch.
         """
         newBranch = self.routine.createDefaultAG()
-        newFrame = self._createActionFrame(newBranch, parent=self.actionsFrameContainer)
-        self.actionFrames.append(newFrame)
+        newFrame = self._createStepFrame(newBranch, parent=self.stepFrameContainer)
+        self.stepFrames.append(newFrame)
         return newFrame
 
-    def _createActionFrame(self, action, parent):
+    def _createStepFrame(self, action: Action | ActionGroup | Argument, parent: tk.Frame):
         """
         Creates a new ActionFrame for the given action and adds it to the container frame under the routine frame.
         
@@ -84,57 +94,57 @@ class RoutineFrame():
         Returns:
             The new ActionFrame object.
         """
-        actionFrame = ActionFrame(routineFrame=self, action=action, parent=parent)
+        actionFrame = StepFrame(routineFrame=self, step=action, parent=parent)
         frame = actionFrame.getFrame()
-        frame.grid(row=len(self.actionFrames), column=0)
+        frame.grid(row=len(self.stepFrames), column=0)
         return actionFrame
 
-    def moveAction(self, actionFrame, offset):
+    def moveStep(self, stepFrame: StepFrame, offset: int):
         """
         Moves an action frame to a new position in the routine frame's list, given by the offset.
         Also moves the action in the routine object accordingly.
         
         Args:
-            actionFrame (ActionFrame): The action frame to be moved
+            stepFrame (StepFrame): The action frame to be moved
             offset (int): The offset of the new position from the current position
         """
-        actionIndex = self.routine.getIndex(actionFrame.getAction())    # update action list in routine
+        actionIndex = self.routine.getIndex(stepFrame.getStep())    # update action list in routine
         self.routine.moveAction(actionIndex, actionIndex + offset)
 
-        actionFrameIndex = self.actionFrames.index(actionFrame)       # update actionFrames list in routineFrame
-        popFrame = self.actionFrames.pop(actionFrameIndex)
-        self.actionFrames.insert(actionIndex + offset, popFrame)
+        stepFrameIndex = self.stepFrames.index(stepFrame)       # update stepFrames list in routineFrame
+        popFrame = self.stepFrames.pop(stepFrameIndex)
+        self.stepFrames.insert(actionIndex + offset, popFrame)
 
-        self.reorderActionFrames()  # updates frames to match
+        self.reorderStepFrames()  # updates frames to match
 
-    def reorderActionFrames(self):
+    def reorderStepFrames(self):
         """
         Updates the action frames in the frame container to match their
         index in the list of action frames.
         """
         currentRow = 0
-        for actionFrame in self.actionFrames:
-            actionFrame.getFrame().grid(row=currentRow, column=0)
+        for stepFrame in self.stepFrames:
+            stepFrame.getFrame().grid(row=currentRow, column=0)
             currentRow += 1
 
-    def removeActionFrame(self, actionFrame):
+    def removeStepFrame(self, stepFrame: StepFrame):
         """
-        Removes an action branch from the routine and the frame from the list of action frames.
+        Removes a step frame from the routine frame and destroys it.
         
         Args: 
-            actionFrame (ActionFrame): The ActionFrame object to be removed.
+            stepFrame (StepFrame): The step frame to be removed.
         """
-        self.routine.removeAction(actionFrame.getAction())
-        self.actionFrames.remove(actionFrame)
-        actionFrame.destroy()
+        self.routine.removeStep(stepFrame.getStep())
+        self.stepFrames.remove(stepFrame)
+        stepFrame.destroy()
 
     def getSteps(self):
         """Returns the list of steps in the routine."""
         return self.routine.getSteps()
 
-    def getActionFrames(self):
+    def getStepFrames(self):
         """Returns the list of action frames under the routine frame."""
-        return self.actionFrames
+        return self.stepFrames
 
     def getFrame(self):
         """Returns the tkinter frame associated with this routine frame."""

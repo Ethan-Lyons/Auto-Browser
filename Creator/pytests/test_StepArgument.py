@@ -1,7 +1,4 @@
-from RoutineMaker.Routine import Routine
-from RoutineMaker.Steps import ActionGroup
-from RoutineMaker.Steps import Action
-from RoutineMaker.Steps import Argument
+from Creator.RoutineMaker.Steps import Argument
 
 import pytest as pytest
 
@@ -16,72 +13,53 @@ ARG_VALUE = "arg_value"
 ARG_DESCRIPTION = "arg_description"
 ARG = Argument(ARG_NAME, ARG_VALUE, ARG_DESCRIPTION)
 
-"""
-def __new__(cls, name, value=None, description=None):
-
-        obj = super().__new__(cls, name)    # call the str constructor
-        obj.value = value
-        obj.description = description
-        return obj
-    
-    def __init__(self, name, value=None, description=None):
-        self.name = name
-        self.value = value
-        self.description = description
-    
-    def __str__(self):
-        return self.name
-    
-    
-    def getName(self):
-        return self.name
-
-    def setDescription(self, description):
-        self.description = description
-    def getDescription(self):
-        return self.description
-
-    def setValue(self, value):
-        self.value = value
-    def getValue(self):
-        return self.value
-    
-    def copy(self):
-        return fullCopy(self)
-
-"""
 def test_init():
-    action = Action(ACTION_NAME, [], ACTION_DESCRIPTION)
-    assert type(action) == Action
+    arg = Argument(ARG_NAME, ARG_VALUE, ARG_DESCRIPTION)
+    assert type(arg) == Argument
 
 def test_init_values():
-    action = Action(ACTION_NAME, [], ACTION_DESCRIPTION)
-    assert action.name == ACTION_NAME
-    assert action.args == []
-    assert action.description == ACTION_DESCRIPTION
+    arg = Argument(ARG_NAME, ARG_VALUE, ARG_DESCRIPTION)
+    assert arg.getName() == ARG_NAME
+    assert arg.getValue() == ARG_VALUE
+    assert arg.getDescription() == ARG_DESCRIPTION
 
 def test_str():
-    action = Action(ACTION_NAME, [ARG], ACTION_DESCRIPTION)
-    assert str(action) == ACTION_NAME
+    arg = Argument(ARG_NAME, ARG_VALUE, ARG_DESCRIPTION)
+    assert str(arg) == "Argument: " + ARG_NAME + "\nValue: " + ARG_VALUE + "\nDescription: " + ARG_DESCRIPTION
+
+def test_setName():
+    arg = Argument(ARG_NAME, ARG_VALUE, ARG_DESCRIPTION)
+    arg.setName("new_name")
+    assert arg.getName() == "new_name"
 
 def test_getName():
-    action = Action(ACTION_NAME, [ARG], ACTION_DESCRIPTION)
-    assert action.getName() == ACTION_NAME
+    arg = Argument(ARG_NAME, ARG_VALUE, ARG_DESCRIPTION)
+    assert arg.getName() == ARG_NAME
 
 def test_copy_value():
-    pass
+    arg = Argument(ARG_NAME, ARG_VALUE, ARG_DESCRIPTION)
+    argCopy = arg.copy()
+    assert argCopy == arg
 
 def test_copy_id():
-    pass
+    arg = Argument(ARG_NAME, ARG_VALUE, ARG_DESCRIPTION)
+    argCopy = arg.copy()
+    assert argCopy is not arg
 
-def test_getArgs():
-    pass
+def test_setValue():
+    arg = Argument(ARG_NAME, ARG_VALUE, ARG_DESCRIPTION)
+    arg.setValue("new_value")
+    assert arg.getValue() == "new_value"
+
+def test_getValue():
+    arg = Argument(ARG_NAME, ARG_VALUE, ARG_DESCRIPTION)
+    assert arg.getValue() == ARG_VALUE
+
+def test_setDescription():
+    arg = Argument(ARG_NAME, ARG_VALUE, ARG_DESCRIPTION)
+    arg.setDescription("new_description")
+    assert arg.getDescription() == "new_description"
 
 def test_getDescription():
-    pass
-
-def test_get_found():
-    pass
-
-def test_get_not_found():
-    pass
+    arg = Argument(ARG_NAME, ARG_VALUE, ARG_DESCRIPTION)
+    assert arg.getDescription() == ARG_DESCRIPTION

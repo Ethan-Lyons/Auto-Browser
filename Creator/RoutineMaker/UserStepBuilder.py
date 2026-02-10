@@ -1,4 +1,4 @@
-import RoutineMaker.ActionFactory as ActionFactory
+import Creator.RoutineMaker.StepsFactory as StepsFactory
 
 class UserActionBuilder:
     def __init__(self):
@@ -103,10 +103,10 @@ class UserActionBuilder:
         whileType = r.userAction("WHILE", [condition], "Loop while a condition is true")
         endwhileType = r.userAction("END_WHILE", [], "End loop block")
 
-        return ActionFactory.createActionGroup("USER_ACTIONS", r.userActions)
+        return StepsFactory.createActionGroup("USER_ACTIONS", r.userActions)
     
-    def createUserAction(self, name, args, description):
-        newAction = ActionFactory.createAction(name, args, description)
+    def createUserAction(self, name: str, args=[], description=""):
+        newAction = StepsFactory.createAction(name, args, description)
         self.userSteps.append(newAction)
         return newAction
     
@@ -117,31 +117,39 @@ class UserActionBuilder:
         return self.userActionGroup
 
 class ActionRegistry:
+    """A class for registering and retrieving all configured step types."""
     def __init__(self):
+        """
+        Initializes the ActionRegistry with empty dictionaries for arguments, groups, actions, and userActions.
+        """
         self.arguments = {}
         self.groups = {}
         self.actions = {}
         self.userActions = []
 
-    def arg(self, name, description=""):
-        argObj = ActionFactory.createArgument(name, description)
+    def arg(self, name: str, description=""):
+        """Creates and returns an argument object with the given name and description."""
+        argObj = StepsFactory.createArgument(name, description)
         self.arguments[name] = argObj
         return argObj
 
-    def group(self, name, items, description=""):
-        groupObj = ActionFactory.createActionGroup(name, items, description)
-        self.groups[name] = groupObj
-        return groupObj
+    def group(self, name: str, args, description=""):
+        """Creates and returns an action group object with the given name, arguments, and description."""
+        actionGroup = StepsFactory.createActionGroup(name, args, description)
+        self.groups[name] = actionGroup
+        return actionGroup
 
-    def action(self, name, args, description=""):
-        actionObj = ActionFactory.createAction(name, args, description)
-        self.actions[name] = actionObj
-        return actionObj
+    def action(self, name: str, args, description=""):
+        """Creates and returns an action object with the given name, arguments, and description."""
+        action = StepsFactory.createAction(name, args, description)
+        self.actions[name] = action
+        return action
     
-    def userAction(self, name, args, description=""):
-        actionObj = ActionFactory.createAction(name, args, description)
-        self.actions[name] = actionObj
-        self.userActions.append(actionObj)
-        return actionObj
+    def userAction(self, name: str, args, description=""):
+        """Creates and returns a user action object with the given name, arguments, and description."""
+        userAction = StepsFactory.createAction(name, args, description)
+        self.actions[name] = userAction
+        self.userActions.append(userAction)
+        return userAction
 
     

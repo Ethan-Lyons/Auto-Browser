@@ -1,9 +1,9 @@
 import tkinter
 import pytest
 
-from RoutineMaker.Routine import Routine
-from RoutineMaker.RoutineFrame import RoutineFrame
-from RoutineMaker.ActionFrame import ActionFrame
+from Creator.RoutineMaker.Routine import Routine
+from Creator.RoutineMaker.RoutineFrame import RoutineFrame
+from Creator.RoutineMaker.StepFrame import StepFrame
 
 @pytest.fixture
 def routineEnv():
@@ -20,7 +20,7 @@ def test_init(routineEnv):
 
     assert len(routine.steps) == 1
     assert len(frame.getSteps()) == 1   # Routine frames will create 1 action on creation
-    assert len(frame.getActionFrames()) == 1
+    assert len(frame.getStepFrames()) == 1
     assert routine.steps[0] is frame.getSteps()[0]
 
 def test_add_frame(routineEnv):
@@ -30,19 +30,19 @@ def test_add_frame(routineEnv):
 
     assert len(routine.steps) == 2
     assert len(frame.getSteps()) == 2
-    assert len(frame.getActionFrames()) == 2
+    assert len(frame.getStepFrames()) == 2
 
-    assert newBranch.getAction() is routine.steps[1]
-    assert newBranch.getAction() is frame.getSteps()[1]
+    assert newBranch.getStep() is routine.steps[1]
+    assert newBranch.getStep() is frame.getSteps()[1]
 
-def test_remove_action(routineEnv):
+def test_remove_step(routineEnv):
     _, routine, frame = routineEnv
 
     frame.addActionBranch()
 
-    frame.removeActionFrame(frame.getActionFrames()[1])
+    frame.removeStepFrame(frame.getStepFrames()[1])
 
     assert len(routine.steps) == 1
     assert len(frame.getSteps()) == 1
-    assert len(frame.getActionFrames()) == 1
+    assert len(frame.getStepFrames()) == 1
 

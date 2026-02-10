@@ -3,17 +3,17 @@ from RoutineMaker.Routine import Routine
 
 TEST_OUTPUT_DIR = "./TestData"
 
-def saveRoutine(routine, name):
+def saveRoutine(routine: Routine, name: str):
     routine.saveRoutine(filePath=f"{TEST_OUTPUT_DIR}/{name}.json")
 
 def newRoutine():
     return Routine(inputOutput=InputOutput)
 
-def openPage(routine, urlValue):
+def openPage(routine: Routine, urlValue: str):
     addNewTabStep(routine)
     addNavStep(routine, urlValue)
 
-def addNavStep(routine, urlValue):
+def addNavStep(routine: Routine, urlValue: str):
     ag = routine.createDefaultAG()
     nav = ag.get("URL_NAV")
     ag.setSelected(nav)
@@ -21,7 +21,7 @@ def addNavStep(routine, urlValue):
     urlArg = nav.get("url")
     urlArg.setValue(urlValue)
 
-def addClickXpathStep(routine, xpathValue):
+def addClickXpathStep(routine: Routine, xpathValue: str):
     ag = routine.createDefaultAG()
     click = ag.get("CLICK")
     ag.setSelected(click)
@@ -32,7 +32,7 @@ def addClickXpathStep(routine, xpathValue):
 
     xpath.setValue(xpathValue)
 
-def addClickLinkStep(routine, linkValue, strictValue=False):
+def addClickLinkStep(routine: Routine, linkValue: str, strictValue=False):
     ag = routine.createDefaultAG()
     click = ag.get("CLICK")
     ag.setSelected(click)   # click action
@@ -55,12 +55,12 @@ def addClickLinkStep(routine, linkValue, strictValue=False):
         strict.setSelected(false)    # strict action group
 
 
-def addNewTabStep(routine):
+def addNewTabStep(routine: Routine):
     ag = routine.createDefaultAG()
     newTab = ag.get("NEW_TAB")
     ag.setSelected(newTab)
 
-def addStoreTextAction(routine, storeName, varValue):
+def addStoreTextAction(routine: Routine, storeName: str, varValue: str):
     ag = routine.createDefaultAG()
     store = ag.get("STORE")
 
@@ -185,33 +185,6 @@ def testIfTrue():
 
     saveRoutine(routine, "test_if_true")
 
-
-"""def testIfFalse():
-    routine = newRoutine()
-    addNewTabStep(routine)
-
-    # IF
-    ag = routine.createDefaultAG()
-    ifAction = ag.get("IF")
-    ag.setSelected(ifAction)
-
-    condition = ifAction.get("condition")
-    text = condition.get("text")
-    condition.setSelected(text)
-    text.setValue("false")  # literal value
-
-    # If body: NAV
-    openPage(routine, "https://example.com")
-
-    # If body: CLICK
-    addClickLinkStep(routine, "example")
-
-    # END_IF
-    endAG = routine.createDefaultAG()
-    endifAction = endAG.get("END_IF")
-    endAG.setSelected(endifAction)
-
-    saveRoutine(routine, "test_if_false")"""
 def testIfFalse():
     routine = newRoutine()
     addNewTabStep(routine)
@@ -406,40 +379,6 @@ def testHistoryForward():
 
     saveRoutine(routine, "test_history_forward")
 
-
-# TODO: screenshot should be under output, not its own action
-"""def testScreenshotValid():
-    routine = newRoutine()
-    addNewTabStep(routine)
-    addNavStep(routine, "https://example.com")
-
-    ag = routine.createDefaultAG()
-    screenshot = ag.get("screenshot")
-    ag.setSelected(screenshot)
-
-    fileName = screenshot.get("fileName")
-    fileName.setValue("example_page")
-
-    saveRoutine(routine, "test_screenshot_valid")
-
-def testScreenshotInvalid():
-    routine = newRoutine()
-    addNewTabStep(routine)
-
-    ag = routine.createDefaultAG()
-    screenshot = ag.get("SCREENSHOT")
-    ag.setSelected(screenshot)
-
-    fileName = screenshot.get("fileName")
-    fileName.setValue("../evil.png")
-
-    saveRoutine(routine, "test_screenshot_invalid")"""
-
-# TODO:
-# info get title / url
-# info get tab number / active tab index
-
-
 def generate_test_data():
     testBlank()
     testNav()
@@ -455,7 +394,5 @@ def generate_test_data():
     testForLoopWithStore()
     testHistoryBackward()
     testHistoryForward()
-    #testScreenshotValid()
-    #testScreenshotInvalid()
 
 generate_test_data()
