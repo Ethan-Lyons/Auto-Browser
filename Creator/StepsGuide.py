@@ -3,9 +3,9 @@ from tkinter import ttk
 import re
 import os
 
-from RoutineMaker.Steps import Action
-from RoutineMaker.Steps import ActionGroup
-from RoutineMaker.Steps import Argument
+from Creator.RoutineMaker.Steps import Action
+from Creator.RoutineMaker.Steps import ActionGroup
+from Creator.RoutineMaker.Steps import Argument
 from Creator.RoutineMaker.UserStepBuilder import UserActionBuilder
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -22,9 +22,13 @@ class StepsGuide():
     A class for creating a window that displays a list of steps along with their types and descriptions.
     Steps are arranged in a hierarchical tree structure.
     """
-    def __init__(self, stepTypes=[]):
-        self.stepTypes = stepTypes  # All steps that can be performed.
+    def __init__(self, stepTypes: list = None):
+        self.stepTypes = stepTypes or []  # All steps that can be performed.
         self.root = self.createWindow()
+        self.container = self.createContainer(self.root)
+        self.tree = self.createTree(self.container)
+    
+    def run(self):
         self.root.mainloop()
 
     def createWindow(self):
@@ -37,25 +41,23 @@ class StepsGuide():
         root = tk.Tk()
         root.title("Action Viewer")
 
-        sContainer = tk.Frame(root)
-        self.stepFrameLayout(sContainer)
-
         return root
     
-    def stepFrameLayout(self, sContainer: tk.Frame):
+    def createContainer(self, parent: tk.Frame):
         """
         Handles the layout of the main window including the step container and the step tree.
         
         Args:
             sContainer (tk.Frame): The parent container for the step tree
         """
-        tree = self.createTree(self.stepTypes, sContainer)
-
+        sContainer = tk.Frame(parent)
         sContainer.grid(row=0, column=0)
-        tree.grid(row=0, column=0)
+
+        return sContainer
+        
 
     
-    def createTree(self, stepTypes: list, sContainer: tk.Frame):
+    def createTree(self, parent: tk.Frame):
         """
         Creates the step tree widget and populates it with the given step types.
 
@@ -66,7 +68,7 @@ class StepsGuide():
         Returns:
             ttk.Treeview: The step tree.
         """
-        tree = ttk.Treeview(sContainer, columns=("type", "description", "js"), show="tree headings")
+        tree = ttk.Treeview(parent, columns=("type", "description", "js"), show="tree headings")
 
         # Configure the column headings
         tree.heading("#0", text="Name")
@@ -77,18 +79,23 @@ class StepsGuide():
         tree.column("js", anchor="center")
 
         # Add the steps to the tree
-        self.addTreeSteps(stepTypes, tree)
+        for step in self.stepTypes:
+            self.addTreeStep(step, tree)
 
         # Update the JS handler column values for top-level steps
-        treeRoot = tree.get_children("")[0]
-        initialChildIDs = tree.get_children(treeRoot)
-        self.jsUpdate(tree, initialChildIDs)
+        rootChildren = tree.get_children("")
+        if rootChildren:
+            treeRoot = rootChildren[0]
+            initialChildIDs = tree.get_children(treeRoot)
+            self.jsUpdate(tree, initialChildIDs)
+
+        tree.grid(row=0, column=0)
 
         return tree
     
-    def addTreeSteps(self, currStep: Action | ActionGroup | Argument, tree: ttk.Treeview, parentID=""):
+    def addTreeStep(self, currStep: Action | ActionGroup | Argument, tree: ttk.Treeview, parentID: str = ""):
         """
-        Adds a single step to the step tree.
+        Adds a single step and its sub-actions to the step tree.
 
         Args:
             currStep (Action | ActionGroup | Argument): The step to add to the tree.
@@ -98,7 +105,7 @@ class StepsGuide():
         # If the current step is a group or action, add it to the tree
         if isinstance(currStep, (ActionGroup, Action)):
             stepType = type(currStep).__name__
-            node_id = tree.insert(
+            nodeID = tree.insert(
                 parentID,
                 "end",
                 text=currStep.getName(),
@@ -107,7 +114,7 @@ class StepsGuide():
 
             # Create a tree node for each sub-action
             for subAction in currStep.getArgs():
-                self.addTreeSteps(subAction, tree, node_id)
+                self.addTreeStep(subAction, tree, nodeID)
 
         # If the current step is an argument, add it to the tree
         elif isinstance(currStep, Argument):
@@ -124,7 +131,7 @@ class StepsGuide():
                 f"addTreeSteps: Unknown step type {currStep} ({type(currStep)})"
             )
         
-    def jsUpdate(self, tree: ttk.Treeview, entries: list):
+    def jsUpdate(self, tree: ttk.Treeview, entries: list, filePath: str = jsHandlerPath):
         """
         Updates the JS handler column for the given tree entries.
 
@@ -132,12 +139,12 @@ class StepsGuide():
             tree (ttk.Treeview): The tree to update.
             entries (list): A list of tree entry IDs.
         """
-        jsText = self.getFileContents(jsHandlerPath)
+        searchText = self.getFileContents(filePath)
 
         for id in entries:
             name = tree.item(id, "text")    # Get the name of the step
             expectedRegex = r"case [\'\"]" + re.escape(name) + r"[\'\"]:"   # Expected format: 'case "name":'
-            match = re.search(expectedRegex, jsText, re.IGNORECASE)
+            match = re.search(expectedRegex, searchText, re.IGNORECASE)
 
             if match:
                 tree.set(id, column="js", value="YES")
@@ -148,10 +155,10 @@ class StepsGuide():
         """Reads and returns the contents of a file."""
         with open(filePath, "r", encoding="utf-8") as file:
             return file.read()
-
-
-if __name__ == "__main__":
-    uAB = UserActionBuilder()
-    userSteps = uAB.getUserActionGroup()
-
-    stepsGuide = StepsGuide(stepTypes=userSteps)
+    
+    def getTreeview(self):
+        return self.tree
+    
+    def closeWindow(self):
+        if self.root:
+            self.root.destroy()

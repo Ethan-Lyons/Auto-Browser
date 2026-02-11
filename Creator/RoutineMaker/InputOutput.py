@@ -36,7 +36,7 @@ def saveRoutine(routine, filePath=None):
         outputRoutine(rTD, filePath)
         print("Saved routine to " + filePath)
 
-def outputRoutine(routineData, addr):
+def outputRoutine(routineData: dict, addr: str):
     """
     Outputs a routine as a JSON file to the address provided.
     
@@ -80,9 +80,9 @@ def loadRoutine(filePath=None):
         print("Loaded routine from " + filePath)
         return output
 
-def actionsToDict(entry):
+def actionsToDict(entry: Action | ActionGroup | Argument):
     """
-    Recursively converts an Action or ActionGroup into a dictionary.
+    Recursively converts an Action, ActionGroup, or Argument into a dictionary.
     
     Args:
         entry (Action or ActionGroup): The object to be converted.
@@ -106,10 +106,14 @@ def actionsToDict(entry):
             }
         return result
     elif isinstance(entry, ActionGroup):    # ActionGroup
+        selected = entry.getSelected()
+        if selected:    # Prevents calling actionsToDict on None
+            selected = actionsToDict(selected)
+
         return {
             "type": "ActionGroup",
             "name": entry.getName(),
-            "selected": actionsToDict(entry.getSelected()),
+            "selected": selected,
             "allArgs": [actionsToDict(a) for a in entry.getArgs()],      # Saves input for all unused actions
             "description": entry.getDescription()
         }
@@ -121,7 +125,7 @@ def actionsToDict(entry):
     else:   # Unknown type
         raise TypeError(f"Unsupported type for actionToDict: {type(entry)}")
     
-def dictToActions(actionDict):
+def dictToActions(actionDict: dict):
     """
     Recursively converts a dictionary into an Action or ActionGroup.
     
@@ -149,8 +153,13 @@ def dictToActions(actionDict):
                                args=[dictToActions(a) for a in actionDict["allArgs"]],
                                description=actionDict["description"])
         
-        selectedAction = newGroup.get(actionDict["selected"]["name"])    # Find the selected action
-        newGroup.setSelected(selectedAction)
+        selected = actionDict.get("selected")
+        if selected is not None:
+            selectedAction = newGroup.get(selected["name"])
+            newGroup.setSelected(selectedAction)
+        else :
+            newGroup.setSelected(None)
+            
         return newGroup
     
     elif actionDict["type"] == "Routine":   # Routine

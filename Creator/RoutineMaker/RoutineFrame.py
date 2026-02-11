@@ -31,7 +31,7 @@ class RoutineFrame():
 
         # Create buttons
         self.addButton = tk.Button(self.frame, text="+",
-                                        command=self.addActionBranch)
+                                        command=self.addStepFrame)
         self.saveButton = tk.Button(self.frame, text="Save", command=lambda: self.frameSave())
         self.loadButton = tk.Button(self.frame, text="Load", command=lambda: self.frameLoad())
         
@@ -41,16 +41,16 @@ class RoutineFrame():
         self.saveButton.grid(row=1, column=0)
         self.loadButton.grid(row=1, column=1)
 
-    def frameSave(self):
+    def frameSave(self, filePath=None):
         """Saves the routine to a file."""
-        self.routine.saveRoutine()
+        self.routine.saveRoutine(filePath)
 
-    def frameLoad(self):
+    def frameLoad(self, filePath=None):
         """
         Loads a routine from a file and rebuilds the action frames accordingly.
         This function will destroy the existing action frames and rebuild the list from the loaded routine.
         """
-        needUpdate = self.routine.loadRoutine()  # load the routine from file and remove previous frames
+        needUpdate = self.routine.loadRoutine(filePath)  # load the routine from file and remove previous frames
         if needUpdate:
             self.stepFrameContainer.destroy()
             self.stepFrames = []
@@ -64,17 +64,17 @@ class RoutineFrame():
         """
         sfContainer = tk.Frame(self.frame)
         self.stepFrames = []
-        actionBranchList = self.routine.getSteps()
+        stepList = self.routine.getSteps()
 
-        for currentBranch in actionBranchList:  # create each step frame
-            newFrame = self._createStepFrame(currentBranch, sfContainer)
+        for branch in stepList:  # create each step frame
+            newFrame = self._createStepFrame(branch, sfContainer)
             self.stepFrames.append(newFrame)
             
         return sfContainer
 
-    def addActionBranch(self):
+    def addStepFrame(self):
         """
-        Creates a new step branch in the routine and creates a new action frame for it.
+        Creates a new step branch in the routine and creates a new step frame for it.
         
         Returns:
             The new StepFrame object for the created action branch.
@@ -86,7 +86,7 @@ class RoutineFrame():
 
     def _createStepFrame(self, action: Action | ActionGroup | Argument, parent: tk.Frame):
         """
-        Creates a new ActionFrame for the given action and adds it to the container frame under the routine frame.
+        Creates a new StepFrame for the given action and adds it to the container frame under the routine frame.
         
         Args:
             action (Action): The action for which to create the action frame
@@ -134,9 +134,12 @@ class RoutineFrame():
         Args: 
             stepFrame (StepFrame): The step frame to be removed.
         """
-        self.routine.removeStep(stepFrame.getStep())
-        self.stepFrames.remove(stepFrame)
-        stepFrame.destroy()
+        for checkFrame in self.stepFrames:
+            if checkFrame == stepFrame:
+                self.routine.removeStep(stepFrame.getStep())
+                self.stepFrames.remove(stepFrame)
+                stepFrame.destroy()
+                return
 
     def getSteps(self):
         """Returns the list of steps in the routine."""

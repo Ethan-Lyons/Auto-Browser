@@ -69,3 +69,38 @@
             print(f"Action {oldAction} not found in routine.")
 """
 
+from Creator.RoutineMaker.Routine import Routine
+from Creator.RoutineMaker.Steps import ActionGroup
+from Creator.RoutineMaker.Steps import Action
+from Creator.RoutineMaker.Steps import Argument
+
+import pytest as pytest
+
+def test_init():
+    routine = Routine()
+    assert routine.steps == []
+
+def test_add_step():
+    routine = Routine()
+    new_action = routine.createDefaultAG()
+    assert len(routine.steps) == 1
+    assert routine.steps[0] == new_action
+
+def test_remove_step():
+    routine = Routine()
+    newAction = routine.createDefaultAG()
+    routine.removeStep(newAction)
+    assert len(routine.steps) == 0
+
+def test_get_steps():
+    routine = Routine()
+    action1 = routine.createDefaultAG()
+    action2 = routine.createDefaultAG()
+    assert routine.getSteps() == [action1, action2]
+
+def test_move_step():
+    routine = Routine()
+    action1 = routine.createDefaultAG()
+    action2 = routine.createDefaultAG()
+    routine.moveAction(0, 1)
+    assert routine.getSteps() == [action2, action1]

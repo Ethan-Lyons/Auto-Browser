@@ -10,6 +10,12 @@ class Routine:
         self.UAB = UserActionBuilder()
         self.userActionGroup = self.UAB.getUserActionGroup()
         self.steps = []
+    
+    def __eq__(self, other):
+        return (
+            isinstance(other, Routine)
+            and self.steps == other.steps
+        )
 
     def __str__(self):
         routineDict = {"actions": [self.inputOutput.actionsToDict(b) for b in self.steps]}
@@ -31,6 +37,9 @@ class Routine:
 
         Args:
             filePath (str): The path of the file to load the routine from. Defaults to None.
+        
+        Returns:
+            bool: True if the routine has been updated, False otherwise.
         """
         newRoutine = self.inputOutput.loadRoutine(filePath)
         if newRoutine:
@@ -44,7 +53,8 @@ class Routine:
     
     def removeStep(self, step: Action | ActionGroup | Argument):
         """Removes a step from the routine step list."""
-        self.steps.remove(step)
+        if step in self.steps:
+            self.steps.remove(step)
 
     def createDefaultAG(self):
         """
@@ -65,6 +75,11 @@ class Routine:
     def getSteps(self):
         """Returns the list of steps in the routine."""
         return self.steps
+    
+    def getIndex(self, step: Action | ActionGroup | Argument):
+        if step in self.steps:
+            return self.steps.index(step)
+        raise ValueError(f"Step \'{step}\' not found in routine.")
     
     def removeByIndex(self, index: int):
         """Removes the action at the given index from the routine."""
