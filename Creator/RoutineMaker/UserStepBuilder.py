@@ -10,6 +10,7 @@ class UserActionBuilder:
         # ---------- Arguments ----------
         variable = r.arg("variable")
         text = r.arg("text")
+        key = r.arg("key")
         fileName = r.arg("file_name")
         url = r.arg("url")
         tab = r.arg("tab")
@@ -18,6 +19,7 @@ class UserActionBuilder:
         end = r.arg("end")
         write = r.arg("write")
         append = r.arg("append")
+        noneArg = r.arg("none")
 
         # Selector types
         xpath = r.arg("xpath")
@@ -80,6 +82,19 @@ class UserActionBuilder:
         canOutput = r.group("CAN_OUTPUT", [textFile, screenshot])
         output = r.userAction("OUTPUT", [canOutput])
 
+        typeText = r.group("TYPE_TEXT", [find, text, milliseconds])
+
+        #keyNext = r.group("KEY_NEXT", [])
+        #chainKey = r.action("CHAIN_KEY", [key, keyNext])
+        #keyNext.setArgs([noneArg, chainKey])
+
+        modKeys = r.arg("MOD_KEY(S)", "Modifier key(s), such as shift, ctrl, alt, or meta. Keys are separated by spaces or +s. For example: 'alt shift' or 'ctrl + alt'")
+        shortcut = r.action("SHORTCUT", [modKeys, key])
+        #shortcut = r.action("SHORTCUT", [key, keyNext])
+        #chainKey = r.action("CHAIN_KEY", [key, keyNext])
+
+        keyMode = r.group("KEY_MODE", [typeText, shortcut])
+        keyboard = r.userAction("KEYBOARD", [keyMode])
 
         urlNav = r.userAction("URL_NAV", [url], "Navigate to a URL")
         tabNav = r.userAction("TAB_NAV", [tab], "Navigate to a tab")
@@ -93,17 +108,17 @@ class UserActionBuilder:
         history = r.userAction("HISTORY", [historyMode], "Go forward or backward in the page history")
 
         # ---------- Conditionals ----------
-        ifType = r.userAction("IF", [condition], "If condition")
-        elseType = r.userAction("ELSE", [], "Else branch")
-        endIfType = r.userAction("END_IF", [], "End if block")
+        ifStep = r.userAction("IF", [condition], "If condition")
+        elseStep = r.userAction("ELSE", [], "Else branch")
+        endIfStep = r.userAction("END_IF", [], "End if block")
 
-        forType = r.userAction("FOR", [start, end], "Loop over a range of values")
-        endforType = r.userAction("END_FOR", [], "End loop block")
+        forStep = r.userAction("FOR", [start, end], "Loop over a range of values")
+        endforStep = r.userAction("END_FOR", [], "End loop block")
 
-        whileType = r.userAction("WHILE", [condition], "Loop while a condition is true")
-        endwhileType = r.userAction("END_WHILE", [], "End loop block")
+        whileStep = r.userAction("WHILE", [condition], "Loop while a condition is true")
+        endwhileStep = r.userAction("END_WHILE", [], "End loop block")
 
-        return StepsFactory.createActionGroup("USER_ACTIONS", r.userActions)
+        return StepsFactory.createActionGroup("USER_ACTIONS", r.userSteps)
     
     def createUserAction(self, name: str, args=[], description=""):
         newAction = StepsFactory.createAction(name, args, description)
@@ -125,7 +140,7 @@ class ActionRegistry:
         self.arguments = {}
         self.groups = {}
         self.actions = {}
-        self.userActions = []
+        self.userSteps = []
 
     def arg(self, name: str, description=""):
         """Creates and returns an argument object with the given name and description."""
@@ -145,11 +160,11 @@ class ActionRegistry:
         self.actions[name] = action
         return action
     
-    def userAction(self, name: str, args, description=""):
+    def userAction(self, name: str, args: list, description: str = ""):
         """Creates and returns a user action object with the given name, arguments, and description."""
         userAction = StepsFactory.createAction(name, args, description)
         self.actions[name] = userAction
-        self.userActions.append(userAction)
+        self.userSteps.append(userAction)
         return userAction
 
     

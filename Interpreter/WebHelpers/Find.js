@@ -1,6 +1,6 @@
 import { getActivePage, resolveBoolean } from "./WebHelpers.js";
 import { assertStep } from "./Assert.js";
-import { BrowserContext, Locator } from 'puppeteer-core';
+import { BrowserContext, Locator, Page } from 'puppeteer-core';
 
 /**
  * Parses a findStep and returns the element locator found.
@@ -48,24 +48,24 @@ export async function exeFind(context, mode, subStep) {
     switch (modeName) {
         case "XPATH":
             const xpathSpec = parseXpath(subStep);
-            return await findByXPath(page, xpathSpec.value);
+            return findByXPath(page, xpathSpec.value);
 
         case "TEXT":
             const textSpec = parseText(subStep);
-            return await findByText(page, textSpec.value);
+            return findByText(page, textSpec.value);
 
         case "ARIA":
             const ariaSpec = parseAria(subStep);
-            return await findByAria(page, ariaSpec.value);
+            return findByAria(page, ariaSpec.value);
 
         case "CSS":
             const cssSpec = parseCSS(subStep);
-            const locator = await page.locator(cssSpec.value);
+            const locator = page.locator(cssSpec.value);
             return locator;
 
         case "LINK":
             const linkSpec = parseLink(subStep);
-            return await findByLinkAddress(page, linkSpec.text, linkSpec.strict);
+            return findByLinkAddress(page, linkSpec.text, linkSpec.strict);
 
         default:
             throw new Error(`exeFind: unsupported find mode: ${modeName}`);
@@ -163,9 +163,9 @@ function parseLink(linkStep) {
  * @param {String} linkAddress The link address to search for.
  * @param {String} [strict="false"] Whether to search for an exact address or
  *  an address that contains the given String.
- * @returns {Promise<Locator>} The locator for the found element.
+ * @returns {Locator} The locator for the found element.
  */
-async function findByLinkAddress(page, linkAddress, strict = false) {
+function findByLinkAddress(page, linkAddress, strict = false) {
     // Check if page exists
     if (!page) {
         throw new TypeError('findByLinkAddress: page is required');
@@ -177,23 +177,23 @@ async function findByLinkAddress(page, linkAddress, strict = false) {
     }
 
     // Look for partial or exact match based on strict value
-    const fullXpath = strict
+    const selector = strict
         ? `::-p-xpath(//a[@href="${linkAddress}"])`
         : `::-p-xpath(//a[contains(@href, "${linkAddress}")])`;
 
     // Return locator
-    return page.locator(fullXpath); 
+    return page.locator(selector); 
 }
 
 /**
  * Helper function to find an element by XPath.
  * @param {Page} page The page to search for the element.
  * @param {String} xPath The XPath to search for.
- * @returns {Promise<Locator>} The locator for the element.
+ * @returns {Locator} The locator for the element.
  */
 async function findByXPath(page, xPath) {
-    const fullXPath = `::-p-xpath(${xPath})`;
-    const locator = await page.locator(fullXPath);
+    const selector = `::-p-xpath(${xPath})`;
+    const locator = page.locator(selector);
     return locator;
 }
 
@@ -201,11 +201,12 @@ async function findByXPath(page, xPath) {
  * Finds an element locator based on its text content.
  * @param {Page} page The page to search for the element.
  * @param {String} text The text content of the target element.
- * @returns {Promise<Locator>} A promise that resolves
+ * @returns {Locator} A promise that resolves
  *  with the element locator found.
  */
-async function findByText(page, text) {
-    const locator = await page.locator(`::-p-text(${text})`);
+function findByText(page, text) {
+    const selector = `::-p-text(${text})`
+    const locator = page.locator(selector);
     return locator;
 }
 
@@ -213,10 +214,10 @@ async function findByText(page, text) {
  * Helper function to find an element by Aria
  * @param {Page} page The page to search for the element.
  * @param {String} aria The aria value to search for.
- * @returns {Promise<Locator>} The locator for the element.
+ * @returns {Locator} The locator for the element.
  */
-async function findByAria(page, aria){
-    const fullXPath = `::-p-aria(${aria})`;
-    const locator = await page.locator(fullXPath);
+function findByAria(page, aria){
+    const selector = `::-p-aria(${aria})`;
+    const locator = page.locator(selector);
     return locator;
 }

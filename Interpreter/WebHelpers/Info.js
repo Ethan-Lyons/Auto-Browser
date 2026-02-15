@@ -29,6 +29,7 @@ export function parseInfo(infoStep) {
 
 /**
  * Performs an info action based on the given info mode.
+ * Supported modes: URL, TITLE, TAB_COUNT, CURRENT_INDEX.
  * @param {BrowserContext} context The browser context instance to use.
  * @param {String} mode The info mode to use.
  * @returns {Promise<String>} The result of the info mode action.

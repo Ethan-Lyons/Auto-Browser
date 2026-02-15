@@ -6,6 +6,30 @@ export function argumentStep(name, value) {
     return { name: name, type: "Argument", value: value };
 }
 
+export function millisecondsStep(msVal) {
+    return { name: "milliseconds", type: "Argument", value: msVal };
+}
+
+export function typeTextStep(findStep, textStep, msStep) {
+    return { name: "TYPE_TEXT", type: "Action", args: [findStep, textStep, msStep] };
+}
+
+export function modKeyStep(modKeyString) {
+    return { name: "MOD_KEY", type: "Argument", value: modKeyString };
+}
+
+export function keyStep(keyString) {
+    return { name: "KEY", type: "Argument", value: keyString };
+}
+
+export function shortcutStep(modKeyStep, keyStep) {
+    return { name: "SHORTCUT", type: "Action", args: [modKeyStep, keyStep] };
+}
+
+export function keyboardStep(selectedKeyModeStep) {
+    return { name: "KEYBOARD", type: "Action", args: { name: "KEY_MODE", type: "ActionGroup", selected: selectedKeyModeStep} };
+}
+
 export function strictStep(selectedStrictStep) {
     return { name: "STRICT", type: "ActionGroup", selected: selectedStrictStep}
 }

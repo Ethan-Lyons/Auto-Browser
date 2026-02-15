@@ -29,6 +29,11 @@ export * from './Assert.js'
 export * from './Screenshot.js'
 export * from './TextFile.js'
 
+export * from './RunRoutine.js'
+export * from './Keyboard.js'
+export * from './Shortcut.js'
+export * from './TypeText.js'
+
 
 // Maps each browser context to its active page
 export const contextToPage = new WeakMap();
