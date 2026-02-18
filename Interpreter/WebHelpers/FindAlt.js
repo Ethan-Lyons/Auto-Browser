@@ -1,4 +1,5 @@
-import { find, getActivePage } from "./WebHelpers.js"
+import { assert } from "puppeteer-core";
+import { find, getActivePage, assertStep } from "./WebHelpers.js"
 import { TimeoutError, BrowserContext } from "puppeteer-core";
 
 /**
@@ -11,8 +12,9 @@ import { TimeoutError, BrowserContext } from "puppeteer-core";
  *  the Boolean result of finding the element.
  */
 export async function canFind(context, canFindStep) {
-    findSpec = parseCanFind(canFindStep);
-    return await exeCanFind(context, findSpec.findStep);
+    const findSpec = parseCanFind(canFindStep);
+    const result = await exeCanFind(context, findSpec.findStep);
+    return result;
 }
 
 /**
@@ -21,10 +23,7 @@ export async function canFind(context, canFindStep) {
  * @returns {{ findStep: Object }}
  */
 export function parseCanFind(canFindStep) {
-    if (!canFindStep || canFindStep.name?.toUpperCase() !== "CAN_FIND") {
-        throw new Error(`parseCanFind: input is not a CAN_FIND action.
-        Input: ${JSON.stringify(canFindStep)}`);
-    }
+    assertStep(canFindStep, 'CAN_FIND', 'parseCanFind');
 
     const [findStep] = canFindStep.args;
     return { findStep: findStep }
@@ -39,7 +38,7 @@ export function parseCanFind(canFindStep) {
  */
 export async function exeCanFind(context, findStep) {
     try {
-        locator = await find(context, findStep);
+        const locator = await find(context, findStep);
         await locator.waitHandle();
     } catch (err) {
         if (err instanceof TimeoutError) {
@@ -56,11 +55,11 @@ export async function exeCanFind(context, findStep) {
  *  instance to use.
  * @param {{name: "FIND_TEXT", type: "Action", args: [Object]}} findTextStep An object
  *  containing the information for the findText action.
- * @returns {Promise<String>} A promise that resolves with
+ * @returns {Promise<string>} A promise that resolves with
  *  the element's text content
  */
 export async function findText(context, findTextStep) {
-    findSpec = parseFindText(findTextStep);
+    const findSpec = parseFindText(findTextStep);
     return await exeFindText(context, findSpec.findStep);
 }
 
@@ -71,10 +70,7 @@ export async function findText(context, findTextStep) {
  * @returns {{ findStep: Object }}
  */
 export function parseFindText(findTextStep) {
-    if (!findTextStep || findTextStep.name?.toUpperCase() !== "FIND_TEXT") {
-        throw new Error(`parseFindText: input is not a FIND_TEXT action.
-        Input: ${JSON.stringify(findTextStep)}`);
-    }
+    assertStep(findTextStep, 'FIND_TEXT', 'parseFindText');
 
     const [findStep] = findTextStep.args;
     return { findStep: findStep }
@@ -84,7 +80,7 @@ export function parseFindText(findTextStep) {
  * Performs a find action and returns the text content of the found element.
  * @param {BrowserContext} context The browser context instance to use.
  * @param {{name: "FIND_TEXT", type: "Action", args: [Object]}} findStep 
- * @returns {Promise<String>} A promise that resolves with the text content of the found element
+ * @returns {Promise<string>} A promise that resolves with the text content of the found element
  */
 export async function exeFindText(context, findStep) {
     let elementHandle;

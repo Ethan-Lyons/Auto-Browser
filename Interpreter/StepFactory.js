@@ -6,6 +6,35 @@ export function argumentStep(name, value) {
     return { name: name, type: "Argument", value: value };
 }
 
+export function outputStep(outputModeStep) {
+    const canOutput = { name: "CAN_OUTPUT", type: "ActionGroup", selected: outputModeStep };
+    return { name: "OUTPUT", type: "Action", args: [canOutput] };
+}
+
+export function textFileStep(textVal, fileNameVal, selectedMode) {
+    const fnStep = fileNameStep(fileNameVal);
+    const tStep = { name: "TEXT", type: "Argument", value: textVal };
+
+    const textModeStep = { name: "TEXT_MODE", type: "ActionGroup", selected: selectedMode };
+    return { name: "TEXT_FILE", type: "Action", args: [tStep, fnStep, textModeStep] };
+}
+
+export function writeStep() {
+    return { name: "WRITE", type: "Argument", value: null };
+}
+export function appendStep() {
+    return { name: "APPEND", type: "Argument", value: null };
+}
+
+export function screenshotStep(fileNameVal) {
+    const fnStep = fileNameStep(fileNameVal);
+    return { name: "SCREENSHOT", type: "Action", args: [fnStep] };
+}
+
+function fileNameStep(fileNameVal) {
+    return { name: "FILE_NAME", type: "Argument", value: fileNameVal };
+}
+
 export function millisecondsStep(msVal) {
     return { name: "milliseconds", type: "Argument", value: msVal };
 }
@@ -15,19 +44,20 @@ export function typeTextStep(findStep, textStep, msStep) {
 }
 
 export function modKeyStep(modKeyString) {
-    return { name: "MOD_KEY", type: "Argument", value: modKeyString };
+    return { name: "MOD_KEYS", type: "Argument", value: modKeyString };
 }
 
 export function keyStep(keyString) {
     return { name: "KEY", type: "Argument", value: keyString };
 }
 
-export function shortcutStep(modKeyStep, keyStep) {
-    return { name: "SHORTCUT", type: "Action", args: [modKeyStep, keyStep] };
+export function shortcutStep(modKeyStep, keyStep, waitNavStep) {
+    return { name: "SHORTCUT", type: "Action", args: [modKeyStep, keyStep, waitNavStep] };
 }
 
 export function keyboardStep(selectedKeyModeStep) {
-    return { name: "KEYBOARD", type: "Action", args: { name: "KEY_MODE", type: "ActionGroup", selected: selectedKeyModeStep} };
+    const keyMode = { name: "KEY_MODE", type: "ActionGroup", selected: selectedKeyModeStep };
+    return { name: "KEYBOARD", type: "Action", args: [keyMode] };
 }
 
 export function strictStep(selectedStrictStep) {
@@ -114,8 +144,12 @@ export function screenShotStep(fileNameVal) {
     return { name: "SCREENSHOT", type: "Action", args: [file] };
 }
 
-export function clickStep(findStep) {
-    return { name: "CLICK", type: "Action", args: [findStep] };
+export function clickStep(findStep, waitNavStep) {
+    return { name: "CLICK", type: "Action", args: [findStep, waitNavStep] };
+}
+
+export function waitNavStep(selectedStep) {
+    return { name: "WAIT_FOR_NAV", type: "ActionGroup", selected: selectedStep };
 }
 
 export function historyStep(modeStep) {

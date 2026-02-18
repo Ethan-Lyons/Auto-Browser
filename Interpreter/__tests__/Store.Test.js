@@ -14,7 +14,7 @@ describe("parse store", () => {
   test("parseStore: valid action", async () => {
     const sStep = storeStep("modeName", "modeValue", "varName")
     const storeSpec = parseStore(sStep)
-    expect(storeSpec).toEqual({ name: "STORE", mode: "modeName",
+    expect(storeSpec).toEqual({ mode: "modeName",
         step: storableStep("modeName", "modeValue"), storeName: "varName"});
   });
 });
@@ -50,7 +50,7 @@ describe("store: text", () => {
     const sStep = storeStep("text", expectedValue, expectedName)
     await store("context", sStep);
 
-    const recieved = await getVariableValue(expectedName);
+    const recieved = getVariableValue(expectedName);
     expect(recieved).toBe(expectedValue);
   });
 
@@ -70,7 +70,7 @@ describe("store: text", () => {
     routine.pushManyList([]);
     await handleStep("context", sStep, routine);
     expect(routine.getStack().length).toBe(0);
-    const recieved = await getVariableValue(expectedName);
+    const recieved = getVariableValue(expectedName);
     expect(recieved).toBe(expectedValue);
   });
 });

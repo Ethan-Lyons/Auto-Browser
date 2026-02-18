@@ -2,6 +2,7 @@ import { condition } from "./Condition.js";
 import { assertStep } from "../Assert.js";
 import { Routine } from "../Routine.js";
 import { BrowserContext } from "puppeteer-core";
+import { assert } from "console";
 
 /**
  * Parses an ifStep and executes a routine if the condition is true.
@@ -11,20 +12,20 @@ import { BrowserContext } from "puppeteer-core";
  * @param {Routine} routine The routine object.
  */
 export async function routineIf(context, ifStep, routine) {
-  ifSpec = parseIf(ifStep);
-  conResult = await condition(context, ifSpec.condition)
+  const ifSpec = parseIf(ifStep);
+  const conResult = await condition(context, ifSpec.condition)
   exeIf(routine, conResult, ifSpec.name);
 }
 
 /**
  * Obtains important values from a 'ifStep' input and returns them using an object
  * @param {{ name: "IF", type: "Action", args: [Object] }} ifStep 
- * @returns {{ name: String, condition: Object }}
+ * @returns {{ name: string, condition: Object }}
  */
 export function parseIf(ifStep) {
     assertStep(ifStep, "IF", "parseIf");
 
-    let [conditionStep] = ifStep.args;
+    const [conditionStep] = ifStep.args;
 
     const ifName = ifStep.name;
     return { name: ifName, condition: conditionStep }
@@ -35,7 +36,7 @@ export function parseIf(ifStep) {
  * is true, or the items inside the else block if the condition is false.
  * @param {Routine} routine The routine object.
  * @param {Boolean} condition The result of the condition action.
- * @param {String} ifName The name of the IF step, used to identify the block.
+ * @param {string} ifName The name of the IF step, used to identify the block.
  */
 export function exeIf(routine, condition, ifName) {
   assert(condition == true || condition == false,

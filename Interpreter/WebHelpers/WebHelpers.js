@@ -38,9 +38,6 @@ export * from './TypeText.js'
 // Maps each browser context to its active page
 export const contextToPage = new WeakMap();
 
-// Default directory for output actions
-export const defaultOutputDir = "./OutputFiles/"
-
 /**
  * Sets the active page in the given context.
  * @param {BrowserContext} context The browser context instance to use.
@@ -95,5 +92,5 @@ export async function getActiveIndex(context) {
 export async function wait(waitStep) {
     let [ms] = waitStep.args;
     ms = resolveNumber(ms);
-    await new Promise(r => setTimeout(r, waitStep));
+    await new Promise(r => setTimeout(r, ms));
 }

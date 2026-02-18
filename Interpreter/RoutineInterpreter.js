@@ -5,7 +5,7 @@ import { Routine } from './WebHelpers/Routine.js';
 /**
  * Obtains the path to the routine from the command line.
  * @param {*} argv The command line arguments.
- * @returns {String} The path to the routine.
+ * @returns {string} The path to the routine.
  */
 export function getPath(argv) {
   const termArgs = argv.slice(2);
@@ -17,10 +17,10 @@ export function getPath(argv) {
 
 /**
  * Loads a routine from a file and returns it.
- * @param {String} routinePath 
+ * @param {string} routinePath 
  * @returns {Routine} The routine object loaded from the file.
  */
-export async function getRoutine(routinePath) {
+export function getRoutine(routinePath) {
   return Routine.fromFile(routinePath);
 }
 
@@ -30,6 +30,7 @@ export async function getRoutine(routinePath) {
  * @param {Routine} routine The routine object to run.
  * @param {Boolean} newContext If true, creates a new browser context instance for the routine.
  * @param {Boolean} autoClose If true, automatically closes the browser context instance upon completion.
+ * @returns {Promise<void>} A promise that resolves when the routine has executed.
  */
 export async function runRoutine(browser, routine, newContext = false, autoClose = true) {
   let context;
@@ -54,6 +55,7 @@ export async function runRoutine(browser, routine, newContext = false, autoClose
  * Entry point for the routine interpreter.
  * Obtains file path, routine object, and browser context before running the routine.
  * @param {*} argv The command line arguments.
+ * @returns {Promise<void>} A promise that resolves when the routine has executed.
  */
 export async function main(argv = process.argv) {
   const routinePath = getPath(argv);

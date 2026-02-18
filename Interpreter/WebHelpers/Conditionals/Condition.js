@@ -1,6 +1,7 @@
 import { canFind } from "../FindAlt";
 import { assertStep } from "../Assert";
 import { resolveBoolean } from "../WebHelpers";
+import { BrowserContext } from "puppeteer-core";
 
 /**
  * Parses a conditionStep and returns the result of the condition action.
@@ -19,7 +20,7 @@ export async function condition(context, conditionStep) {
  * Obtains important values from a 'conditionStep' input and returns them using an object
  * @param {{name: "CONDITION", type: "ActionGroup", selected: Object}} conditionStep An object
  * containing the condition action data.
- * @returns {{ mode: String, step: Object, value: String }}
+ * @returns {{ mode: string, step: Object }}
  */
 export function parseCondition(conditionStep) {
     assertStep(conditionStep, "CONDITION", "parseCondition");
@@ -42,7 +43,7 @@ export function parseCondition(conditionStep) {
 /**
  * Performs a condition action based on the given condition mode and substep.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {String} mode The condition mode to use.
+ * @param {string} mode The condition mode to use.
  * @param {Object} modeStep The step object for the selected condition mode.
  * @returns {Promise<Boolean>} A promise that resolves with the result of the condition action.
  */

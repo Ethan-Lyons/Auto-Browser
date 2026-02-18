@@ -103,13 +103,13 @@ export class Routine {
    * Control blocks are defined as blocks of steps that are grouped together
    * to form a single logical unit. Examples of control blocks include FOR loops,
    * IF statements, and WHILE loops.
-   * @param {String} type The type of control block to pop from the stack.
+   * @param {string} type The type of control block to pop from the stack.
    * @returns {Object} The popped control block, or null if the stack is empty.
    * @throws {Error} If the given type is not supported.
    */
   popControlBlock(type) {
-    type = type.toUpperCase();
-    switch (type) {
+    const typeName = type.toUpperCase();
+    switch (typeName) {
       case "FOR": return this.popBlock("FOR", "END_FOR");
       case "IF": return this.popBlock("IF", "END_IF", "ELSE");
       case "WHILE": return this.popBlock("WHILE", "END_WHILE");
@@ -120,9 +120,9 @@ export class Routine {
   
   /**
    * Pops a control block from the stack based on the given type.
-   * @param {String} startToken The name of the step that starts the control block
-   * @param {String} endToken The name of the step that ends the control block
-   * @param {String} splitToken (optional) The name of the step that splits the control block into two parts
+   * @param {string} startToken The name of the step that starts the control block
+   * @param {string} endToken The name of the step that ends the control block
+   * @param {string} splitToken (optional) The name of the step that splits the control block into two parts
    * @returns {Object} The popped control block. Properties are return in stack order.
    * Has the following properties:
    * - body: the steps before the given split token

@@ -19,7 +19,7 @@ export async function store(context, storeStep) {
 /**
  * Obtains the store information from a store step.
  * @param {{ name: "STORE", type: "Action", args: [Object, Object] }} storeStep The store step.
- * @returns {{ mode: String, step: Object, storeName: String }}
+ * @returns {{ mode: string, step: Object, storeName: string }}
  */
 export function parseStore(storeStep) {
     assertStep(storeStep, "STORE", "parseStore");
@@ -35,9 +35,9 @@ export function parseStore(storeStep) {
 /**
  * Stores the result of a store action under a new variable name.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {String} mode The store mode to use.
+ * @param {string} mode The store mode to use.
  * @param {Object} step The step object for the selected store mode.
- * @param {String} storeName The new variable name to store under.
+ * @param {string} storeName The new variable name to store under.
  * @throws {Error} If the store mode is not supported.
  * @returns {Promise<void>} A promise that resolves when the value has been stored under the new variable name.
  */
@@ -60,7 +60,7 @@ export async function exeStore(context, mode, step, storeName) {
 /**
  * Obtains the store mode and step from a storable step.
  * @param {{ name: "STORABLE", type: "ActionGroup", selected: Object }} storableStep 
- * @returns {{ mode: String, step: Object }}
+ * @returns {{ mode: string, step: Object }}
  */
 export function parseStorable(storableStep) {
     assertStep(storableStep, "STORABLE", "parseStorable");
@@ -71,9 +71,9 @@ export function parseStorable(storableStep) {
 
 /**
  * Obtains the variable name from a variable step.
- * @param {{ name: "VARIABLE", type: "Action", value: String}} varNameStep An object
+ * @param {{ name: "VARIABLE", type: "Action", value: string}} varNameStep An object
  * containing the information for the variable name.
- * @returns {{ value: String }}
+ * @returns {{ value: string }}
  */
 export function parseVar(varNameStep) {
     assertStep(varNameStep, "VARIABLE", "parseVar");
@@ -86,7 +86,7 @@ export function parseVar(varNameStep) {
  * @param {BrowserContext} context 
  * @param {{ name: "FIND_TEXT", type: "Action", args: [Object]}} findTextStep An object
  * containing the information for the findText action.
- * @param {String} varStoreName 
+ * @param {string} varStoreName 
  * @returns {Promise<void>} A promise that resolves when the value
  *  has been stored under the new variable name.
  */
@@ -101,7 +101,7 @@ export async function storeFindText (context, findTextStep, varStoreName){
  *  instance to use.
  * @param {{ name: "INFO", type: "Action", args: [Object] }} infoStep An object
  * containing the information for the info action.
- * @param {String} varStoreName - The new variable name to store under.
+ * @param {string} varStoreName - The new variable name to store under.
  * @returns {Promise<void>} - A promise that resolves when the value
  *  has been stored under the new variable name.
  */
@@ -112,9 +112,9 @@ export async function storeInfo (context, infoStep, varStoreName){
 
 /**
  * Stores a user input text value under a (new) variable name.
- * @param {{ name: "TEXT", type: "Argument", value: String }} textStep A step object
+ * @param {{ name: "TEXT", type: "Argument", value: string }} textStep A step object
  *  with the text value to store.
- * @param {String} varStoreName - The new variable name to store under.
+ * @param {string} varStoreName - The new variable name to store under.
  */
 export function storeText(textStep, varStoreName){
     assertStep(textStep, "TEXT", "storeText");
@@ -128,7 +128,7 @@ export function storeText(textStep, varStoreName){
  *  instance to use.
  * @param {{ name: "CAN_FIND", type: "Action", args: [Object]}} findTextStep An object
  * containing the information for the canFind action.
- * @param {String} varStoreName - The new variable name to store under.
+ * @param {string} varStoreName - The new variable name to store under.
  * @returns {Promise<void>} - A promise that resolves when the value
  *  has been stored under the new variable name.
  */

@@ -11,20 +11,20 @@ import { Routine } from "../Routine.js";
  * @param {Routine} routine The routine object.
  */
 export async function routineWhile(context, whileStep, routine) {
-    whileSpec = parseWhile(whileStep);
-    conResult = await condition(context, whileSpec.condition)
+    const whileSpec = parseWhile(whileStep);
+    const conResult = await condition(context, whileSpec.condition)
     exeWhile(routine, conResult, whileStep)
 }
 
 /**
  * Obtains important values from a 'whileStep' input and returns them using an object
  * @param {{ name: "WHILE", type: "Action", args: [Object] }} whileStep 
- * @returns {{ name: String, condition: Object }}
+ * @returns {{ name: string, condition: Object }}
  */
 export function parseWhile(whileStep) {
     assertStep(whileStep, "WHILE", "parseWhile");
 
-    let [condition] = whileStep.args;
+    const [condition] = whileStep.args;
     const whileName = whileStep.name;
 
     return { name: whileName, condition: condition }

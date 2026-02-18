@@ -1,5 +1,5 @@
 import { test, expect } from '@jest/globals';
-import { argumentStep, clickStep, findStep, linkStep, falseStep, trueStep } from '../../StepFactory.js';
+import { argumentStep, clickStep, findStep, linkStep, falseStep, trueStep, waitNavStep } from '../../StepFactory.js';
 
 import { getBrowser, getContext, browserDisconnect, newTab,
     getActiveIndex, getTabs, getActivePage, exeUrlNav } from '../../WebHelpers/WebHelpers.js';
@@ -38,9 +38,11 @@ describe("parseClick", () => {
     });
 
     test("parseClick: valid action", async () => {
-        const cStep = clickStep(findStep(argumentStep("text", "example.com")));
+        const cStep = clickStep(findStep(argumentStep("text", "example.com")), waitNavStep(trueStep()));
         const cSpec = parseClick(cStep)
-        expect(cSpec).toEqual({ findStep: { name: "FIND", type: "ActionGroup", selected: argumentStep("text", "example.com")}});
+
+        expect(cSpec).toEqual({ findStep: { name: "FIND", type: "ActionGroup",
+            selected: argumentStep("text", "example.com")}, waitForNav: "TRUE" });
     });
 });
 
@@ -50,10 +52,10 @@ describe("exeClick", () => {
         const fStep = findStep(linkStep("example", falseStep()));
         const locator = await find(context, fStep);
 
-        await exeClick(context, locator);
+        await exeClick(context, locator, true);
 
         const page = await getActivePage(context);
-        const url = await page.url();
+        const url = page.url();
         expect(url).toEqual("https://www.iana.org/help/example-domains");
     });
 
@@ -61,30 +63,30 @@ describe("exeClick", () => {
         const fStep = findStep(argumentStep("text", "Learn more"));
         const locator = await find(context, fStep);
 
-        await exeClick(context, locator);
+        await exeClick(context, locator, true);
 
         const page = await getActivePage(context);
-        const url = await page.url();
+        const url = page.url();
         expect(url).toEqual("https://www.iana.org/help/example-domains");
     });
 });
 
 describe("click", () => {
     test("click: link", async () => {
-        const cStep = clickStep(findStep(linkStep("example", falseStep())));
+        const cStep = clickStep(findStep(linkStep("example", falseStep())), waitNavStep(trueStep()));
         await click(context, cStep);
 
         const page = await getActivePage(context);
-        const url = await page.url();
+        const url = page.url();
         expect(url).toEqual("https://www.iana.org/help/example-domains");
     });
 
     test("click: text", async () => {
-        const cStep = clickStep(findStep(argumentStep("text", "Learn more")));
+        const cStep = clickStep(findStep(argumentStep("text", "Learn more")), waitNavStep(trueStep()));
         await click(context, cStep);
 
         const page = await getActivePage(context);
-        const url = await page.url();
+        const url = page.url();
         expect(url).toEqual("https://www.iana.org/help/example-domains");
     });
 });

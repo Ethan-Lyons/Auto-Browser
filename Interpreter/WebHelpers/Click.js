@@ -1,5 +1,5 @@
 import { find } from './Find.js';
-import { getActivePage } from './WebHelpers.js';
+import { getActivePage, resolveBoolean, wait } from './WebHelpers.js';
 import { BrowserContext, ElementHandle } from 'puppeteer-core';
 import { assertStep } from './Assert.js';
 
@@ -7,27 +7,35 @@ import { assertStep } from './Assert.js';
  * Parses a clickStep and performs a click action.
  * @param {BrowserContext} context The browser
  *  context instance to use.
- * @param {{name: "CLICK", type: "Action", args: [Object]}} clickStep An object
+ * @param {{name: "CLICK", type: "Action", args: [Object, Object]}} clickStep An object
  * for a click action.
  */
 export async function click(context, clickStep) {
+    let waitBool = false;
     const clickSpec = parseClick(clickStep);
     const locator = await find(context, clickSpec.findStep);
-    
-    await exeClick(context, locator);
+
+    if (clickSpec.waitForNav !== "") {
+        waitBool = resolveBoolean(clickSpec.waitForNav);
+    }
+
+    await exeClick(context, locator, waitBool);
 }
 
 /**
  * Obtains important values from a 'clickStep' input and returns them using an object
- * @param {{name: "CLICK", type: "Action", args: [Object]}} clickStep The object
+ * @param {{name: "CLICK", type: "Action", args: [Object, Object]}} clickStep The object
  * containing the click action data.
  * @returns {{ findStep: findStep }} An object containing containing a 'findStep' entry.
  */
 export function parseClick(clickStep) {
     assertStep(clickStep, 'CLICK', 'parseClick');
 
-    const [findStep] = clickStep.args;
-    return { findStep: findStep };
+    const [findStep, waitNavStep] = clickStep.args;
+    assertStep(waitNavStep, 'WAIT_FOR_NAV', 'parseClick');
+    const waitVal = waitNavStep.selected.name;
+
+    return { findStep: findStep, waitForNav: waitVal };
 }
 
 /**
@@ -37,13 +45,19 @@ export function parseClick(clickStep) {
  *  instance to use.
  *  @param {ElementHandle} locator The element locator
  *  of the element to click.
+ *  @param {boolean} waitForNav Whether to wait for page navigation. Defaults to false.
  *  @returns {Promise<void>} A promise that resolves when the click is completed.
  */
-export async function exeClick(context, locator) {
-    const page = await getActivePage(context);
+export async function exeClick(context, locator, waitForNav = false) {
+    if (waitForNav) {   // Page navigation expected
+        const page = await getActivePage(context);
 
-    await Promise.allSettled([  // Wait for page load
-        page.waitForNavigation({ waitUntil: 'networkidle0'}),
-        locator.click(),
-    ]);
+        await Promise.all([
+            page.waitForNavigation({ waitUntil: 'networkidle0' }),
+            locator.click()
+        ]);
+
+    } else {  // Page navigation not expected
+        await locator.click();
+    }
 }

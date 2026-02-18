@@ -9,6 +9,10 @@ import { routineIf, routineFor, routineWhile, store, click, urlNav,
  * @returns {Promise<void>} A promise that resolves when the routine has executed.
  */
 export async function handleRoutine(context, routine) {
+  if (!(routine instanceof Routine)) {
+    throw new Error("Routine is not an instance of Routine. Type: " + typeof routine);
+  }
+
   while (routine.hasNext()) {
     const step = routine.pop();
     await handleStep(context, step, routine);
@@ -64,7 +68,6 @@ export async function handleStep(context, step, routine) {
  * @throws {Error} If the step type is unknown.
  */
 export async function handleAction(context, currentStep, routine) {
-  //currentStep.name = currentStep.name.toUpperCase()
   const stepName = currentStep.name.toUpperCase();
   
   switch (stepName) {
@@ -114,6 +117,14 @@ export async function handleAction(context, currentStep, routine) {
     
     case "OUTPUT":
       await output(context, currentStep);
+      break;
+    
+    case "RUN_ROUTINE":
+      await runRoutine(context, currentStep);
+      break;
+    
+    case "KEYBOARD":
+      await keyboard(context, currentStep);
       break;
 
     default:

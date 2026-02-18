@@ -9,9 +9,9 @@ fs.writeFileSync(logPath, "=== VARIABLE LOG START ===\n\n");
 
 /**
  * Updates the variable log file.
- * @param {String} action The action that triggered the log.
- * @param {String} name The variable name.
- * @param {String} value The variable value.
+ * @param {string} action The action that triggered the log.
+ * @param {string} name The variable name.
+ * @param {string} value The variable value.
  */
 function logVariable(action, name, value) {
     const timestamp = new Date().toISOString();
@@ -23,8 +23,8 @@ function logVariable(action, name, value) {
 
 /**
  * 
- * @param {String} name 
- * @returns {String}
+ * @param {string} name 
+ * @returns {string}
  */
 function removeBrackets(name) {
     if (typeof name !== "string") return removeBrackets(String(name));
@@ -34,20 +34,20 @@ function removeBrackets(name) {
 
 /**
  * 
- * @param {String} name The name of the variable to set, with or without brackets.
- * @param {String} value The value to set the variable to.
+ * @param {string} name The name of the variable to set, with or without brackets.
+ * @param {string} value The value to set the variable to.
  */
 export function setVariable(name, value) {
-    const normalized = removeBrackets(name).toUpperCase();
-    variableStorage.set(normalized, value);
-    logVariable("SET", normalized, value);
+    const formatName = removeBrackets(name).toUpperCase();
+    variableStorage.set(formatName, value);
+    logVariable("SET", formatName, value);
 }
 
 /**
  *  Gets a value under a custom variable name.
- *  @param {String} name The name of the variable to get from, with or without brackets.
+ *  @param {string} name The name of the variable to get from, with or without brackets.
  *  @throws If the variable has not been defined.
- *  @returns {String} The value of the variable.
+ *  @returns {string} The value of the variable.
  */
 export function getVariableValue(name) {
     const targetVar = removeBrackets(name).toUpperCase();
@@ -69,42 +69,44 @@ export function clearVariables() {
 }
 
 /**
- *  Replaces named variables inside brackets with their values.
- *  Throws if a variable does not exist.
- *  @param {*} input
- *  @returns {String} The resolved string.
+ * Replaces named variables inside brackets with their values.
+ * Throws if a variable does not exist.
+ * @param {*} input
+ * @returns {string} The resolved string.
  */
 export function resolveString(input) {
     if (typeof input !== "string") {
         try {
-            input = String(input);
-            return resolveString(input);
+            return resolveString(String(input));
         } catch {
-            throw new Error(`Cannot resolve input type to string.
-                Type: ${typeof input}, Input: ${input}`);
+            throw new Error(
+                `Cannot resolve input type to string. Type: ${typeof input}, Input: ${input}`
+            );
         }
     }
-    input = input.trim().toUpperCase();
+
+    const trimmed = input.trim();
 
     function replacer(fullMatch, variableName) {
+        const normalized = variableName.trim().toUpperCase();
 
-        if (!variableStorage.has(variableName)) {
+        if (!variableStorage.has(normalized)) {
             throw new Error(`resolveString: variable "${variableName}" not defined`);
         }
-        const value = variableStorage.get(variableName);
-        logVariable("RESOLVE", variableName, value);
+
+        const value = variableStorage.get(normalized);
+        logVariable("RESOLVE", normalized, value);
         return String(value);
     }
 
     const regex = /\{([^}]+)\}/g;
-    const result = input.replace(regex, replacer);
-    return result.trim();
+    return trimmed.replace(regex, replacer).trim();
 }
 
 /**
  *  Resolves a numeric input.
  *  Throws if input is not a number or cannot be parsed.
- *  @param {String|Number} input 
+ *  @param {string|Number} input 
  *  @returns {Number}
  */
 export function resolveNumber(input) {
@@ -128,7 +130,7 @@ export function resolveNumber(input) {
 /**
  *  Resolves a boolean input.
  *  Throws if input is not a boolean or cannot be parsed.
- *  @param {String|Boolean} input 
+ *  @param {string|Boolean} input 
  *  @returns {Boolean}
  */
 export function resolveBoolean(input) {

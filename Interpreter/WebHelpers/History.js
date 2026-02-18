@@ -17,7 +17,7 @@ export async function history(context, historyStep) {
 /**
  * Obtains important values from a 'historyStep' input and returns them using an object.
  * @param {{ name: "HISTORY", type: "Action", args: [Object] }} historyStep 
- * @returns {{ mode: String }}
+ * @returns {{ mode: string }}
  */
 export function parseHistory(historyStep) {
     assertStep(historyStep, "HISTORY", "parseHistory");
@@ -32,7 +32,7 @@ export function parseHistory(historyStep) {
 /**
  * Performs a history action based on the given history mode.
  * @param { BrowserContext } context The browser context instance to use.
- * @param {String} mode The history mode to use.
+ * @param {string} mode The history mode to use.
  */
 export async function exeHistory(context, mode) {
     mode = mode.toUpperCase();

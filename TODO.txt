@@ -11,6 +11,10 @@ Change it so true and false arguments do not try to access value and just use th
 
 Add a toolbar for routine frame (delete duplicate add save etc.)
 
+https://pptr.dev/api/puppeteer.elementhandle
+option exists to screenshot using an elementhandle, add option for outputs
+add a 'read' file option for store to take in txt file inputs
+
 Testing:
 """
 class RoutineFrame():

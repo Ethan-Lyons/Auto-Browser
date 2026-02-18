@@ -26,6 +26,10 @@ def addClickXpathStep(routine: Routine, xpathValue: str):
     click = ag.get("CLICK")
     ag.setSelected(click)
 
+    waitNav = click.get("WAIT_FOR_NAV")
+    trueStep = waitNav.get("true")
+    waitNav.setSelected(trueStep)
+
     find = click.get("find")
     xpath = find.get("xpath")
     find.setSelected(xpath)
@@ -36,6 +40,10 @@ def addClickLinkStep(routine: Routine, linkValue: str, strictValue=False):
     ag = routine.createDefaultAG()
     click = ag.get("CLICK")
     ag.setSelected(click)   # click action
+
+    waitNav = click.get("WAIT_FOR_NAV")
+    trueStep = waitNav.get("true")
+    waitNav.setSelected(trueStep)
 
     find = click.get("find")
     link = find.get("link")

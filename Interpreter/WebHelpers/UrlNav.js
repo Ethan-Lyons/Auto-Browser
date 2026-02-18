@@ -17,7 +17,7 @@ export async function urlNav(context, navStep) {
  * Obtains important values from a 'urlNavStep' input and returns them using an object.
  * @param {{ name: "URL_NAV", type: "Action", args: [Object] }} navStep An object
  * containing the information for the urlNav action.
- * @returns {{ url: String }}
+ * @returns {{ url: string }}
  */
 export function parseUrlNav(navStep) {
     assertStep(navStep, "URL_NAV", "urlNavParse");
@@ -30,7 +30,7 @@ export function parseUrlNav(navStep) {
 /**
  * Performs the action of navigating to a URL.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {String} url The URL to navigate to.
+ * @param {string} url The URL to navigate to.
  * @returns {Promise<void>} A promise that resolves when the navigation is complete.
  */
 export async function exeUrlNav(context, url) {
@@ -51,8 +51,8 @@ export async function exeUrlNav(context, url) {
 
 /**
  * Obtains important values from a 'urlStep' input and returns them using an object.
- * @param {{ name: "URL", type: "Argument", value: String}} urlStep 
- * @returns {{ url: String }}
+ * @param {{ name: "URL", type: "Argument", value: string}} urlStep 
+ * @returns {{ url: string }}
  */
 export function parseUrl(urlStep) {
     assertStep(urlStep, "URL", "urlParse");

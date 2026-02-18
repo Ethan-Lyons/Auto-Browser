@@ -20,7 +20,7 @@ export async function find(context, findStep) {
 /**
  * Obtains important values from a 'findStep' input and returns them using an object.
  * @param {{name: "FIND", type: "ActionGroup", selected: Object}} findStep 
- * @returns {{ mode: String, step: Object }} An object containing containing a 'mode' and 'step' entry.
+ * @returns {{ mode: string, step: Object }} An object containing containing a 'mode' and 'step' entry.
  */
 export function parseFind(findStep) {
     assertStep(findStep, "FIND", "parseFind");
@@ -36,7 +36,7 @@ export function parseFind(findStep) {
 /**
  * Performs a find action based on the given find mode and substep.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {String} mode The find mode to use.
+ * @param {string} mode The find mode to use.
  * @param {Object} subStep The substep for the given find mode.
  * @throws Will throw an error if the selection method is not supported
  * @returns {Promise<Locator>} A promise that resolves with the element locator found.
@@ -74,8 +74,8 @@ export async function exeFind(context, mode, subStep) {
 
 /**
  * Obtains important values from a 'xpathStep' input and returns them using an object.
- * @param {{name: "XPATH", type: "Argument", value: String}} xpathStep The step to parse.
- * @returns {{value: String}}
+ * @param {{name: "XPATH", type: "Argument", value: string}} xpathStep The step to parse.
+ * @returns {{value: string}}
  */
 function parseXpath(xpathStep) {
     assertStep(xpathStep, "XPATH", "parseXpath");
@@ -84,8 +84,8 @@ function parseXpath(xpathStep) {
 
 /**
  * Obtains important values from a 'textStep' input and returns them using an object.
- * @param {{name: "TEXT", type: "Argument", value: String}} textStep The step to parse.
- * @returns {{value: String}}
+ * @param {{name: "TEXT", type: "Argument", value: string}} textStep The step to parse.
+ * @returns {{value: string}}
  */
 function parseText(textStep) {
     assertStep(textStep, "TEXT", "parseText");
@@ -94,8 +94,8 @@ function parseText(textStep) {
 
 /**
  * Obtains important values from a 'ariaStep' input and returns them using an object.
- * @param {{name: "ARIA", type: "Argument", value: String}} ariaStep The step to parse.
- * @returns {{value: String}}
+ * @param {{name: "ARIA", type: "Argument", value: string}} ariaStep The step to parse.
+ * @returns {{value: string}}
  */
 function parseAria(ariaStep) {
     assertStep(ariaStep, "ARIA", "parseAria");
@@ -104,8 +104,8 @@ function parseAria(ariaStep) {
 
 /**
  * Obtains important values from a 'cssStep' input and returns them using an object.
- * @param {{name: "CSS", type: "Argument", value: String}} cssStep The step to parse.
- * @returns {{value: String}}
+ * @param {{name: "CSS", type: "Argument", value: string}} cssStep The step to parse.
+ * @returns {{value: string}}
  */
 function parseCSS(cssStep) {
     assertStep(cssStep, "CSS", "parseCSS");
@@ -115,7 +115,7 @@ function parseCSS(cssStep) {
 /**
  * Obtains important values from a 'linkStep' input and returns them using an object
  * @param {{ name: "LINK", type: "Action", args: [Object, Object] }} linkStep 
- * @returns {{ text: String, strict: Boolean }}
+ * @returns {{ text: string, strict: Boolean }}
  */
 function parseLink(linkStep) {
     assertStep(linkStep, "LINK", "parseLink");
@@ -127,21 +127,18 @@ function parseLink(linkStep) {
 
     // Check that text value is present and valid
     let textValue = textArg.value;
-    if (!textValue) {
-        throw new Error(`parseLink: text value is missing.
-            Link Step:\n${JSON.stringify(linkStep)}`);
-    }
-    if (typeof textValue !== 'String') {
-        throw new Error(`parseLink: text value is not a String.
+    if (!textValue || typeof textValue !== 'string') {
+        throw new Error(`parseLink: text valie is invalid or missing.
             Link Step:\n${JSON.stringify(linkStep)}`);
     }
 
     // Check that strict mode and its value are present and valid
-    let strictMode = strictGroup.selected;
+    const strictMode = strictGroup.selected;
     if (!strictMode) {
         throw new Error(`parseLink: strict mode is missing.
             Link Step:\n${JSON.stringify(linkStep)}`);
     }
+    
     let boolValue = strictMode.name;
     if(!boolValue) {
         throw new Error(`parseLink: strict mode name is missing.
@@ -160,9 +157,9 @@ function parseLink(linkStep) {
 /**
  * Helper to find an element by its link address.
  * @param {Page} page The page to search for the element.
- * @param {String} linkAddress The link address to search for.
- * @param {String} [strict="false"] Whether to search for an exact address or
- *  an address that contains the given String.
+ * @param {string} linkAddress The link address to search for.
+ * @param {string} [strict="false"] Whether to search for an exact address or
+ *  an address that contains the given string.
  * @returns {Locator} The locator for the found element.
  */
 function findByLinkAddress(page, linkAddress, strict = false) {
@@ -171,8 +168,8 @@ function findByLinkAddress(page, linkAddress, strict = false) {
         throw new TypeError('findByLinkAddress: page is required');
     }
     // Check linkAddress type
-    if (typeof linkAddress !== 'String' || linkAddress.length === 0) {  
-        throw new TypeError(`findByLinkAddress: linkAddress must be a non-empty String, but got: ${linkAddress}
+    if (typeof linkAddress !== 'string' || linkAddress.length === 0) {  
+        throw new TypeError(`findByLinkAddress: linkAddress must be a non-empty string, but got: ${linkAddress}
             Link Step:\n${JSON.stringify(linkStep)}`);
     }
 
@@ -188,7 +185,7 @@ function findByLinkAddress(page, linkAddress, strict = false) {
 /**
  * Helper function to find an element by XPath.
  * @param {Page} page The page to search for the element.
- * @param {String} xPath The XPath to search for.
+ * @param {string} xPath The XPath to search for.
  * @returns {Locator} The locator for the element.
  */
 async function findByXPath(page, xPath) {
@@ -200,7 +197,7 @@ async function findByXPath(page, xPath) {
 /**
  * Finds an element locator based on its text content.
  * @param {Page} page The page to search for the element.
- * @param {String} text The text content of the target element.
+ * @param {string} text The text content of the target element.
  * @returns {Locator} A promise that resolves
  *  with the element locator found.
  */
@@ -213,7 +210,7 @@ function findByText(page, text) {
 /**
  * Helper function to find an element by Aria
  * @param {Page} page The page to search for the element.
- * @param {String} aria The aria value to search for.
+ * @param {string} aria The aria value to search for.
  * @returns {Locator} The locator for the element.
  */
 function findByAria(page, aria){

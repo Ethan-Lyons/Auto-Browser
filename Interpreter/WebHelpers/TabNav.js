@@ -21,7 +21,7 @@ export async function tabNav(context, navStep) {
 /**
  * Obtains important values from a 'tabNavStep' input and returns them using an object.
  * @param {{ name: "TAB_NAV", type: "Action", args: [Object] }} navStep 
- * @returns {{ tab: String }}
+ * @returns {{ tab: string }}
  */
 export function parseTabNav(navStep) {
     assertStep(navStep, "TAB_NAV", "parseTabNav");
@@ -38,7 +38,7 @@ export function parseTabNav(navStep) {
 /**
  * Performs a tab navigation action.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {String} tabStr The String representation of the tab to navigate to.
+ * @param {string} tabStr The string representation of the tab to navigate to.
  * @returns {Promise<void>} A promise that resolves when the tab navigation is complete.
  */
 export async function exeTabNav(context, tabStr) {
@@ -53,5 +53,6 @@ export async function exeTabNav(context, tabStr) {
         console.warn("Tab index out of range. Tab: " + tabStr);
         return;
     }
+    
     await Webhelpers.setActivePage(context, tabs[indexSpec.index]);
 }

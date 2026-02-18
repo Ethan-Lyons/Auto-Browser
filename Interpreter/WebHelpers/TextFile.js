@@ -1,23 +1,32 @@
 import { resolveString } from './WebHelpers.js';
 import { BrowserContext} from 'puppeteer-core';
 import fs from 'fs';
+import path from 'path';
 
 /**
  * Parses and executes a text file output action.
  * @param {BrowserContext} context 
  * @param {{ name: "TEXT_FILE", type: "Action", args: [Object, Object, Object] }} tfStep An object
  * containing the information for the text file action.
- * @param {String} outputDir The directory to save the text file to.
+ * @param {string} outputDir The directory to save the text file to.
  */
 export function textFile(tfStep, outputDir) {
     const tfSpec = parseTextFile(tfStep);
-    exeTextFile(tfSpec.text, tfSpec.fileName, outputDir, tfSpec.mode);
+
+    if (outputDir === "") {
+        outputDir = "./";
+    }
+
+    // If the output directory does not exist, create it
+    fs.mkdirSync(outputDir, { recursive: true });
+
+    exeTextFile(tfSpec.text, outputDir, tfSpec.fileName, tfSpec.mode);
 }
 
 /**
  * Obtains the important values from a 'textFileStep' input and returns them using an object.
  * @param {{ name: "TEXT_FILE", type: "Action", args: [Object, Object, Object] }} tfStep 
- * @returns {{ text: String, fileName: String, mode: String }}
+ * @returns {{ text: string, fileName: string, mode: string }}
  */
 export function parseTextFile(tfStep) {
     const [textStep, fileStep, modeStep] = tfStep.args;
@@ -31,47 +40,62 @@ export function parseTextFile(tfStep) {
 
 /**
  * Saves (to) a text file based on the given text content and output mode.
- * @param {String} textContent The text content to write to the text file.
- * @param {String} outputDir The directory to save the text file to.
- * @param {String} mode The output mode to use.
+ * @param {string} textContent The text content to write to the text file.
+ * Any user variables will be resolved to their values.
+ * @param {string} outputDir The directory to save the text file to.
+ * @param {string} mode The output mode to use.
  */
-export function exeTextFile(textContent, fileName, outputDir, mode) {
-    mode = mode.toUpperCase();
-    const filePath = resolveFilePath(fileName, outputDir);
+export function exeTextFile(textContent, outputDir, fileName, mode) {
+    const upMode = mode.toUpperCase();
+    const filePath = resolveTextFilePath(outputDir, fileName);
+    const resolvedContent = resolveString(textContent);
 
-    switch (mode) {
+    switch (upMode) {
         case "WRITE":
-            fs.writeFileSync(filePath, textContent);
+            fs.writeFileSync(filePath, resolvedContent);
+            break;
+
         case "APPEND":
-            fs.appendFileSync(filePath, textContent);
+            fs.appendFileSync(filePath, resolvedContent);
+            break;
+
         default:
-            throw new Error(`exeTextFile: unsupported output mode: ${mode}`);
+            throw new Error(`exeTextFile: unsupported output mode: ${upMode}`);
     }
 }
 
 /**
  * Resolves a file path from a given file name for a text file action.
- * If the file name does not have an extension, it will be added as ".txt".
- * @param {String} fileName The file name to resolve the file path from.
- * @returns {String} The resolved file path.
+ * If the file name does not have an extension, ".txt" will be appended.
+ * @param {string} outputDir Base output directory.
+ * @param {string} fileName File name (may include user variables).
+ * @returns {string} Absolute resolved file path.
  * @throws {Error} If the file name is invalid.
  */
-function resolveFilePath(fileName, outputDir) {
-    fileName = resolveString(fileName);
+export function resolveTextFilePath(outputDir, fileName) {
+    const resolvedName = resolveString(fileName).trim();
 
-    const regex = /^([a-zA-Z0-9_.-])+(\.(txt))?$/i;
-    const match = fileName.match(regex);
-    if (!match) {
-        throw new Error(`Invalid file name for text file: ${fileName}`);
+    // Strict filename: letters, numbers, underscore, dash, dot
+    const filenameRegex = /^[a-z0-9][a-z0-9_.-]*$/i;
+
+    if (!filenameRegex.test(resolvedName)) {
+        throw new Error(
+            `Invalid file name for text file: ${fileName} -> ${resolvedName}`
+        );
     }
 
-    let outName = match[0];
-    const extension = match[2];
-    if (!extension) {
-        outName += ".txt";
+    // Disallow ".." to prevent traversal
+    if (resolvedName.includes("..")) {
+        throw new Error(
+            `Invalid file name (path traversal not allowed): ${resolvedName}`
+        );
     }
 
-    outName = outputDir + outName;
+    let finalName = resolvedName;
 
-    return outName;
+    if (!finalName.toLowerCase().endsWith(".txt")) {
+        finalName += ".txt";
+    }
+
+    return path.join(outputDir, finalName);
 }

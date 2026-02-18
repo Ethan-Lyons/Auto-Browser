@@ -4,4 +4,5 @@ export default {
   roots: ["<rootDir>/Interpreter"],
   transform: {},
   moduleDirectories: ["node_modules", "src"],
+  testTimeout: 10000,
 };

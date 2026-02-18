@@ -23,6 +23,6 @@ describe('parseCondition', () => {
     test('parseCondition: valid action', async () => {
         const conStep = conditionStep(textStep("true"));
         const result = parseCondition(conStep);
-        expect(result).toEqual({ mode: "TEXT", step: textStep("true"), value: "true" });
+        expect(result).toEqual({ mode: "TEXT", step: textStep("true")});
     });
 });

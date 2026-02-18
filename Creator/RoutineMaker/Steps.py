@@ -46,7 +46,7 @@ class Action:
     def get(self, stepName: str):
         """Finds and returns a step in the named action's arguments by name string. Returns None if no argument found"""
         for step in self.args:
-            if step.getName().lower() == stepName.lower():
+            if step.getName().upper() == stepName.upper():
                 return step
             
         raise KeyError("Argument \'" + str(stepName) + "\' not found in action: " + str(self.name))

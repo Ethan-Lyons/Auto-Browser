@@ -1,6 +1,9 @@
 import puppeteer, { Browser, BrowserContext } from 'puppeteer-core';
 const debugPort = 9222; // port used for browser connection
 
+// Default timeout for pages
+export const DEFAULT_TIMEOUT = 5000;
+
 import { contextToPage } from './WebHelpers.js';
 
 let browserInstance = null;
@@ -77,8 +80,7 @@ export async function browserDisconnect(browser) {
  *  disconnection is completed.
  */
 export async function browserDisconnectContext(context) {
-    let browser;
-    browser = context.browser();
+    const browser = context.browser();
     await browserDisconnect(browser);
 }
 

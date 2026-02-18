@@ -76,6 +76,12 @@ class UserActionBuilder:
             [goForward, goBackward]
         )
 
+        waitForNav = r.group(
+            "WAIT_FOR_NAV",
+            [true, false],
+            "Defaults to false. Set to true if the action is expected to cause a navigation to a new page."
+        )
+
         textMode = r.group("TEXT_MODE", [write, append])
         textFile = r.action("TEXT_FILE", [text, fileName, textMode])
         screenshot = r.action("SCREENSHOT", [fileName])
@@ -84,14 +90,8 @@ class UserActionBuilder:
 
         typeText = r.group("TYPE_TEXT", [find, text, milliseconds])
 
-        #keyNext = r.group("KEY_NEXT", [])
-        #chainKey = r.action("CHAIN_KEY", [key, keyNext])
-        #keyNext.setArgs([noneArg, chainKey])
-
-        modKeys = r.arg("MOD_KEY(S)", "Modifier key(s), such as shift, ctrl, alt, or meta. Keys are separated by spaces or +s. For example: 'alt shift' or 'ctrl + alt'")
-        shortcut = r.action("SHORTCUT", [modKeys, key])
-        #shortcut = r.action("SHORTCUT", [key, keyNext])
-        #chainKey = r.action("CHAIN_KEY", [key, keyNext])
+        modKeys = r.arg("MOD_KEY(S)", "Modifier key(s), such as shift, ctrl, alt, or meta. Keys are separated by spaces or '+'s. For example: 'alt shift' or 'ctrl + alt'")
+        shortcut = r.action("SHORTCUT", [modKeys, key, waitForNav])
 
         keyMode = r.group("KEY_MODE", [typeText, shortcut])
         keyboard = r.userAction("KEYBOARD", [keyMode])
@@ -101,9 +101,8 @@ class UserActionBuilder:
         newTab = r.userAction("NEW_TAB", [], "Open a new tab")
         closeTab = r.userAction("CLOSE_TAB", [tab], "Close a specific tab, or the current tab if no tab is specified")
 
-        click = r.userAction("CLICK", [find], "Click an element")
+        click = r.userAction("CLICK", [find, waitForNav], "Click an element")
 
-        typeA = r.userAction("TYPE", [find, text], "Type text into input")  # TODO: confirm this, does it need a find if click before
         wait = r.userAction("WAIT", [milliseconds], "Wait")
         history = r.userAction("HISTORY", [historyMode], "Go forward or backward in the page history")
 

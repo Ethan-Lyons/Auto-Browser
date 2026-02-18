@@ -11,8 +11,8 @@ import { Routine } from "../Routine.js";
  * @param {Routine} routine The routine object.
  */
 export function routineFor(forStep, routine) {
-  forSpec = parseFor(forStep)
-  loopCount = forSpec.end - forSpec.start
+  const forSpec = parseFor(forStep)
+  const loopCount = forSpec.end - forSpec.start
   exeFor(routine, loopCount, forSpec.name)
 }
 
@@ -20,7 +20,7 @@ export function routineFor(forStep, routine) {
  * Obtains important values from a 'forStep' input and returns them using an object.
  * @param {{ name: "FOR", type: "Action", args: [Object, Object]}} forStep An object
  * containing the information for the for action.
- * @returns {{ name: String, start: Number, end: Number}}
+ * @returns {{ name: string, start: Number, end: Number}}
  */
 export function parseFor(forStep) {
   assertStep(forStep, "FOR", "parseFor");
@@ -40,7 +40,7 @@ export function parseFor(forStep) {
  * the end and start index of a FOR loop.
  * @param {Routine} routine The routine object.
  * @param {Number} loopCount The number of times to repeat the block.
- * @param {String} forName The name of the FOR loop step, used to identify the block.
+ * @param {string} forName The name of the FOR loop step, used to identify the block.
  */
 export function exeFor(routine, loopCount, forName) {
     loopCount = Math.max(0, loopCount)

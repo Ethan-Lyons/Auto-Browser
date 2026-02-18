@@ -1,5 +1,8 @@
-import { defaultOutputDir, getActivePage, assertStep, screenshot, textFile } from './WebHelpers.js';
+import { getActivePage, assertStep, screenshot, textFile } from './WebHelpers.js';
 import { BrowserContext } from 'puppeteer-core';
+
+// Default directory for output actions
+export const defaultOutputDir = "./OutputFiles/"
 
 /**
  * Parses and executes an output action.
@@ -17,7 +20,7 @@ export async function output(context, outputStep) {
 /**
  * Obtains the important values from a 'outputStep' input and returns them using an object.
  * @param {{ name: "OUTPUT", type: "Action", args: [Object] }} outputStep 
- * @returns {{ name: String, step: Object }}
+ * @returns {{ name: string, step: Object }}
  */
 export async function parseOutput(outputStep) {
     assertStep(outputStep, "OUTPUT", "parseOutput");
@@ -32,7 +35,7 @@ export async function parseOutput(outputStep) {
 /**
  * Calls the correct output function based on the output mode.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {String} mode The output mode to use.
+ * @param {string} mode The output mode to use.
  * @param {Object} subStep The substep for the given output mode.
  * @returns {Promise<void>} A promise that resolves when the output action is completed.
  */
