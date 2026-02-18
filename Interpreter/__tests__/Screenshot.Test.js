@@ -1,11 +1,16 @@
 import { test, expect, describe } from '@jest/globals';
 import { screenshotStep } from '../StepFactory.js';
 
-import { getBrowser, getContext, browserDisconnect, newTab,
-    getActiveIndex, getTabs, getActivePage, exeUrlNav } from '../WebHelpers/WebHelpers.js';
-import { screenshot, parseScreenshot, exeScreenshot, resolveScrFilePath } from '../WebHelpers/WebHelpers.js';
+import { getBrowser, getContext, browserDisconnect,
+    newTab } from '../WebHelpers/WebHelpers.js';
+    
+import { screenshot, parseScreenshot, exeScreenshot,
+    resolveScrFilePath } from '../WebHelpers/WebHelpers.js';
 
 import fs from 'fs';
+
+import { testOutputDirectory } from './Output.Test.js';
+import path from 'path';
 
 let browser;
 let context;
@@ -48,24 +53,24 @@ describe('parseScreenshot', () => {
 
 describe('resolveScrFilePath', () => {
     test('valid path with extension', () => {
-        const directory = "";
+        //const directory = "";
         const fileName = "test.png";
-        const result = resolveScrFilePath(directory, fileName);
-        expect(result).toEqual(directory + fileName);
+        const result = resolveScrFilePath(testOutputDirectory, fileName);
+        expect(result).toEqual(path.join(testOutputDirectory, fileName));
     });
 
     test('valid path with jpg extension', () => {
-        const directory = "";
+        //const directory = "";
         const fileName = "test.jpg";
-        const result = resolveScrFilePath(directory, fileName);
-        expect(result).toEqual(directory + fileName);
+        const result = resolveScrFilePath(testOutputDirectory, fileName);
+        expect(result).toEqual(path.join(testOutputDirectory, fileName));
     });
 
     test('valid path without extension', () => {
         const directory = "";
         const fileName = "test";
-        const result = resolveScrFilePath(directory, fileName);
-        expect(result).toEqual(directory + fileName + ".png");
+        const result = resolveScrFilePath(testOutputDirectory, fileName);
+        expect(result).toEqual(path.join(testOutputDirectory, fileName + ".png"));
     });
 });
 
@@ -73,31 +78,43 @@ describe('exeScreenshot', () => {
     test('valid name with extension', async () => {
         const directory = "";
         const fileName = "screenshot.png";
-        await exeScreenshot(context, directory, fileName);
-        expect(fs.existsSync(directory + fileName)).toBe(true);
+        await exeScreenshot(context, testOutputDirectory, fileName);
+        expect(fs.existsSync(path.join(testOutputDirectory, fileName))).toBe(true);
 
-        fs.unlinkSync(directory + fileName);
+        fs.unlinkSync(path.join(testOutputDirectory, fileName));
     });
 
     test('valid name with jpg extension', async () => {
         const directory = "";
         const fileName = "screenshot.jpg";
-        await exeScreenshot(context, directory, fileName);
-        expect(fs.existsSync(directory + fileName)).toBe(true);
+        await exeScreenshot(context, testOutputDirectory, fileName);
 
-        fs.unlinkSync(directory + fileName);
+        const filePath = path.join(testOutputDirectory, fileName)
+        expect(fs.existsSync(filePath)).toBe(true);
+
+        fs.unlinkSync(filePath);
     });
 
     test('valid name without extension', async () => {
         const directory = "";
         const fileName = "screenshot";
-        await exeScreenshot(context, directory, fileName);
-        expect(fs.existsSync(directory + fileName + ".png")).toBe(true);
+        await exeScreenshot(context, testOutputDirectory, fileName);
 
-        fs.unlinkSync(directory + fileName + ".png");
+        const filePath = path.join(testOutputDirectory, fileName + ".png")
+        expect(fs.existsSync(filePath)).toBe(true);
+
+        fs.unlinkSync(filePath);
     });
 });
 
 describe('screenshot', () => {
-    
+    test('valid screenshot', async () => {
+        const ssStep = screenshotStep("screenshot.png");
+        await screenshot(context, ssStep, testOutputDirectory);
+
+        const filePath = path.join(testOutputDirectory, "screenshot.png")
+        expect(fs.existsSync(filePath)).toBe(true);
+
+        fs.unlinkSync(filePath);
+    })
 });

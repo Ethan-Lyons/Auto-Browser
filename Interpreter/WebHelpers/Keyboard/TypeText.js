@@ -1,5 +1,5 @@
-import { assertStep } from "./Assert";
-import { getActivePage, find } from "./WebHelpers";
+import { assertStep } from "../Assert";
+import { getActivePage, find } from "../WebHelpers";
 import { BrowserContext, Locator } from "puppeteer-core";
 
 /**

@@ -1,4 +1,4 @@
-import { getActivePage, resolveString } from './WebHelpers.js';
+import { getActivePage, resolveString, assertStep } from './WebHelpers.js';
 import { BrowserContext, Page } from 'puppeteer-core';
 import path from 'path';
 import fs from 'fs';
@@ -8,11 +8,12 @@ import fs from 'fs';
  * @param {BrowserContext} context The browser context instance to use.
  * @param {{ name: "SCREENSHOT", type: "Action", args: [Object] }} scrStep An object
  * containing the information for the screenshot action.
+ * @param {string} outputDir Directory to output the screenshot to. Defaults to current directory.
  * @returns {Promise<void>} A promise that resolves when the screenshot action is completed.
  */
-export async function screenshot(context, scrStep, outputDir) {
+export async function screenshot(context, scrStep, outputDir = "") {
     const scrSpec = parseScreenshot(scrStep);
-    await exeScreenshot(context, outputDir, scrSpec.name);
+    await exeScreenshot(context, outputDir, scrSpec.fileName);
 }
 
 /**
@@ -22,6 +23,8 @@ export async function screenshot(context, scrStep, outputDir) {
  * @returns {{ fileName: string }}
  */
 export function parseScreenshot(scrStep) {
+    assertStep(scrStep, "SCREENSHOT", "parseScreenshot");
+
     const [fileNameStep] = scrStep.args;
     const fileName = fileNameStep.value;
 
@@ -36,6 +39,10 @@ export function parseScreenshot(scrStep) {
 export async function exeScreenshot (context, outputDir, fileName)  {
     const page = await getActivePage(context);
 
+    if (!page) {
+        throw new Error("No page(s) found for screenshot.");
+    }
+
     if (outputDir === "") {
         outputDir = "./";
     }
@@ -44,6 +51,7 @@ export async function exeScreenshot (context, outputDir, fileName)  {
     fs.mkdirSync(outputDir, { recursive: true });
 
     const filePath = resolveScrFilePath(outputDir, fileName);
+
     await page.screenshot({
         path: filePath,
         fullPage: true

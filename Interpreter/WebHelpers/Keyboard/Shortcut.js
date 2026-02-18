@@ -1,5 +1,5 @@
-import { assertStep } from "./Assert";
-import { getActivePage, find, wait, resolveBoolean } from "./WebHelpers";
+import { assertStep } from "../Assert";
+import { getActivePage, find, wait, resolveBoolean } from "../WebHelpers";
 import { Browser, BrowserContext} from "puppeteer-core";
 import { KEY_INPUT } from "./KeyInput";
 

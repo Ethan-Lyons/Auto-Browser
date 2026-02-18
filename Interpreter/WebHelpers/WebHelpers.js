@@ -1,6 +1,7 @@
 import puppeteer from 'puppeteer-core';
 import { Browser, BrowserContext, Page } from 'puppeteer-core';
 import { resolveNumber } from './StoreVariables.js';
+import { assert } from 'console';
 export * from './Find.js';
 export * from './FindAlt.js';
 export * from './Info.js';
@@ -30,9 +31,9 @@ export * from './Screenshot.js'
 export * from './TextFile.js'
 
 export * from './RunRoutine.js'
-export * from './Keyboard.js'
-export * from './Shortcut.js'
-export * from './TypeText.js'
+export * from './Keyboard/Keyboard.js'
+export * from './Keyboard/Shortcut.js'
+export * from './Keyboard/TypeText.js'
 
 
 // Maps each browser context to its active page
@@ -58,15 +59,20 @@ export async function setActivePage(context, page) {
  * @returns {Promise<Page>} The active page in the browser context.
  */
 export async function getActivePage(context) {
+    assert(context instanceof BrowserContext, "Context is not a BrowserContext, type: " + typeof context);
+    
     const page = contextToPage.get(context);
     const pages = await context.pages()
+
     if (pages.length === 0) { // check if context is empty
         console.warn("Warning (getActivePage): No pages in context.");
         return null;
     }
+
     else if (page && !page.isClosed()) { // check if page is still open
         return page;
     }
+
     await setActivePage(context, pages[0]);
     return pages[0]; // deterministic fallback
 }

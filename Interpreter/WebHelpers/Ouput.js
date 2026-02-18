@@ -12,9 +12,8 @@ export const defaultOutputDir = "./OutputFiles/"
  * @returns {Promise<void>} A promise that resolves when the output action is completed.
  */
 export async function output(context, outputStep) {
-    const page = await getActivePage(context);
     const outputSpec = parseOutput(outputStep);
-    await exeOutput(page, outputSpec.name);
+    await exeOutput(context, outputSpec.name, outputSpec.step);
 }
 
 /**
@@ -22,7 +21,7 @@ export async function output(context, outputStep) {
  * @param {{ name: "OUTPUT", type: "Action", args: [Object] }} outputStep 
  * @returns {{ name: string, step: Object }}
  */
-export async function parseOutput(outputStep) {
+export function parseOutput(outputStep) {
     assertStep(outputStep, "OUTPUT", "parseOutput");
 
     const [canOutput] = outputStep.args;

@@ -1,9 +1,11 @@
 import { test, expect, describe } from '@jest/globals';
-import { argumentStep, typeTextStep, millisecondsStep,
-    textStep, findStep, canFindStep, urlStep, modKeyStep, blankStep, waitNavStep } from '../../StepFactory.js';
 
-import { getBrowser, getContext, browserDisconnect, newTab, getActiveIndex, getTabs,
-    getActivePage, exeUrlNav, canFind, find } from '../../WebHelpers/WebHelpers.js';
+import { argumentStep, typeTextStep, millisecondsStep,
+    textStep, findStep, canFindStep, blankStep} from '../../StepFactory.js';
+
+import { getBrowser, getContext, browserDisconnect, newTab, exeUrlNav,
+    canFind, find } from '../../WebHelpers/WebHelpers.js';
+    
 import { parseTypeText, exeTypeText, typeText } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
@@ -94,9 +96,9 @@ describe('typeText', () => {
         expect(findResult == false);
 
         const fs = findStep(argumentStep('aria', '[role="textbox"]'));
-        const locator = await find(context, fs);
 
-        await typeText(locator, inputText, 0);
+        const ttStep = typeTextStep(fs, textStep(inputText), millisecondsStep("0"));
+        await typeText(context, ttStep);
 
         findResult = await canFind(context, cfStep);
         expect(findResult == true);

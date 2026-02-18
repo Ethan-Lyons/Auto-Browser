@@ -1,11 +1,10 @@
-import { resolveString } from './WebHelpers.js';
+import { resolveString, assertStep } from './WebHelpers.js';
 import { BrowserContext} from 'puppeteer-core';
 import fs from 'fs';
 import path from 'path';
 
 /**
  * Parses and executes a text file output action.
- * @param {BrowserContext} context 
  * @param {{ name: "TEXT_FILE", type: "Action", args: [Object, Object, Object] }} tfStep An object
  * containing the information for the text file action.
  * @param {string} outputDir The directory to save the text file to.
@@ -29,6 +28,7 @@ export function textFile(tfStep, outputDir) {
  * @returns {{ text: string, fileName: string, mode: string }}
  */
 export function parseTextFile(tfStep) {
+    assertStep(tfStep, "TEXT_FILE", "parseTextFile");
     const [textStep, fileStep, modeStep] = tfStep.args;
 
     const text = textStep.value;
@@ -43,12 +43,14 @@ export function parseTextFile(tfStep) {
  * @param {string} textContent The text content to write to the text file.
  * Any user variables will be resolved to their values.
  * @param {string} outputDir The directory to save the text file to.
+ * @param {string} fileName File name (may include user variables).
  * @param {string} mode The output mode to use.
  */
 export function exeTextFile(textContent, outputDir, fileName, mode) {
     const upMode = mode.toUpperCase();
-    const filePath = resolveTextFilePath(outputDir, fileName);
+
     const resolvedContent = resolveString(textContent);
+    const filePath = resolveTextFilePath(outputDir, fileName);
 
     switch (upMode) {
         case "WRITE":
