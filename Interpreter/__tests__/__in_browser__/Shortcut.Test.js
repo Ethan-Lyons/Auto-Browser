@@ -1,5 +1,5 @@
 import { test, expect, describe } from '@jest/globals';
-import { argumentStep, keyStep, shortcutStep, typeTextStep, millisecondsStep,
+import { argumentStep, keyStep, shortcutStep, typeTextStep, delayStep,
     textStep, findStep, canFindStep, urlStep, modKeyStep, blankStep, waitNavStep, 
     trueStep, falseStep} from '../../StepFactory.js';
 
@@ -73,5 +73,5 @@ describe('exeShortcut', () => {
 });
 
 describe('shortcut', () => {
-    
+
 })

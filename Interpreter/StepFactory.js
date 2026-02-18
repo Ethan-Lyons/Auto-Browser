@@ -11,6 +11,14 @@ export function outputStep(outputModeStep) {
     return { name: "OUTPUT", type: "Action", args: [canOutput] };
 }
 
+export function setFocusStep(subFocusStep) {
+    return { name: "SET_FOCUS", type: "ActionGroup", selected: subFocusStep };
+}
+
+export function skipStep() {
+    return { name: "SKIP", type: "Argument", args: [null] };
+}
+
 export function textFileStep(textVal, fileNameVal, selectedMode) {
     const fnStep = fileNameStep(fileNameVal);
     const tStep = { name: "TEXT", type: "Argument", value: textVal };
@@ -35,12 +43,13 @@ function fileNameStep(fileNameVal) {
     return { name: "FILE_NAME", type: "Argument", value: fileNameVal };
 }
 
-export function millisecondsStep(msVal) {
-    return { name: "milliseconds", type: "Argument", value: msVal };
+export function delayStep(msVal) {
+    return { name: "DELAY_MS", type: "Argument", value: msVal };
 }
 
-export function typeTextStep(findStep, textStep, msStep) {
-    return { name: "TYPE_TEXT", type: "Action", args: [findStep, textStep, msStep] };
+export function typeTextStep(textVal, delayVal, subFocusStep) {
+    return { name: "TYPE_TEXT", type: "Action", args:
+        [textStep(textVal), delayStep(delayVal), setFocusStep(subFocusStep)] };
 }
 
 export function modKeyStep(modKeyString) {

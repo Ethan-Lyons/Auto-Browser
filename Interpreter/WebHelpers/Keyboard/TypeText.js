@@ -1,5 +1,5 @@
 import { assertStep } from "../Assert";
-import { getActivePage, find } from "../WebHelpers";
+import { getActivePage, find, setFocus } from "../WebHelpers";
 import { BrowserContext, Locator } from "puppeteer-core";
 
 /**
@@ -8,30 +8,30 @@ import { BrowserContext, Locator } from "puppeteer-core";
  * @param {{name: "TYPE_TEXT", type: "Action", args: [Object]}} typeTextStep 
  */
 export async function typeText(context, typeTextStep) {
-    const typeTextSpec = parseTypeText(typeTextStep);
+    const spec = parseTypeText(typeTextStep);
 
-    const locator = await find(context, typeTextSpec.findStep);
-    await exeTypeText(locator, typeTextSpec.text, typeTextSpec.delay);
+    await setFocus(context, spec.setFocusStep);
+    await exeTypeText(context, spec.text, spec.delay);
 }
 
 /**
  * 
  * @param {{name: "TYPE_TEXT", type: "Action", args: [Object]}} typeTextStep 
- * @returns {{ findStep: Object, text: string, delay: Number }}
+ * @returns {{ findStep: Object | null, text: string, delay: Number }}
  */
 export function parseTypeText(typeTextStep) {
     assertStep(typeTextStep, "TYPE_TEXT", "parseTypeText");
 
     // Ensure argument structure is correct
-    const [findStep, text, milliseconds] = typeTextStep.args;
-    if (!findStep) throw new Error("Missing findStep argument in typeTextStep");
-    if (!text) throw new Error("Missing text argument in typeTextStep");
-    if (!milliseconds) throw new Error("Missing milliseconds argument in typeTextStep");
+    const [textStep, delayStep, setFocusStep] = typeTextStep.args;
+    assertStep(textStep, "TEXT", "parseTypeText");
+    assertStep(delayStep, "DELAY_MS", "parseTypeText");
+    assertStep(setFocusStep, "SET_FOCUS", "parseTypeText");
 
-    assertStep(text, "TEXT", "parseTypeText");
-    assertStep(milliseconds, "MILLISECONDS", "parseTypeText");
+    const text = textStep.value;
+    const delay = delayStep.value;
 
-    return { findStep: findStep, text: text.value, delay: milliseconds.value};
+    return { text: text.value, delay: delay.value, setFocusStep: setFocusStep };
 }
 
 /**
@@ -40,10 +40,12 @@ export function parseTypeText(typeTextStep) {
  * @param {string} text 
  * @param {Number} delay 
  */
-export async function exeTypeText(locator, text, delay) {
-    // Fix negative or empty delay inputs
-    numDelay = Number(delay);
+export async function exeTypeText(context, text, delay) {
+    const page = await getActivePage(context);
+
+    // Ensure delay is non-negative
+    let numDelay = Number(delay);
     numDelay = Math.max(0, numDelay || 0);
-    const element = await locator.waitHandle();
-    await element.type(text, { delay: numDelay });
+
+    await page.keyboard.type(text, { delay: numDelay });
 }

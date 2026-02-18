@@ -1,6 +1,6 @@
 import { test, expect, describe } from '@jest/globals';
-import { argumentStep, keyStep, keyboardStep, shortcutStep, typeTextStep, millisecondsStep, textStep,
-    findStep, canFindStep, waitNavStep, falseStep, trueStep, modKeyStep, blankStep} from '../../StepFactory.js';
+import { argumentStep, keyStep, keyboardStep, shortcutStep, typeTextStep, delayStep, textStep,
+    findStep, canFindStep, waitNavStep, falseStep, trueStep, modKeyStep, blankStep, skipStep } from '../../StepFactory.js';
 
 import { getBrowser, getContext, browserDisconnect, newTab, exeUrlNav, canFind } from '../../WebHelpers/WebHelpers.js';
 import { parseKeyboard, exeKeyboard, keyboard, exeCanFind, exeInfo, getTabCount } from '../../WebHelpers/WebHelpers.js';
@@ -37,9 +37,9 @@ describe('parseKeyboard', () => {
     })
 
     test('valid key step', async () => {
-        const ks = keyboardStep(typeTextStep(blankStep(), blankStep(), blankStep()));
+        const ks = keyboardStep(typeTextStep(blankStep(), blankStep(), skipStep()));
         const result = parseKeyboard(ks);
-        expect(result).toEqual({ modeStep: typeTextStep(blankStep(), blankStep(), blankStep()) });
+        expect(result).toEqual({ modeStep: typeTextStep(blankStep(), blankStep(), skipStep()) });
     });
 });
 
@@ -52,7 +52,7 @@ describe('exeKeyboard', () => {
         expect(findResult == false);
 
         const fs = findStep(argumentStep('aria', '[role="textbox"]'));
-        const ttStep = typeTextStep(fs, textStep(inputText), millisecondsStep("0"));
+        const ttStep = typeTextStep(textStep(inputText), delayStep("0"), fs);
         await exeKeyboard(context, ttStep);
 
         findResult = await canFind(context, cfStep);
@@ -74,7 +74,7 @@ describe('exeKeyboard', () => {
         const inputText = "example";
         const fs = findStep(argumentStep('aria', '[role="combobox"]'));
         
-        await exeKeyboard(context, typeTextStep(fs, textStep(inputText), millisecondsStep("0")));
+        await exeKeyboard(context, typeTextStep(textStep(inputText), delayStep("0"), fs));
 
         await exeKeyboard(context, shortcutStep(modKeyStep(""), keyStep("Enter"), waitNavStep(trueStep())));
 
@@ -91,7 +91,7 @@ describe('exeKeyboard', () => {
         expect(await exeCanFind(context, findStep(argumentStep("text", goalText))) == false);
 
         const fs = findStep(argumentStep('aria', '[role="textbox"]'));
-        await exeKeyboard(context, typeTextStep(fs, textStep(inputText), millisecondsStep("0")));
+        await exeKeyboard(context, typeTextStep(textStep(inputText), delayStep("0"), fs));
 
         const leftStep = shortcutStep(modKeyStep("ArrowLeft"), keyStep(""), waitNavStep(falseStep()));
         const rightStep = shortcutStep(modKeyStep("ArrowRight"), keyStep(""), waitNavStep(falseStep()));
@@ -103,7 +103,7 @@ describe('exeKeyboard', () => {
         await exeKeyboard(context, backStep);
         await exeKeyboard(context, rightStep);
 
-        await exeKeyboard(context, typeTextStep(fs, textStep(" test"), millisecondsStep("0")));
+        await exeKeyboard(context, typeTextStep(textStep(" test"), delayStep("0"), fs));
         const findResult = await exeCanFind(context, findStep(argumentStep("text", goalText)));
         expect(findResult == true);
     });
@@ -117,7 +117,7 @@ describe('exeKeyboard', () => {
         expect(findResult == false);
 
         const fs = findStep(argumentStep('aria', '[role="textbox"]'));
-        await exeKeyboard(context, typeTextStep(fs, textStep(inputText), millisecondsStep("0")));
+        await exeKeyboard(context, typeTextStep(textStep(inputText), delayStep("0"), fs));
 
         const selectStep = shortcutStep(modKeyStep("Control"), keyStep("A"), waitNavStep(falseStep()));
         const copyStep = shortcutStep(modKeyStep("Control"), keyStep("C"), waitNavStep(falseStep()));

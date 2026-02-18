@@ -34,6 +34,7 @@ export * from './RunRoutine.js'
 export * from './Keyboard/Keyboard.js'
 export * from './Keyboard/Shortcut.js'
 export * from './Keyboard/TypeText.js'
+export * from './Keyboard/SetFocus.js'
 
 
 // Maps each browser context to its active page

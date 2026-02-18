@@ -14,12 +14,12 @@ class UserActionBuilder:
         fileName = r.arg("file_name")
         url = r.arg("url")
         tab = r.arg("tab")
-        milliseconds = r.arg("milliseconds")
+        delayMs = r.arg("delay_ms")
         start = r.arg("start")
         end = r.arg("end")
-        write = r.arg("write")
-        append = r.arg("append")
-        noneArg = r.arg("none")
+        write = r.arg("WRITE")
+        append = r.arg("APPEND")
+        skipArg = r.arg("SKIP")
 
         # Selector types
         xpath = r.arg("xpath")
@@ -82,16 +82,18 @@ class UserActionBuilder:
             "Defaults to false. Set to true if the action is expected to cause a navigation to a new page."
         )
 
+        setFocus = r.group("SET_FOCUS", [skipArg, find])
+
         textMode = r.group("TEXT_MODE", [write, append])
         textFile = r.action("TEXT_FILE", [text, fileName, textMode])
         screenshot = r.action("SCREENSHOT", [fileName])
         canOutput = r.group("CAN_OUTPUT", [textFile, screenshot])
         output = r.userAction("OUTPUT", [canOutput])
 
-        typeText = r.group("TYPE_TEXT", [find, text, milliseconds])
+        typeText = r.group("TYPE_TEXT", [text, delayMs, setFocus])
 
         modKeys = r.arg("MOD_KEY(S)", "Modifier key(s), such as shift, ctrl, alt, or meta. Keys are separated by spaces or '+'s. For example: 'alt shift' or 'ctrl + alt'")
-        shortcut = r.action("SHORTCUT", [modKeys, key, waitForNav])
+        shortcut = r.action("SHORTCUT", [modKeys, key, waitForNav, setFocus])
 
         keyMode = r.group("KEY_MODE", [typeText, shortcut])
         keyboard = r.userAction("KEYBOARD", [keyMode])
@@ -103,7 +105,7 @@ class UserActionBuilder:
 
         click = r.userAction("CLICK", [find, waitForNav], "Click an element")
 
-        wait = r.userAction("WAIT", [milliseconds], "Wait")
+        wait = r.userAction("WAIT", [delayMs], "Wait")
         history = r.userAction("HISTORY", [historyMode], "Go forward or backward in the page history")
 
         # ---------- Conditionals ----------

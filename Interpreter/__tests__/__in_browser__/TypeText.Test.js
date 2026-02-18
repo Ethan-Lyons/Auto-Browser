@@ -1,12 +1,13 @@
 import { test, expect, describe } from '@jest/globals';
 
-import { argumentStep, typeTextStep, millisecondsStep,
-    textStep, findStep, canFindStep, blankStep} from '../../StepFactory.js';
+import { argumentStep, typeTextStep, delayStep as delayStep,
+    textStep, findStep, canFindStep, blankStep, setFocusStep, skipStep } from '../../StepFactory.js';
 
 import { getBrowser, getContext, browserDisconnect, newTab, exeUrlNav,
     canFind, find } from '../../WebHelpers/WebHelpers.js';
-    
-import { parseTypeText, exeTypeText, typeText } from '../../WebHelpers/WebHelpers.js';
+
+import { parseTypeText, exeTypeText, typeText, exeSetFocus } from '../../WebHelpers/WebHelpers.js';
+import { parse } from 'path';
 
 let browser;
 let context;
@@ -40,8 +41,9 @@ describe('parseTypeText', () => {
     })
 
     test('valid key step', async () => {
-        const ttStep = typeTextStep(blankStep(), textStep("FOO"), millisecondsStep("0"));
-        expect(parseTypeText(ttStep)).toEqual({ findStep: blankStep(), text: "FOO", delay: "0" });
+        const ttStep = typeTextStep(textStep("FOO"), delayStep("0"), skipStep());
+        const ttSpec = parseTypeText(ttStep);
+        expect(ttSpec).toEqual({ text: "FOO", delay: "0", setFocusStep: setFocusStep(skipStep()) });
     });
 });
 
@@ -57,8 +59,10 @@ describe('exeTypeText', () => {
 
         const fs = findStep(argumentStep('aria', '[role="textbox"]'));
         const locator = await find(context, fs);
+        await exeSetFocus(locator);
 
-        await exeTypeText(locator, inputText, 0);
+        //await exeTypeText(locator, inputText, 0);
+        await exeTypeText(context, inputText, 0);
 
         findResult = await canFind(context, cfStep);
         expect(findResult == true);
@@ -76,9 +80,12 @@ describe('exeTypeText', () => {
 
         const fs = findStep(argumentStep('aria', '[role="textbox"]'));
         const locator = await find(context, fs);
+        await exeSetFocus(locator);
 
-        await exeTypeText(locator, inputText, 0);
-        await exeTypeText(locator, inputText, 0);
+        //await exeTypeText(locator, inputText, 0);
+        //await exeTypeText(locator, inputText, 0);
+        await exeTypeText(context, inputText, 0);
+        await exeTypeText(context, inputText, 0);
 
         findResult = await canFind(context, cfStep);
         expect(findResult == true);
@@ -97,7 +104,7 @@ describe('typeText', () => {
 
         const fs = findStep(argumentStep('aria', '[role="textbox"]'));
 
-        const ttStep = typeTextStep(fs, textStep(inputText), millisecondsStep("0"));
+        const ttStep = typeTextStep(textStep(inputText), delayStep("0"), fs);
         await typeText(context, ttStep);
 
         findResult = await canFind(context, cfStep);
