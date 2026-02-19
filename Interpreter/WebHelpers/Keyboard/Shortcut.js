@@ -1,12 +1,13 @@
-import { assertStep } from "../Assert";
-import { getActivePage, find, wait, resolveBoolean } from "../WebHelpers";
+import { assertStep } from "../Assert.js";
+import { getActivePage, setFocus, resolveBoolean } from "../WebHelpers.js";
 import { Browser, BrowserContext} from "puppeteer-core";
-import { KEY_INPUT } from "./KeyInput";
+import { KEY_INPUT } from "./KeyInput.js";
 
 
 /**
  * 
  * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object]}} scStep 
+ * @returns {Promise<void>}
  */
 export async function shortcut(context, scStep) {
     const shortcutSpec = parseShortcut(scStep);
@@ -14,34 +15,41 @@ export async function shortcut(context, scStep) {
 
     const waitNavBool = resolveBoolean(shortcutSpec.waitForNav);
 
+    await setFocus(context, shortcutSpec.setFocusStep);
+
     await exeShortcut(context, keyList, waitNavBool);
 }
 
 /**
  * 
  * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object]}} scStep 
- * @returns 
+ * @returns {{ modKeyStr: string, mainKey: string, waitForNav: string, setFocusStep: Object }}
  */
 export function parseShortcut(scStep) {
     assertStep(scStep, "SHORTCUT", "parseShortcut");
 
     // Ensure argument structure is correct
-    const [modKeyStr, mainKey, waitNavStep] = scStep.args;
+    const [modKeyStr, mainKey, waitNavStep, setFocusStep] = scStep.args;
     assertStep(modKeyStr, "MOD_KEYS", "parseShortcut");
     assertStep(mainKey, "KEY", "parseShortcut");
     assertStep(waitNavStep, "WAIT_FOR_NAV", "parseShortcut");
+    assertStep(setFocusStep, "SET_FOCUS", "parseShortcut");
 
-    return { modKeyStr: modKeyStr.value, mainKey: mainKey.value, waitForNav: waitNavStep.selected.name };
+    return { modKeyStr: modKeyStr.value, mainKey: mainKey.value,
+        waitForNav: waitNavStep.selected.name, setFocusStep: setFocusStep };
 }
 
 /**
  * 
  * @param {string} keyStr 
  * @param {string} mainKey 
- * @returns 
+ * @returns {string[]}
  */
 export function keyStrListMerge(keyStr, mainKey) {
     let keyStrList = [];
+    if (keyStr == "" && mainKey == "") {
+        throw new Error("Error (keyStrListMerge): No keys in shortcut.");
+    }
 
     // If there are no keys, do nothing, else split list by spaces and/or plus signs
     if (keyStr !== "") {
@@ -99,7 +107,7 @@ export async function exeShortcut(context, keyList, waitForNav = false) {
 /**
  * 
  * @param {string} checkKey 
- * @returns 
+ * @returns {string}
  */
 function formatKey(checkKey){
     for (const key of KEY_INPUT){

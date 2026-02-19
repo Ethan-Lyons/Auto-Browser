@@ -60,8 +60,8 @@ export function keyStep(keyString) {
     return { name: "KEY", type: "Argument", value: keyString };
 }
 
-export function shortcutStep(modKeyStep, keyStep, waitNavStep) {
-    return { name: "SHORTCUT", type: "Action", args: [modKeyStep, keyStep, waitNavStep] };
+export function shortcutStep(modKeyStep, keyStep, waitNavStep, subFocusStep) {
+    return { name: "SHORTCUT", type: "Action", args: [modKeyStep, keyStep, waitNavStep, setFocusStep(subFocusStep)] };
 }
 
 export function keyboardStep(selectedKeyModeStep) {
