@@ -1,6 +1,6 @@
-import { Browser, BrowserContext } from 'puppeteer-core';
+import { BrowserContext } from 'puppeteer-core';
 import { routineIf, routineFor, routineWhile, store, click, urlNav,
-  tabNav, newTab, closeTab, wait, Routine } from './WebHelpers.js';
+  tabNav, newTab, closeTab, wait, Routine, runRoutine, keyboard, history, output } from './WebHelpers.js';
 
 /**
  * Runs all steps in a given routine.
@@ -13,6 +13,7 @@ export async function handleRoutine(context, routine) {
     throw new Error("Routine is not an instance of Routine. Type: " + typeof routine);
   }
 
+  // Get next step from top of stack
   while (routine.hasNext()) {
     const step = routine.pop();
     await handleStep(context, step, routine);
@@ -28,8 +29,9 @@ export async function handleRoutine(context, routine) {
  * @returns {Promise<void>} A promise that resolves when the step has executed.
  */
 export async function handleStep(context, step, routine) {
-  const type = step.type.toUpperCase();
-  switch (type) {
+  const upType = step.type.toUpperCase();
+
+  switch (upType) {
     case "ACTIONGROUP": // extract selected step from groups
       const selectedStep = step.selected;
       await handleStep(context, selectedStep, routine);
@@ -76,11 +78,11 @@ export async function handleAction(context, currentStep, routine) {
       break;
 
     case "IF":
-      await routineIf(context, currentStep, routine)
+      await routineIf(context, currentStep, routine);
       break;
 
     case "WHILE":
-      await routineWhile(context, currentStep, routine)
+      await routineWhile(context, currentStep, routine);
       break;
 
     case "STORE":
@@ -108,7 +110,7 @@ export async function handleAction(context, currentStep, routine) {
       break;
     
     case "WAIT":
-      await wait(currentStep)
+      await wait(currentStep);
       break;
     
     case "HISTORY":

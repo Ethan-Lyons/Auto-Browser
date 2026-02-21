@@ -1,9 +1,11 @@
 import { test, expect, describe } from '@jest/globals';
-import { findTextStep, canFindStep, findStep, argumentStep, infoStep } from '../../StepFactory.js';
 
-import { getBrowser, getContext, browserDisconnect, newTab,
-    getActiveIndex, getTabs, getActivePage, exeUrlNav } from '../../WebHelpers/WebHelpers.js';
-import { storeFindText, storeInfo, storeCanFind, getVariableValue } from '../../WebHelpers/WebHelpers.js';
+import { findTextStep, canFindStep, findStep, argumentStep,
+    infoStep } from '../../StepFactory.js';
+
+import { getBrowser, getContext, browserDisconnect, newTab, exeUrlNav,
+    storeFindText, storeInfo, storeCanFind,
+    getVariableValue } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
 let context;

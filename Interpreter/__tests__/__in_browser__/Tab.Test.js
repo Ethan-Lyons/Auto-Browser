@@ -1,9 +1,10 @@
 import { test, expect, describe } from '@jest/globals';
+
 import { newTabStep, closeTabStep } from '../../StepFactory.js';
 
-import { getBrowser, getContext, browserDisconnect, newTab,
-    getActiveIndex, getTabs, getActivePage } from '../../WebHelpers/WebHelpers.js';
-import { parseCloseTab, exeCloseTab, closeTab, getTabCount, resolveTabIndex, clampTabIndex } from '../../WebHelpers/WebHelpers.js';
+import { getBrowser, getContext, browserDisconnect, newTab, getTabs, parseCloseTab,
+    exeCloseTab, closeTab, getTabCount, resolveTabIndex,
+    clampTabIndex } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
 let context;

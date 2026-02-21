@@ -1,7 +1,5 @@
-import puppeteer from 'puppeteer-core';
-import { Browser, BrowserContext, Page } from 'puppeteer-core';
-import { resolveNumber } from './StoreVariables.js';
-import { assert } from 'console';
+import { BrowserContext, Page, resolveNumber } from 'puppeteer-core';
+
 export * from './Find.js';
 export * from './FindAlt.js';
 export * from './Info.js';
@@ -36,6 +34,8 @@ export * from './Keyboard/Shortcut.js'
 export * from './Keyboard/TypeText.js'
 export * from './Keyboard/SetFocus.js'
 
+export * from './History.js'
+
 
 // Maps each browser context to its active page
 export const contextToPage = new WeakMap();
@@ -60,10 +60,12 @@ export async function setActivePage(context, page) {
  * @returns {Promise<Page>} The active page in the browser context.
  */
 export async function getActivePage(context) {
-    assert(context instanceof BrowserContext, "Context is not a BrowserContext, type: " + typeof context);
+    if (!(context instanceof BrowserContext)) {
+        throw new Error("Context is not a BrowserContext, type: " + typeof context);
+    }
     
     const page = contextToPage.get(context);
-    const pages = await context.pages()
+    const pages = await context.pages();
 
     if (pages.length === 0) { // check if context is empty
         console.warn("Warning (getActivePage): No pages in context.");
@@ -92,7 +94,7 @@ export async function getActiveIndex(context) {
 
 /**
  * Waits for a specified amount of time.
- * @param {{ name: "WAIT", type: "Action", args: [Object]}} waitStep An object
+ * @param {{name: "WAIT", type: "Action", args: [Object]}} waitStep An object
  * containing the information for the wait action.
  * @returns {Promise<void>} A promise that resolves when the wait is complete.
  */

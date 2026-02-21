@@ -1,6 +1,5 @@
-import * as WebHelpers from './WebHelpers/WebHelpers.js';
-import { getBrowser, browserDisconnect } from './WebHelpers/Browser.js';
-import { Routine } from './WebHelpers/Routine.js';
+import { getContext, closeContext, browserDisconnect, handleRoutine,
+  getBrowser, Routine } from './WebHelpers/WebHelpers.js';
 
 /**
  * Obtains the path to the routine from the command line.
@@ -36,8 +35,8 @@ export async function runRoutine(browser, routine, newContext = false, autoClose
   let context;
 
   try {
-    context = await WebHelpers.getContext(browser, newContext);
-    await WebHelpers.handleRoutine(context, routine);
+    context = await getContext(browser, newContext);
+    await handleRoutine(context, routine);
     
     console.log("Routine \"" + routine.getName() + "\" Finished.\n")
 
@@ -46,7 +45,7 @@ export async function runRoutine(browser, routine, newContext = false, autoClose
     
   } finally { // Clean up context
     if (autoClose && context && newContext) {
-      await WebHelpers.closeContext(context);
+      await closeContext(context);
     }
   }
 }
@@ -59,12 +58,12 @@ export async function runRoutine(browser, routine, newContext = false, autoClose
  */
 export async function main(argv = process.argv) {
   const routinePath = getPath(argv);
-  const routine = await getRoutine(routinePath);
+  const routine = getRoutine(routinePath);
   const browser = await getBrowser();
 
   try {
     await runRoutine(browser, routine, false, true);
   } finally { // Clean up
-    await WebHelpers.browserDisconnect(browser)
+    await browserDisconnect(browser)
   }
 }

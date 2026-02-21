@@ -1,11 +1,10 @@
-import { getActivePage } from './WebHelpers.js';
-import { assertStep } from './Assert.js';
 import { BrowserContext } from 'puppeteer-core';
+import { getActivePage, assertStep } from './WebHelpers.js';
 
 /**
  * Parses a urlNavStep and performs a urlNav action.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {{ name: "URL_NAV", type: "Action", args: [Object] }} navStep An object
+ * @param {{name: "URL_NAV", type: "Action", args: [Object]}} navStep An object
  * containing the information for the urlNav action.
  */
 export async function urlNav(context, navStep) {
@@ -15,15 +14,16 @@ export async function urlNav(context, navStep) {
 
 /**
  * Obtains important values from a 'urlNavStep' input and returns them using an object.
- * @param {{ name: "URL_NAV", type: "Action", args: [Object] }} navStep An object
+ * @param {{name: "URL_NAV", type: "Action", args: [Object]}} navStep An object
  * containing the information for the urlNav action.
- * @returns {{ url: string }}
+ * @returns {{url: string}}
  */
 export function parseUrlNav(navStep) {
     assertStep(navStep, "URL_NAV", "urlNavParse");
 
     const [urlStep] = navStep.args;
     const urlSpec = parseUrl(urlStep);
+
     return { url: urlSpec.url }
 }
 
@@ -51,8 +51,8 @@ export async function exeUrlNav(context, url) {
 
 /**
  * Obtains important values from a 'urlStep' input and returns them using an object.
- * @param {{ name: "URL", type: "Argument", value: string}} urlStep 
- * @returns {{ url: string }}
+ * @param {{name: "URL", type: "Argument", value: string}} urlStep 
+ * @returns {{url: string}}
  */
 export function parseUrl(urlStep) {
     assertStep(urlStep, "URL", "urlParse");

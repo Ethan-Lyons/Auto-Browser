@@ -1,9 +1,10 @@
 import { test, expect, describe } from '@jest/globals';
-import { Routine } from '../WebHelpers/Routine.js';
-import { getVariableValue } from '../WebHelpers/StoreVariables.js';
-import { handleStep } from '../WebHelpers/StepsHandler.js';
-import { store, parseStore, exeStore, parseStorable, parseVar, storeText} from '../WebHelpers/Store.js'
-import { storableGroupStep, storableStep, variableStep, storeStep } from '../StepFactory.js';
+
+import { storableGroupStep, storableStep, variableStep,
+  storeStep } from '../StepFactory.js';
+
+import { store, parseStore, exeStore, parseStorable, parseVar, storeText,
+  handleStep, getVariableValue, Routine } from '../WebHelpers/WebHelpers.js'
 
 describe("parse store", () => {
   test("parseStore: invalid action", async () => {

@@ -3,12 +3,12 @@ import { parseCondition, condition } from '../../WebHelpers/WebHelpers';
 import { conditionStep, textStep} from '../../StepFactory';
 
 describe('Condition', () => {
-    test('Condition text true', async () => {
+    test('Condition string, true', async () => {
         result = await condition(null, conditionStep(textStep("true")));
         expect(result).toBe(true);
     });
 
-    test('Condition text false', async() => {
+    test('Condition string, false', async() => {
         result = await condition(null, conditionStep(textStep("false")));
         expect(result).toBe(false);
     });

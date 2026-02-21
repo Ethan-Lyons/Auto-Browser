@@ -1,7 +1,6 @@
-import * as Webhelpers from "./WebHelpers.js";
-import { assertStep } from "./Assert.js";
-import { resolveTabIndex } from "./Tab.js";
 import { BrowserContext } from "puppeteer-core";
+import { setActivePage, getTabs, getActiveIndex, assertStep,
+    resolveTabIndex } from "./WebHelpers.js";
 
 /**
  * Parses a 'tabNavStep' input and performs a tab navigation action.
@@ -43,10 +42,10 @@ export function parseTabNav(navStep) {
  */
 export async function exeTabNav(context, tabStr) {
     // If there are no tabs, do nothing
-    const tabs = await Webhelpers.getTabs(context);
+    const tabs = await getTabs(context);
     if (tabs.length === 0) return;
 
-    const activeIndex = await Webhelpers.getActiveIndex(context);
+    const activeIndex = await getActiveIndex(context);
     const indexSpec = resolveTabIndex(tabStr, activeIndex, tabs.length);
 
     if(indexSpec.index < 0 || indexSpec.index > tabs.length - 1) {
@@ -54,5 +53,5 @@ export async function exeTabNav(context, tabStr) {
         return;
     }
     
-    await Webhelpers.setActivePage(context, tabs[indexSpec.index]);
+    await setActivePage(context, tabs[indexSpec.index]);
 }

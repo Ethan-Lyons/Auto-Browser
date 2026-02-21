@@ -1,11 +1,11 @@
 import { resolveString, assertStep } from './WebHelpers.js';
-import { BrowserContext} from 'puppeteer-core';
+
 import fs from 'fs';
 import path from 'path';
 
 /**
  * Parses and executes a text file output action.
- * @param {{ name: "TEXT_FILE", type: "Action", args: [Object, Object, Object] }} tfStep An object
+ * @param {{name: "TEXT_FILE", type: "Action", args: [Object, Object, Object]}} tfStep An object
  * containing the information for the text file action.
  * @param {string} outputDir The directory to save the text file to.
  */
@@ -24,8 +24,8 @@ export function textFile(tfStep, outputDir) {
 
 /**
  * Obtains the important values from a 'textFileStep' input and returns them using an object.
- * @param {{ name: "TEXT_FILE", type: "Action", args: [Object, Object, Object] }} tfStep 
- * @returns {{ text: string, fileName: string, mode: string }}
+ * @param {{name: "TEXT_FILE", type: "Action", args: [Object, Object, Object]}} tfStep 
+ * @returns {{text: string, fileName: string, mode: string}}
  */
 export function parseTextFile(tfStep) {
     assertStep(tfStep, "TEXT_FILE", "parseTextFile");
@@ -34,6 +34,9 @@ export function parseTextFile(tfStep) {
     const text = textStep.value;
     const fileName = fileStep.value;
     const mode = modeStep.selected.name;
+    assertStep(textStep, "TEXT", "parseTextFile");
+    assertStep(fileStep, "FILE_NAME", "parseTextFile");
+    assertStep(modeStep, "OUTPUT_MODE", "parseTextFile");
 
     return { text: text, fileName: fileName, mode: mode };
 }

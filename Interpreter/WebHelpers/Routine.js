@@ -36,10 +36,11 @@ export class Routine {
       routine.filePath = filePath;
       return routine;
 
-    } catch (error) {
+    } catch (error) { // Routine creation failed
       throw new Error(
         `Failed to load routine from file '${filePath}',
-        \nDirectory: ${process.cwd()}:\n${error.message}`
+        Directory: ${process.cwd()},
+        Error: ${error.message}`
       );
     }
   }
@@ -109,7 +110,9 @@ export class Routine {
    */
   popControlBlock(type) {
     const typeName = type.toUpperCase();
-    switch (typeName) {
+
+    // Matches starting marker with ending marker to find routine blocks
+    switch (typeName) { 
       case "FOR": return this.popBlock("FOR", "END_FOR");
       case "IF": return this.popBlock("IF", "END_IF", "ELSE");
       case "WHILE": return this.popBlock("WHILE", "END_WHILE");
@@ -170,6 +173,7 @@ export class Routine {
             continue;
         }
 
+        // Place item in 'before' group or 'after' group depending on collectPost value
         if (collectPost) {
             after.push(next);
         } else {
@@ -215,19 +219,20 @@ export class Routine {
 /**
  * Logs a snapshot of the stack to a file.
  * @param {string} op The operation that triggered the log.
- * @param {string} [detail] Optional detail to append to the log.
+ * @param {string} detail Optional detail to append to the log.
  * 
  * The log will contain the given operation and detail, followed by a
  * snapshot of the current stack in the format of "TOP → <step> | <step> | ..."
  * where each step is represented by its name.
  */
   _logStack(op, detail = "") {
-  const snapshot = this._formatStack();
-  fs.appendFileSync(
-    this.stackLogPath,
-    `[${op}] ${detail}\n` +
-    `TOP → ${snapshot.join(" | ")}\n\n`
-  );
+    const snapshot = this._formatStack();
+
+    fs.appendFileSync(
+      this.stackLogPath,
+      `[${op}] ${detail}\n` +
+      `TOP → ${snapshot.join(" | ")}\n\n`
+    );
   }
 
 /**

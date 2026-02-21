@@ -1,7 +1,5 @@
-import { canFind } from "../FindAlt";
-import { assertStep } from "../Assert";
-import { resolveBoolean } from "../WebHelpers";
 import { BrowserContext } from "puppeteer-core";
+import { resolveBoolean, assertStep, canFind } from "../WebHelpers";
 
 /**
  * Parses a conditionStep and returns the result of the condition action.
@@ -11,8 +9,9 @@ import { BrowserContext } from "puppeteer-core";
  * @returns {Promise<Boolean>} A promise that resolves with the result of the condition.
  */
 export async function condition(context, conditionStep) {
-    const conditionSpec = parseCondition(conditionStep)
-    const result = await exeCondition(context, conditionSpec.mode, conditionSpec.step, conditionSpec.value);
+    const conditionSpec = parseCondition(conditionStep);
+    const result = await exeCondition(context, conditionSpec.mode,
+        conditionSpec.step, conditionSpec.value);
     return result;
 }
 
@@ -37,13 +36,16 @@ export function parseCondition(conditionStep) {
         throw new Error(`parseCondition: missing mode name`);
     }
     
-    return { mode: modeName, step: modeStep };     
+    return {
+        mode: modeName,
+        step: modeStep
+    };     
 }
 
 /**
  * Performs a condition action based on the given condition mode and substep.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {string} mode The condition mode to use.
+ * @param {string} mode The condition mode to use (case insensitive).
  * @param {Object} modeStep The step object for the selected condition mode.
  * @returns {Promise<Boolean>} A promise that resolves with the result of the condition action.
  */

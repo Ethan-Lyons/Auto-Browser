@@ -1,16 +1,14 @@
-import { getActivePage, resolveBoolean } from "./WebHelpers.js";
-import { assertStep } from "./Assert.js";
 import { BrowserContext, Locator, Page } from 'puppeteer-core';
+import { getActivePage, resolveBoolean, assertStep } from "./WebHelpers.js";
 
 /**
  * Parses a findStep and returns the element locator found.
  * @param {BrowserContext} context The browser context
  *  instance to use.
- * @param {{name: "FIND", type: "ActionGroup", selected: Object}} findStep An object containing the information
- *  for the find action.
+ * @param {{name: "FIND", type: "ActionGroup", selected: Object}} findStep An object
+ * containing the information for the find action.
  * @returns {Promise<Locator>} A promise that resolves with
  *  the element locator found.
- * @throws Will throw an error if the selection method is not supported
  */
 export async function find(context, findStep) {
     const findSpec = parseFind(findStep);
@@ -202,7 +200,7 @@ async function findByXPath(page, xPath) {
  *  with the element locator found.
  */
 function findByText(page, text) {
-    const selector = `::-p-text(${text})`
+    const selector = `::-p-text(${text})`;
     const locator = page.locator(selector);
     return locator;
 }

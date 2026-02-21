@@ -1,9 +1,10 @@
 import { test, expect } from '@jest/globals';
-import { argumentStep, clickStep, findStep, linkStep, falseStep, trueStep, waitNavStep } from '../../StepFactory.js';
 
-import { getBrowser, getContext, browserDisconnect, newTab,
-    getActiveIndex, getTabs, getActivePage, exeUrlNav } from '../../WebHelpers/WebHelpers.js';
-import { parseClick, exeClick, click, find } from '../../WebHelpers/WebHelpers.js';
+import { argumentStep, clickStep, findStep, linkStep, falseStep,
+    trueStep, waitNavStep } from '../../StepFactory.js';
+
+import { getBrowser, getContext, browserDisconnect, newTab, getActivePage,
+    exeUrlNav, parseClick, exeClick, click, find } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
 let context;

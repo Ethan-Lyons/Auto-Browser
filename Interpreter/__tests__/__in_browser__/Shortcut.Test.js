@@ -1,11 +1,11 @@
 import { test, expect, describe } from '@jest/globals';
-import { argumentStep, keyStep, shortcutStep, setFocusStep,
-    textStep, findStep, canFindStep, urlStep, modKeyStep, skipStep, waitNavStep, 
-    trueStep, falseStep} from '../../StepFactory.js';
 
-import { getBrowser, getContext, browserDisconnect, newTab, setFocus, exeUrlNav, shortcut} from '../../WebHelpers/WebHelpers.js';
-import { exeKeyboard, exeCanFind, exeInfo, getTabCount, keyStrListMerge,
-    parseShortcut, exeShortcut } from '../../WebHelpers/WebHelpers.js';
+import { argumentStep, keyStep, shortcutStep, setFocusStep, findStep, modKeyStep,
+    skipStep, waitNavStep, trueStep, falseStep} from '../../StepFactory.js';
+
+import { getBrowser, getContext, browserDisconnect, newTab, setFocus, exeUrlNav,
+    shortcut, exeInfo, getTabCount, keyStrListMerge, parseShortcut,
+    exeShortcut } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
 let context;

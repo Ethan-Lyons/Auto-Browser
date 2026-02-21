@@ -1,13 +1,10 @@
-import { condition } from "./Condition.js";
-import { assertStep } from "../Assert.js";
-import { Routine } from "../Routine.js";
 import { BrowserContext } from "puppeteer-core";
-import { assert } from "console";
+import { condition, Routine, assertStep } from "../WebHelpers.js";
 
 /**
- * Parses an ifStep and executes a routine if the condition is true.
+ * Parses an ifStep and pushes a routine block if the condition is true or discards it if false.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {{ name: "IF", type: "Action", args: [Object] }} ifStep An object
+ * @param {{name: "IF", type: "Action", args: [Object]}} ifStep An object
  * containing the information for the if action.
  * @param {Routine} routine The routine object.
  */
@@ -19,16 +16,19 @@ export async function routineIf(context, ifStep, routine) {
 
 /**
  * Obtains important values from a 'ifStep' input and returns them using an object
- * @param {{ name: "IF", type: "Action", args: [Object] }} ifStep 
- * @returns {{ name: string, condition: Object }}
+ * @param {{name: "IF", type: "Action", args: [Object]}} ifStep 
+ * @returns {{name: string, condition: Object}}
  */
 export function parseIf(ifStep) {
     assertStep(ifStep, "IF", "parseIf");
 
     const [conditionStep] = ifStep.args;
-
     const ifName = ifStep.name;
-    return { name: ifName, condition: conditionStep }
+
+    return {
+      name: ifName,
+      condition: conditionStep
+    };
 }
 
 /**
@@ -39,13 +39,14 @@ export function parseIf(ifStep) {
  * @param {string} ifName The name of the IF step, used to identify the block.
  */
 export function exeIf(routine, condition, ifName) {
-  assert(condition == true || condition == false,
-      "exeIf: input condition is not boolean");
-      
+    if (!(condition === true || condition === false)) {
+        throw new Error(`Invalid condition recieved. Condition: ${condition}`)
+    }
+
   // Block contains:
-  //  body: actions to execute if condition is true
-  //  bodyPost: actions to execute if condition is false
-  //  end: end marker
+  //  body: actions to executed if condition is true (if block)
+  //  bodyPost: actions to executed if condition is false (else block)
+  //  end: end if marker
   const block = routine.popControlBlock(ifName);
 
   if (condition) { // Push items inside the if section

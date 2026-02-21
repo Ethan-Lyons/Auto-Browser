@@ -1,8 +1,6 @@
-import { assertStep } from "./Assert.js";
-import { setActivePage, getActiveIndex } from "./WebHelpers.js";
-import { resolveString } from "./WebHelpers.js";
 import { BrowserContext, Page } from "puppeteer-core";
-import { DEFAULT_TIMEOUT } from "./WebHelpers.js";
+import { setActivePage, getActiveIndex, assertStep, resolveString,
+    DEFAULT_TIMEOUT } from "./WebHelpers.js";
 
 /**
  * Returns all tabs in the browser context.
@@ -36,8 +34,10 @@ export async function getTabCount(context) {
  */
 export async function newTab(context) {
     const newPage = await context.newPage();
+
     await setActivePage(context, newPage);
-    newPage.setDefaultTimeout(DEFAULT_TIMEOUT)
+    newPage.setDefaultTimeout(DEFAULT_TIMEOUT);
+
     return newPage;
 }
 
@@ -52,8 +52,8 @@ export async function closeTab(context, closeTabStep) {
 
 /**
  * Obtains important values from a 'closeTabStep' input and returns them using an object.
- * @param {{ name: "CLOSE_TAB", type: "Action", args: [Object]"}} closeTabStep 
- * @returns {{ tab: string }}
+ * @param {{name: "CLOSE_TAB", type: "Action", args: [Object]"}} closeTabStep 
+ * @returns {{tab: string}}
  */
 export function parseCloseTab(closeTabStep) {
     assertStep(closeTabStep, "CLOSE_TAB", "parseCloseTab");

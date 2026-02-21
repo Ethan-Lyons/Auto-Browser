@@ -1,8 +1,9 @@
 import { test, expect, describe } from '@jest/globals';
+
 import { urlNavStep } from "../../StepFactory.js";
 
 import { getBrowser, getContext, browserDisconnect, newTab,
-    getActiveIndex, getTabs, getActivePage } from '../../WebHelpers/WebHelpers.js';
+    getActivePage } from '../../WebHelpers/WebHelpers.js';
 import { parseUrlNav, exeUrlNav, urlNav }  from '../../WebHelpers/WebHelpers.js';
 
 let browser;

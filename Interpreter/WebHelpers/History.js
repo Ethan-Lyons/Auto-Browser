@@ -1,10 +1,9 @@
-import { getActivePage } from './WebHelpers.js';
-import { assertStep } from './Assert.js';
 import { BrowserContext } from 'puppeteer-core';
+import { getActivePage, assertStep } from './WebHelpers.js';
 
 /**
  * Parses a historyStep and performs a history action.
- * @param { BrowserContext } context 
+ * @param {BrowserContext} context 
  * @param {{ name: "HISTORY", type: "Action", args: [Object] }} historyStep An object
  * containing the information for the history action.
  * @returns {Promise<void>} A promise that resolves when the history action is completed.
@@ -31,13 +30,14 @@ export function parseHistory(historyStep) {
 
 /**
  * Performs a history action based on the given history mode.
- * @param { BrowserContext } context The browser context instance to use.
- * @param {string} mode The history mode to use.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {string} mode The history mode to use (case insensitive).
  */
 export async function exeHistory(context, mode) {
-    mode = mode.toUpperCase();
+    const upMode = mode.toUpperCase();
     const page = await getActivePage(context);
-    switch (mode) {
+
+    switch (upMode) {
         case "GO_FORWARD":
             await page.goForward();
             break;
@@ -45,6 +45,6 @@ export async function exeHistory(context, mode) {
             await page.goBack();
             break;
         default:
-            throw new Error(`exeHistory: unsupported history mode: ${mode}`);
+            throw new Error(`exeHistory: unsupported history mode: ${upMode}`);
     }
 }

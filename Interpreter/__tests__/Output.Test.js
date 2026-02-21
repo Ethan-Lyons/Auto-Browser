@@ -1,8 +1,11 @@
 import { test, expect, describe } from '@jest/globals';
-import { outputStep, textFileStep, writeStep, appendStep, screenShotStep } from '../StepFactory.js';
 
-import { getBrowser, getContext, browserDisconnect, newTab } from '../WebHelpers/WebHelpers.js';
-import { output, parseOutput, exeOutput, defaultOutputDir } from '../WebHelpers/WebHelpers.js';
+import { outputStep, textFileStep, writeStep, appendStep,
+    screenShotStep } from '../StepFactory.js';
+
+import { getBrowser, getContext, browserDisconnect, newTab, output, parseOutput,
+    exeOutput, defaultOutputDir } from '../WebHelpers/WebHelpers.js';
+
 import fs from 'fs';
 import path from 'path';
 

@@ -1,5 +1,5 @@
-import { getActivePage, assertStep, screenshot, textFile } from './WebHelpers.js';
 import { BrowserContext } from 'puppeteer-core';
+import { assertStep, screenshot, textFile } from './WebHelpers.js';
 
 // Default directory for output actions
 export const defaultOutputDir = "./OutputFiles/"
@@ -26,21 +26,25 @@ export function parseOutput(outputStep) {
 
     const [canOutput] = outputStep.args;
     assertStep(canOutput, "CAN_OUTPUT", "parseOutput");
+    const subOutput = canOutput.selected;
 
-    const selected = canOutput.selected;
-    return { name: selected.name, step: selected };
+    return {
+        name: subOutput.name,
+        step: subOutput
+    };
 }
 
 /**
  * Calls the correct output function based on the output mode.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {string} mode The output mode to use.
+ * @param {string} mode The output mode to use (case insensitive).
  * @param {Object} subStep The substep for the given output mode.
  * @returns {Promise<void>} A promise that resolves when the output action is completed.
  */
 export async function exeOutput(context, mode, subStep) {
-    mode = mode.toUpperCase();
-    switch (mode) {
+    const upMode = mode.toUpperCase();
+
+    switch (upMode) {
         case "SCREENSHOT":
             return await screenshot(context, subStep, defaultOutputDir);
         case "TEXT_FILE":

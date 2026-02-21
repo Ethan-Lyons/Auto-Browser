@@ -1,6 +1,5 @@
-import { assert } from "puppeteer-core";
-import { find, getActivePage, assertStep } from "./WebHelpers.js"
 import { TimeoutError, BrowserContext } from "puppeteer-core";
+import { find, getActivePage, assertStep } from "./WebHelpers.js"
 
 /**
  *  Parses a canFindStep and returns a bool indicating if the target element is found.
@@ -26,7 +25,7 @@ export function parseCanFind(canFindStep) {
     assertStep(canFindStep, 'CAN_FIND', 'parseCanFind');
 
     const [findStep] = canFindStep.args;
-    return { findStep: findStep }
+    return { findStep: findStep };
 }
 
 /**
@@ -73,7 +72,7 @@ export function parseFindText(findTextStep) {
     assertStep(findTextStep, 'FIND_TEXT', 'parseFindText');
 
     const [findStep] = findTextStep.args;
-    return { findStep: findStep }
+    return { findStep: findStep };
 }
 
 /**
@@ -87,6 +86,7 @@ export async function exeFindText(context, findStep) {
     const page = await getActivePage(context);
     const locator = await find(context, findStep);
 
+    // Validate that the element can be found.
     try {
         elementHandle = await locator.waitHandle();
     } catch (err) {
@@ -96,6 +96,8 @@ export async function exeFindText(context, findStep) {
         }
         throw err;
     }
+
+    // Extract the text content from an element handle
     const text = await page.evaluate(el => el.textContent, elementHandle);
 
     return text;

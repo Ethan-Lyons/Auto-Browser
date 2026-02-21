@@ -1,12 +1,12 @@
+import { BrowserContext } from 'puppeteer-core';
 import { getActivePage, resolveString, assertStep } from './WebHelpers.js';
-import { BrowserContext, Page } from 'puppeteer-core';
 import path from 'path';
 import fs from 'fs';
 
 /**
  * Parses and executes a screenshot action.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {{ name: "SCREENSHOT", type: "Action", args: [Object] }} scrStep An object
+ * @param {{name: "SCREENSHOT", type: "Action", args: [Object]}} scrStep An object
  * containing the information for the screenshot action.
  * @param {string} outputDir Directory to output the screenshot to. Defaults to current directory.
  * @returns {Promise<void>} A promise that resolves when the screenshot action is completed.
@@ -18,9 +18,9 @@ export async function screenshot(context, scrStep, outputDir = "") {
 
 /**
  * Obtains the important values from a 'screenshotStep' input and returns them using an object.
- * @param {{ name: "SCREENSHOT", type: "Action", args: [Object] }} scrStep An object
+ * @param {{name: "SCREENSHOT", type: "Action", args: [Object]}} scrStep An object
  * containing the information for the screenshot action.
- * @returns {{ fileName: string }}
+ * @returns {{fileName: string}}
  */
 export function parseScreenshot(scrStep) {
     assertStep(scrStep, "SCREENSHOT", "parseScreenshot");
@@ -38,12 +38,11 @@ export function parseScreenshot(scrStep) {
  */
 export async function exeScreenshot (context, outputDir, fileName)  {
     const page = await getActivePage(context);
-
     if (!page) {
         throw new Error("No page(s) found for screenshot.");
     }
 
-    if (outputDir === "") {
+    if (outputDir === "") { // Default directory
         outputDir = "./";
     }
 
@@ -67,7 +66,7 @@ export async function exeScreenshot (context, outputDir, fileName)  {
  * @throws {Error} If the file name is invalid.
  */
 export function resolveScrFilePath(outputDir, fileName) {
-    const resolvedName = resolveString(fileName).trim();
+    const resolvedName = resolveString(fileName);
 
     // Allow alphanumeric + _ . -
     const filenameRegex = /^[a-z0-9][a-z0-9_.-]*$/i;

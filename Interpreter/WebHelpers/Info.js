@@ -1,7 +1,5 @@
-import { getActivePage, getActiveIndex } from './WebHelpers.js';
-import { getTabCount } from './WebHelpers.js';
-import { assertStep } from './Assert.js';
 import { BrowserContext, Page } from 'puppeteer-core';
+import { getActivePage, getActiveIndex, getTabCount, assertStep } from './WebHelpers.js';
 
 /**
  * Parses an infoStep and returns the result of the info action.
@@ -23,7 +21,8 @@ export function parseInfo(infoStep) {
     assertStep(infoStep, "INFO", "parseInfo");
 
     const selected = infoStep.selected;
-    const name = selected.name
+    const name = selected.name;
+
     return { mode: name };
 }
 
@@ -35,16 +34,14 @@ export function parseInfo(infoStep) {
  * @returns {Promise<string>} The result of the info mode action.
  */
 export async function exeInfo(context, mode) {
-    let page;
-    mode = mode.toUpperCase();
-    switch (mode) {
+    const upMode = mode.toUpperCase();
+
+    switch (upMode) {
         case "URL":
-            page = await getActivePage(context);
-            return getUrl(page);
+            return getUrl(context);
 
         case "TITLE":
-            page = await getActivePage(context);
-            return await getTitle(page);
+            return await getTitle(context);
 
         case "TAB_COUNT":
             return await getTabCount(context);
@@ -53,16 +50,17 @@ export async function exeInfo(context, mode) {
             return await getActiveIndex(context);
 
         default:
-            throw new Error(`exeInfo: unsupported info mode: ${mode}`);
+            throw new Error(`exeInfo: unsupported info mode: ${upMode}`);
     }
 }
 
 /**
  * Obtains the URL from a puppeteer page.
- * @param {Page} page The page to get the URL from.
+ * @param {BrowserContext} context The browser context instance to use.
  * @returns {Promise<string>} The URL of the page.
  */
-function getUrl(page) {
+function getUrl(context) {
+    const page = getActivePage(context)
     if (!page) {
         console.warn("Warning (getUrl): No active page in context.");
         return null;
@@ -73,10 +71,11 @@ function getUrl(page) {
 
 /**
  * Obtains the title from a puppeteer page.
- * @param {Page} page The page to get the title from.
+ * @param {BrowserContext} context The browser context instance to use.
  * @returns {Promise<string>} The title of the page.
  */
-async function getTitle(page) {
+async function getTitle(context) {
+    const page = await getActivePage(context);
     if (!page) {
         console.warn("Warning (getTitle): No active page in context.");
         return null;

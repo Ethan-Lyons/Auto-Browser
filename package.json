@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test:py": "pytest Creator",
-    "test:js": "python3 ./UpdateJSTestData.py && cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
+    "test:js": "python ./UpdateJSTestData.py && cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
     "test": "npm run test:py && npm run test:js"
   },
   "keywords": [],

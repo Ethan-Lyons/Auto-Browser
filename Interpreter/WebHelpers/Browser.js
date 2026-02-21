@@ -1,10 +1,8 @@
 import puppeteer, { Browser, BrowserContext } from 'puppeteer-core';
-const debugPort = 9222; // port used for browser connection
-
-// Default timeout for pages
-export const DEFAULT_TIMEOUT = 7500;
-
 import { contextToPage } from './WebHelpers.js';
+
+const DEBUG_PORT = 9222; // port used for browser connection
+export const DEFAULT_TIMEOUT = 7500;    // Default timeout for pages
 
 let browserInstance = null;
 let disconnectFlag = false; // used to prevent multiple running browser connections.
@@ -19,14 +17,14 @@ export async function getBrowser() {
         return browserInstance;
     }
     try {
-        // connect to browser
+        // connect to a headless browser via the specified debug port
         const browser = await puppeteer.connect({
-            browserURL: 'http://localhost:' + debugPort,
+            browserURL: 'http://localhost:' + DEBUG_PORT,
             defaultViewport: null,
             headless: false
         });
 
-        // update contextToPage with new pages
+        // update contextToPage when new pages are created
         browser.on('targetcreated', async target => { 
             if (target.type() !== 'page') return;
 

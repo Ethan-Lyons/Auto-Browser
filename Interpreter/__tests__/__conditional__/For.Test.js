@@ -1,5 +1,8 @@
 import { test, expect, describe } from '@jest/globals';
-import { parseFor, exeFor, routineFor, Routine, handleStep, handleRoutine } from '../../WebHelpers/WebHelpers.js';
+
+import { parseFor, exeFor, routineFor, Routine, handleStep,
+  handleRoutine } from '../../WebHelpers/WebHelpers.js';
+  
 import { newTabStep, endForStep, forStep, userAction } from '../../StepFactory.js';
 
 describe("parseFor", () => {
@@ -13,8 +16,6 @@ describe("parseFor", () => {
     const result = parseFor(fStep);
     expect(result).toEqual({ name: "FOR", start: 1, end: 2 });
   });
-
-  //TODO: add tests with variable resolution
 });
 
 describe("exeFor", () => {
