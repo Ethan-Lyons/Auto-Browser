@@ -26,7 +26,7 @@ class RoutineFrame():
         """
         # Create frames
         if len(self.routine.getSteps()) == 0:
-            self.routine.createDefaultAG()
+            self.routine.createDefStep()
         self.stepFrameContainer = self._buildSFContainer()
 
         # Create buttons
@@ -79,7 +79,7 @@ class RoutineFrame():
         Returns:
             The new StepFrame object for the created action branch.
         """
-        newBranch = self.routine.createDefaultAG()
+        newBranch = self.routine.createDefStep()
         newFrame = self._createStepFrame(newBranch, parent=self.stepFrameContainer)
         self.stepFrames.append(newFrame)
         return newFrame

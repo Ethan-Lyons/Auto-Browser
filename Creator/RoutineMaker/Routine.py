@@ -56,7 +56,7 @@ class Routine:
         if step in self.steps:
             self.steps.remove(step)
 
-    def createDefaultAG(self):
+    def createDefStep(self):
         """
         Creates a new ActionGroup in the routine by copying the default ActionGroup and adding it to the actions list.
         

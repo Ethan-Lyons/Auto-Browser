@@ -1,3 +1,7 @@
+/**
+ * Creates specific steps to use for testing the interpreter.
+ */
+
 export function blankStep() {
     return { name: "BLANK", type: "Action", args: [null] };
 }

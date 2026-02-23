@@ -1,11 +1,11 @@
-import { assertStep } from "../Assert";
-import { getActivePage, find, setFocus } from "../WebHelpers";
-import { BrowserContext, Locator } from "puppeteer-core";
+import { BrowserContext } from "puppeteer-core";
+import { getActivePage, setFocus, assertStep } from "../WebHelpers";
 
 /**
- * 
- * @param {BrowserContext} context 
- * @param {{name: "TYPE_TEXT", type: "Action", args: [Object]}} typeTextStep 
+ * Parses a typeTextStep and executes the typeText action.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {{name: "TYPE_TEXT", type: "Action", args: [Object]}} typeTextStep An object
+ * containing the information for the typeText action.
  */
 export async function typeText(context, typeTextStep) {
     const spec = parseTypeText(typeTextStep);
@@ -15,8 +15,9 @@ export async function typeText(context, typeTextStep) {
 }
 
 /**
- * 
- * @param {{name: "TYPE_TEXT", type: "Action", args: [Object]}} typeTextStep 
+ * Obtains the important information from a typeTextStep and returns it as an object.
+ * @param {{name: "TYPE_TEXT", type: "Action", args: [Object]}} typeTextStep An object
+ * containing the information for the typeText action.
  * @returns {{ findStep: Object | null, text: string, delay: Number }}
  */
 export function parseTypeText(typeTextStep) {
@@ -35,10 +36,10 @@ export function parseTypeText(typeTextStep) {
 }
 
 /**
- * 
- * @param {Locator} locator 
- * @param {string} text 
- * @param {Number} delay 
+ * Types text into the currently focused element.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {string} text The text to type.
+ * @param {Number} delay The delay, in milliseconds, between typing each character.
  */
 export async function exeTypeText(context, text, delay) {
     const page = await getActivePage(context);

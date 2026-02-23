@@ -1,12 +1,12 @@
-import { assertStep } from "../Assert.js";
-import { getActivePage, setFocus, resolveBoolean } from "../WebHelpers.js";
-import { Browser, BrowserContext} from "puppeteer-core";
+import { BrowserContext} from "puppeteer-core";
+import { getActivePage, setFocus, resolveBoolean, assertStep } from "../WebHelpers.js";
 import { KEY_INPUT } from "./KeyInput.js";
 
 
 /**
- * 
- * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object]}} scStep 
+ * Parses a shortcutStep and performs a shortcut action.
+ * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object]}} scStep An object
+ * containing the information for the shortcut action.
  * @returns {Promise<void>}
  */
 export async function shortcut(context, scStep) {
@@ -21,8 +21,9 @@ export async function shortcut(context, scStep) {
 }
 
 /**
- * 
- * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object]}} scStep 
+ * Obtains the information from a 'shortcutStep' input and returns them using an object.
+ * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object]}} scStep An object
+ * containing the information for the shortcut action.
  * @returns {{ modKeyStr: string, mainKey: string, waitForNav: string, setFocusStep: Object }}
  */
 export function parseShortcut(scStep) {
@@ -40,12 +41,13 @@ export function parseShortcut(scStep) {
 }
 
 /**
- * 
- * @param {string} keyStr 
- * @param {string} mainKey 
+ * Turns a string of keys and a main key into a list of keys.
+ * @param {string} keyStr A string containing a key or a list of keys separated by
+ * spaces or plus signs. Optional if mainKey is provided.
+ * @param {string} mainKey A string containing a key. Optional if keyStr is provided.
  * @returns {string[]}
  */
-export function keyStrListMerge(keyStr, mainKey) {
+export function keyStrListMerge(keyStr="", mainKey="") {
     let keyStrList = [];
     if (keyStr == "" && mainKey == "") {
         throw new Error("Error (keyStrListMerge): No keys in shortcut.");
@@ -64,9 +66,9 @@ export function keyStrListMerge(keyStr, mainKey) {
 }
 
 /**
- * 
- * @param {BrowserContext} context 
- * @param {string[]} keyList 
+ * Presses down a list of keys and then releases them.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {string[]} keyList A list of keys to press.
  */
 export async function exeShortcut(context, keyList, waitForNav = false) {
     // If there are no keys, do nothing
@@ -105,9 +107,11 @@ export async function exeShortcut(context, keyList, waitForNav = false) {
 }
 
 /**
- * 
- * @param {string} checkKey 
+ * Changes the case of a key to match puppeteer style. Single letter keys maintain their
+ * original case.
+ * @param {string} checkKey The string for a single key to check.
  * @returns {string}
+ * @throws {Error} If the key is found under the KEY_INPUT list.
  */
 function formatKey(checkKey){
     for (const key of KEY_INPUT){

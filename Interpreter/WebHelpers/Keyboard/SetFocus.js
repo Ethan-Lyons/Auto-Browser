@@ -1,12 +1,12 @@
-import { assertStep } from "../Assert";
-import { getActivePage, find } from "../WebHelpers";
 import { BrowserContext, Locator } from "puppeteer-core";
+import { find, assertStep } from "../WebHelpers";
 
 /**
- * 
- * @param {BrowserContext} context 
- * @param {*} setFocusStep 
- * @returns 
+ * Parses a setFocusStep and executes the setFocus action.
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {{name: "SET_FOCUS", type: "ActionGroup", selected: Object}} setFocusStep An object
+ * containing the information for the setFocus action. 
+ * @returns {Promise<void>} A promise that resolves when the setFocus action is completed.
  */
 export async function setFocus(context, setFocusStep) {
     const sfSpec = parseSetFocus(setFocusStep);
@@ -22,9 +22,11 @@ export async function setFocus(context, setFocusStep) {
 }
 
 /**
- * 
- * @param {*} sfStep 
- * @returns 
+ * Obtains important values from a 'setFocusStep' input and returns them using an object.
+ * @param {{name: "SET_FOCUS", type: "ActionGroup", selected: Object}} sfStep An object
+ * containing the information for the setFocus action.
+ * @returns {{findStep: Object}|null}
+ * @throws {Error} If the step mode is not supported.
  */
 export function parseSetFocus(sfStep) {
     assertStep(sfStep, "SET_FOCUS", "parseSetFocus");
@@ -44,8 +46,9 @@ export function parseSetFocus(sfStep) {
 }
 
 /**
- * 
- * @param {Locator} locator 
+ * Sets focus on the page element specified by the given locator.
+ * @param {Locator} locator The locator of the element to set focus on.
+ * @returns {Promise<void>} A promise that resolves when the focus is set.
  */
 export async function exeSetFocus(locator) {
     const element = await locator.waitHandle();

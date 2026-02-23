@@ -1,4 +1,4 @@
-import { BrowserContext, Page } from 'puppeteer-core';
+import { BrowserContext } from 'puppeteer-core';
 import { getActivePage, getActiveIndex, getTabCount, assertStep } from './WebHelpers.js';
 
 /**

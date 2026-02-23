@@ -14,7 +14,7 @@ def openPage(routine: Routine, urlValue: str):
     addNavStep(routine, urlValue)
 
 def addNavStep(routine: Routine, urlValue: str):
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     nav = ag.get("URL_NAV")
     ag.setSelected(nav)
 
@@ -22,7 +22,7 @@ def addNavStep(routine: Routine, urlValue: str):
     urlArg.setValue(urlValue)
 
 def addClickXpathStep(routine: Routine, xpathValue: str):
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     click = ag.get("CLICK")
     ag.setSelected(click)
 
@@ -37,7 +37,7 @@ def addClickXpathStep(routine: Routine, xpathValue: str):
     xpath.setValue(xpathValue)
 
 def addClickLinkStep(routine: Routine, linkValue: str, strictValue=False):
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     click = ag.get("CLICK")
     ag.setSelected(click)   # click action
 
@@ -64,12 +64,12 @@ def addClickLinkStep(routine: Routine, linkValue: str, strictValue=False):
 
 
 def addNewTabStep(routine: Routine):
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     newTab = ag.get("NEW_TAB")
     ag.setSelected(newTab)
 
 def addStoreTextAction(routine: Routine, storeName: str, varValue: str):
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     store = ag.get("STORE")
 
     storable = store.get("storable")
@@ -82,7 +82,7 @@ def addStoreTextAction(routine: Routine, storeName: str, varValue: str):
 
 def testBlank():
     routine = newRoutine()
-    routine.createDefaultAG()
+    routine.createDefStep()
     saveRoutine(routine, "test_blank")
 
 def testNav():
@@ -113,7 +113,7 @@ def testForLoop():
     addNewTabStep(routine)
 
     # FOR i = 0..2
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     forAction = ag.get("FOR")
     ag.setSelected(forAction)
 
@@ -126,7 +126,7 @@ def testForLoop():
     addNewTabStep(routine)
 
     # END_FOR
-    endAG = routine.createDefaultAG()
+    endAG = routine.createDefStep()
     endforAction = endAG.get("END_FOR")
     endAG.setSelected(endforAction)
 
@@ -142,7 +142,7 @@ def testForLoopWithStore():
     addStoreTextAction(routine, "endIndex", "2")
 
     # FOR i = {startIndex}..{endIndex}
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     forAction = ag.get("FOR")
     ag.setSelected(forAction)
 
@@ -158,7 +158,7 @@ def testForLoopWithStore():
     addClickLinkStep(routine, "example")
 
     # END_FOR
-    endAG = routine.createDefaultAG()
+    endAG = routine.createDefStep()
     endforAction = endAG.get("END_FOR")
     endAG.setSelected(endforAction)
 
@@ -171,7 +171,7 @@ def testIfTrue():
     addNewTabStep(routine)
 
     # IF
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     ifAction = ag.get("IF")
     ag.setSelected(ifAction)
 
@@ -187,7 +187,7 @@ def testIfTrue():
     addClickLinkStep(routine, "example")
 
     # END_IF
-    endAG = routine.createDefaultAG()
+    endAG = routine.createDefStep()
     endifAction = endAG.get("END_IF")
     endAG.setSelected(endifAction)
 
@@ -198,7 +198,7 @@ def testIfFalse():
     addNewTabStep(routine)
 
     # IF
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     ifAction = ag.get("IF")
     ag.setSelected(ifAction)
 
@@ -214,7 +214,7 @@ def testIfFalse():
     addClickLinkStep(routine, "example")
 
     # END_IF
-    endAG = routine.createDefaultAG()
+    endAG = routine.createDefStep()
     endifAction = endAG.get("END_IF")
     endAG.setSelected(endifAction)
 
@@ -233,7 +233,7 @@ def testIfTrueStore():
     addStoreTextAction(routine, storeName, "true")
 
     # IF
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     ifAction = ag.get("IF")
     ag.setSelected(ifAction)
 
@@ -249,7 +249,7 @@ def testIfTrueStore():
     addClickLinkStep(routine, "example")
 
     # END_IF
-    endAG = routine.createDefaultAG()
+    endAG = routine.createDefStep()
     endifAction = endAG.get("END_IF")
     endAG.setSelected(endifAction)
 
@@ -265,7 +265,7 @@ def testIfFalseStore():
     addStoreTextAction(routine, storeName, "false")
 
     # IF
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     ifAction = ag.get("IF")
     ag.setSelected(ifAction)
 
@@ -281,7 +281,7 @@ def testIfFalseStore():
     addClickLinkStep(routine, "example")
 
     # END_IF
-    endAG = routine.createDefaultAG()
+    endAG = routine.createDefStep()
     endifAction = endAG.get("END_IF")
     endAG.setSelected(endifAction)
 
@@ -296,7 +296,7 @@ def testWhileFalse():
     addStoreTextAction(routine, storeName, "false")
 
     # IF
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     ifAction = ag.get("WHILE")
     ag.setSelected(ifAction)
 
@@ -313,7 +313,7 @@ def testWhileFalse():
     addClickLinkStep(routine, "example")
 
     # END_IF
-    endAG = routine.createDefaultAG()
+    endAG = routine.createDefStep()
     endifAction = endAG.get("END_WHILE")
     endAG.setSelected(endifAction)
 
@@ -327,7 +327,7 @@ def testWhileFalseStore():
     addStoreTextAction(routine, storeName, "false")
 
     # WHILE
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     whileAction = ag.get("WHILE")
     ag.setSelected(whileAction)
 
@@ -341,7 +341,7 @@ def testWhileFalseStore():
     addClickLinkStep(routine, "example")
 
     # END_WHILE
-    endAG = routine.createDefaultAG()
+    endAG = routine.createDefStep()
     endwhileAction = endAG.get("END_WHILE")
     endAG.setSelected(endwhileAction)
 
@@ -354,7 +354,7 @@ def testHistoryBackward():
     addNavStep(routine, "https://example.com")
     addNavStep(routine, "https://example.org")
 
-    ag = routine.createDefaultAG()
+    ag = routine.createDefStep()
     history = ag.get("HISTORY")
     ag.setSelected(history)
 
@@ -372,14 +372,14 @@ def testHistoryForward():
     addNavStep(routine, "https://example.org")
 
     # go back first
-    ag1 = routine.createDefaultAG()
+    ag1 = routine.createDefStep()
     history1 = ag1.get("HISTORY")
     ag1.setSelected(history1)
     mode1 = history1.get("history_mode")
     mode1.setSelected(mode1.get("go_backward"))
 
     # then go forward
-    ag2 = routine.createDefaultAG()
+    ag2 = routine.createDefStep()
     history2 = ag2.get("HISTORY")
     ag2.setSelected(history2)
     mode2 = history2.get("history_mode")

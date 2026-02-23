@@ -1,5 +1,5 @@
 import { assertStep } from "../Assert";
-import { typeText, shortcut, setFocus } from "../WebHelpers.js";
+import { typeText, shortcut } from "../WebHelpers.js";
 
 /**
  * Parses and executes a keyboard action.
