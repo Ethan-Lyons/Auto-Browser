@@ -6,7 +6,7 @@ import * as Variables from './StoreVariables.js';
  * Parses a storeStep and performs a store action.
  * @param {BrowserContext} context The browser context
  *  instance to use.
- * @param {{name: "STORE", type: "Action", args: [Object, Object]}} storeAction An object
+ * @param {{name: "STORE", type: "Action", args: [Object, Object]}} storeStep An object
  * containing the information for the store action.
  * @throws {Error} If the store mode is not supported.
  */
@@ -60,12 +60,12 @@ export async function exeStore(context, mode, step, storeName) {
             break;
             //return await storeFindText(context, step, storeName);
         case "CAN_FIND":
-            result = await canFind(context, step);
+            result = String(await canFind(context, step));
             //Variables.set(storeName, result);
             break;
             //return await storeCanFind(context, step, storeName);
         case "INFO":
-            result = await info(context, step);
+            result = String(await info(context, step));
             //Variables.set(storeName, result);
             break;
             //return await storeInfo(context, step, storeName);
@@ -73,7 +73,7 @@ export async function exeStore(context, mode, step, storeName) {
             throw new Error(`exeStore: unsupported store mode: ${mode}`);
     }
 
-    Variables.set(storeName, result);
+    Variables.setVariable(storeName, result);
 }
 
 /**

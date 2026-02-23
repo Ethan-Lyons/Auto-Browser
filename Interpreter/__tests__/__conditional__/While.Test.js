@@ -8,8 +8,8 @@ import { userAction, endWhileStep, whileStep, conditionStep,
 
 describe("parseWhile", () => {
     test("parseWhile: invalid action", async () => {
-        const wStep = { name: "FOO", args: [null] };
-        expect(() => parseWhile(wStep)).toThrow();
+        const fakeStep = { name: "FOO", args: [null] };
+        expect(() => parseWhile(fakeStep)).toThrow();
     });
 
     test("parseWhile: valid action", async () => {

@@ -4,8 +4,8 @@ import { ifStep, elseStep, endIfStep, userAction, conditionStep, blankStep, text
 
 describe("parseIf", () => {
   test("parseIf: invalid action", async () => {
-    const iStep = { name: "FOO", args: [null] };
-    expect(() => parseIf(iStep)).toThrow();
+    const fakeStep = { name: "FOO", args: [null] };
+    expect(() => parseIf(fakeStep)).toThrow();
   });
 
   test("parseIf: valid action", async () => {

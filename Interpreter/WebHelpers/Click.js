@@ -1,4 +1,4 @@
-import { BrowserContext, ElementHandle } from 'puppeteer-core';
+import { BrowserContext, Locator } from 'puppeteer-core';
 import { getActivePage, resolveBoolean, find, assertStep } from './WebHelpers.js';
 
 /**
@@ -46,7 +46,7 @@ export function parseClick(clickStep) {
  *  Waits for the page to finish loading while navigating to the new page.
  *  @param {BrowserContext} context The browser context
  *  instance to use.
- *  @param {ElementHandle} locator The element locator
+ *  @param {Locator} locator The element locator
  *  of the element to click.
  *  @param {boolean} waitForNav Whether to wait for page navigation. Defaults to false.
  *  @returns {Promise<void>} A promise that resolves when the click is completed.

@@ -1,5 +1,5 @@
-import { assertStep } from "../Assert";
-import { typeText, shortcut } from "../WebHelpers.js";
+import { BrowserContext } from "puppeteer-core";
+import { typeText, shortcut, assertStep } from "../WebHelpers.js";
 
 /**
  * Parses and executes a keyboard action.
@@ -29,19 +29,19 @@ export function parseKeyboard(kbStep) {
 /**
  * Executes a keyboard action based on the given keyboard mode.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {String} keyMode The keyboard mode to use.
+ * @param {Object} subKeyStep The keyboard mode to use.
  * @returns {Promise<void>} A promise that resolves when the keyboard action is completed.
  */
-export async function exeKeyboard(context, keyModeStep) {
-    const keyMode = keyModeStep.name.toUpperCase();
-    switch (keyMode) {
+export async function exeKeyboard(context, subKeyStep) {
+    const upMode = subKeyStep.name.toUpperCase();
+    switch (upMode) {
         case "TYPE_TEXT":
-            await typeText(context, keyModeStep);
+            await typeText(context, subKeyStep);
             break;
         case "SHORTCUT":
-            await shortcut(context, keyModeStep);
+            await shortcut(context, subKeyStep);
             break;
         default:
-            throw new Error(`exeKeyboard: unsupported keyboard mode: ${keyMode}`);
+            throw new Error(`exeKeyboard: unsupported keyboard mode: ${upMode}`);
     }
 }

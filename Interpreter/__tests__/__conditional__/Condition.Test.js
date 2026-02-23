@@ -4,20 +4,20 @@ import { conditionStep, textStep} from '../../StepFactory';
 
 describe('Condition', () => {
     test('Condition string, true', async () => {
-        result = await condition(null, conditionStep(textStep("true")));
+        const result = await condition(null, conditionStep(textStep("true")));
         expect(result).toBe(true);
     });
 
     test('Condition string, false', async() => {
-        result = await condition(null, conditionStep(textStep("false")));
+        const result = await condition(null, conditionStep(textStep("false")));
         expect(result).toBe(false);
     });
 });
 
 describe('parseCondition', () => {
     test('parseCondition: invalid action', async () => {
-        const conditionStep = { name: "FOO", args: [null] };
-        expect(() => parseCondition(conditionStep)).toThrow();
+        const fakeStep = { name: "FOO", args: [null] };
+        expect(() => parseCondition(fakeStep)).toThrow();
     });
 
     test('parseCondition: valid action', async () => {

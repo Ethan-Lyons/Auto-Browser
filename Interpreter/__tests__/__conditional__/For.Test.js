@@ -7,14 +7,14 @@ import { newTabStep, endForStep, forStep, userAction } from '../../StepFactory.j
 
 describe("parseFor", () => {
   test("parseFor: invalid action", async () => {
-    const forStep = { name: "FOO", args: [null] };
-    expect(() => parseFor(forStep)).toThrow();
+    const fakeStep = { name: "FOO", args: [null] };
+    expect(() => parseFor(fakeStep)).toThrow();
   });
 
   test("parseFor: valid action", async () => {
     const fStep = forStep("1", "2");
     const result = parseFor(fStep);
-    expect(result).toEqual({ name: "FOR", start: 1, end: 2 });
+    expect(result).toEqual({ name: "FOR", start: "1", end: "2"});
   });
 });
 

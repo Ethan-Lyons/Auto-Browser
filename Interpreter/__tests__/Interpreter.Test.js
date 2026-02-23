@@ -1,3 +1,4 @@
+import { test, expect, describe } from '@jest/globals';
 import { getPath } from '../RoutineInterpreter.js';
 
 describe('getPath', () => {

@@ -156,7 +156,7 @@ function parseLink(linkStep) {
  * Helper to find an element by its link address.
  * @param {Page} page The page to search for the element.
  * @param {string} linkAddress The link address to search for.
- * @param {string} [strict="false"] Whether to search for an exact address or
+ * @param {boolean} [strict=false] Whether to search for an exact address or
  *  an address that contains the given string.
  * @returns {Locator} The locator for the found element.
  */
@@ -167,8 +167,7 @@ function findByLinkAddress(page, linkAddress, strict = false) {
     }
     // Check linkAddress type
     if (typeof linkAddress !== 'string' || linkAddress.length === 0) {  
-        throw new TypeError(`findByLinkAddress: linkAddress must be a non-empty string, but got: ${linkAddress}
-            Link Step:\n${JSON.stringify(linkStep)}`);
+        throw new TypeError(`findByLinkAddress: linkAddress must be a non-empty string, but got: ${linkAddress}`);
     }
 
     // Look for partial or exact match based on strict value
@@ -186,7 +185,7 @@ function findByLinkAddress(page, linkAddress, strict = false) {
  * @param {string} xPath The XPath to search for.
  * @returns {Locator} The locator for the element.
  */
-async function findByXPath(page, xPath) {
+function findByXPath(page, xPath) {
     const selector = `::-p-xpath(${xPath})`;
     const locator = page.locator(selector);
     return locator;

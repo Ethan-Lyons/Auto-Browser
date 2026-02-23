@@ -5,7 +5,7 @@ import { getActivePage, getActiveIndex, getTabCount, assertStep } from './WebHel
  * Parses an infoStep and returns the result of the info action.
  * @param {BrowserContext} context The browser context instance to use.
  * @param {{name: "INFO", type: "ActionGroup", selected: Object}} infoStep 
- * @returns {Promise<string>} The result of the info action.
+ * @returns {Promise<string|number>} The result of the info action.
  */
 export async function info(context, infoStep) {
     const infoSpec = parseInfo(infoStep);
@@ -31,14 +31,14 @@ export function parseInfo(infoStep) {
  * Supported modes: URL, TITLE, TAB_COUNT, CURRENT_INDEX.
  * @param {BrowserContext} context The browser context instance to use.
  * @param {string} mode The info mode to use.
- * @returns {Promise<string>} The result of the info mode action.
+ * @returns {Promise<string|number>} The result of the info mode action.
  */
 export async function exeInfo(context, mode) {
     const upMode = mode.toUpperCase();
 
     switch (upMode) {
         case "URL":
-            return getUrl(context);
+            return await getUrl(context);
 
         case "TITLE":
             return await getTitle(context);
@@ -59,8 +59,8 @@ export async function exeInfo(context, mode) {
  * @param {BrowserContext} context The browser context instance to use.
  * @returns {Promise<string>} The URL of the page.
  */
-function getUrl(context) {
-    const page = getActivePage(context)
+async function getUrl(context) {
+    const page = await getActivePage(context)
     if (!page) {
         console.warn("Warning (getUrl): No active page in context.");
         return null;

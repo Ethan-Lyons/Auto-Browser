@@ -22,7 +22,7 @@ export async function shortcut(context, scStep) {
 
 /**
  * Obtains the information from a 'shortcutStep' input and returns them using an object.
- * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object]}} scStep An object
+ * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object, Object]}} scStep An object
  * containing the information for the shortcut action.
  * @returns {{ modKeyStr: string, mainKey: string, waitForNav: string, setFocusStep: Object }}
  */

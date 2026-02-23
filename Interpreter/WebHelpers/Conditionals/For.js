@@ -23,7 +23,7 @@ export function routineFor(forStep, routine) {
  * Obtains important values from a 'forStep' input and returns them using an object.
  * @param {{name: "FOR", type: "Action", args: [Object, Object]}} forStep An object
  * containing the information for the for action.
- * @returns {{name: string, start: Number, end: Number}}
+ * @returns {{name: string, start: string, end: string}}
  */
 export function parseFor(forStep) {
   assertStep(forStep, "FOR", "parseFor");

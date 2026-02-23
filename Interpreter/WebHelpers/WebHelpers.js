@@ -1,4 +1,5 @@
-import { BrowserContext, Page, resolveNumber } from 'puppeteer-core';
+import { BrowserContext, Page } from 'puppeteer-core';
+import { resolveNumber } from './StoreVariables.js';
 
 export * from './Find.js';
 export * from './FindAlt.js';
