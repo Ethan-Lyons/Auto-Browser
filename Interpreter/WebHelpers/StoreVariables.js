@@ -134,7 +134,7 @@ export function resolveNumber(input) {
 
     } else {
         throw new Error(`Cannot resolve input type to number.
-            Type: ${typeof input}, Input: ${input}`);
+            Type: ${typeof input}, Input: ${JSON.stringify(input)}`);
     }
 }
 

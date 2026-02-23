@@ -21,7 +21,7 @@ export async function getBrowser() {
         const browser = await puppeteer.connect({
             browserURL: 'http://localhost:' + DEBUG_PORT,
             defaultViewport: null,
-            headless: false
+            //headless: false
         });
 
         // update contextToPage when new pages are created

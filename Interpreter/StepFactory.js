@@ -23,6 +23,12 @@ export function skipStep() {
     return { name: "SKIP", type: "Argument", args: [null] };
 }
 
+/**
+ * @param {string} textVal 
+ * @param {string} fileNameVal 
+ * @param {Object} selectedMode 
+ * @returns 
+ */
 export function textFileStep(textVal, fileNameVal, selectedMode) {
     const fnStep = fileNameStep(fileNameVal);
     const tStep = { name: "TEXT", type: "Argument", value: textVal };

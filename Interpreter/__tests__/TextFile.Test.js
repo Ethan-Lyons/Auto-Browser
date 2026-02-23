@@ -1,4 +1,4 @@
-import { test, expect, describe } from '@jest/globals';
+import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } from '@jest/globals';
 
 import { textFileStep, writeStep, appendStep } from '../StepFactory.js';
 
@@ -46,7 +46,11 @@ describe('parseTextFile', () => {
         const tfStep = textFileStep(text, fileName, textMode);
         const result = parseTextFile(tfStep);
         
-        expect(result).toEqual({ text: text, fileName: fileName, mode: writeStep().name });
+        expect(result).toEqual({
+            text: text,
+            fileName: fileName,
+            mode: textMode.name
+        });
     });
 });
 

@@ -1,4 +1,4 @@
-import { test, expect, describe } from '@jest/globals';
+import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } from '@jest/globals';
 
 import { argumentStep, typeTextStep, delayStep, textStep, findStep, canFindStep,
     setFocusStep, skipStep } from '../../StepFactory.js';
@@ -39,7 +39,7 @@ describe('parseTypeText', () => {
     })
 
     test('valid key step', async () => {
-        const ttStep = typeTextStep(textStep("FOO"), delayStep("0"), skipStep());
+        const ttStep = typeTextStep("FOO", "0", skipStep());
         const ttSpec = parseTypeText(ttStep);
         expect(ttSpec).toEqual({ text: "FOO", delay: "0", setFocusStep: setFocusStep(skipStep()) });
     });
@@ -102,7 +102,7 @@ describe('typeText', () => {
 
         const fs = findStep(argumentStep('aria', '[role="textbox"]'));
 
-        const ttStep = typeTextStep(textStep(inputText), delayStep("0"), fs);
+        const ttStep = typeTextStep(inputText, "0", fs);
         await typeText(context, ttStep);
 
         findResult = await canFind(context, cfStep);

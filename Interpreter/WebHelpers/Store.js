@@ -38,7 +38,7 @@ export function parseStore(storeStep) {
 /**
  * Stores the result of a store action under a new variable name.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {string} mode The store mode to use (case insensitive).
+ * @param {string} mode The store mode to use (case insensitive). Valid modes are: "TEXT", "FIND_TEXT", "CAN_FIND", "INFO".
  * @param {Object} step The step object for the selected store mode.
  * @param {string} storeName The new variable name to store under.
  * @throws {Error} If the store mode is not supported.

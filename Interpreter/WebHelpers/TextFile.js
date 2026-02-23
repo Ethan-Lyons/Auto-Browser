@@ -36,13 +36,13 @@ export function parseTextFile(tfStep) {
     const mode = modeStep.selected.name;
     assertStep(textStep, "TEXT", "parseTextFile");
     assertStep(fileStep, "FILE_NAME", "parseTextFile");
-    assertStep(modeStep, "OUTPUT_MODE", "parseTextFile");
+    assertStep(modeStep, "TEXT_MODE", "parseTextFile");
 
     return { text: text, fileName: fileName, mode: mode };
 }
 
 /**
- * Saves (to) a text file based on the given text content and output mode.
+ * Saves (to) a text file based on the given text content and text output mode.
  * @param {string} textContent The text content to write to the text file.
  * Any user variables will be resolved to their values.
  * @param {string} outputDir The directory to save the text file to.

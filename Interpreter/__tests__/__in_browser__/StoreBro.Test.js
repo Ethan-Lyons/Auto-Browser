@@ -1,10 +1,8 @@
-import { test, expect, describe } from '@jest/globals';
+import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } from '@jest/globals';
 
-import { findTextStep, canFindStep, findStep, argumentStep,
-    infoStep } from '../../StepFactory.js';
+import { findTextStep, canFindStep, findStep, argumentStep, infoStep } from '../../StepFactory.js';
 
-import { getBrowser, getContext, browserDisconnect, newTab, exeUrlNav,
-    storeFindText, storeInfo, storeCanFind,
+import { getBrowser, getContext, browserDisconnect, newTab, exeUrlNav, exeStore,
     getVariableValue } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
@@ -37,8 +35,9 @@ describe('storeFindText', () => {
         await newTab(context);
         await exeUrlNav(context, "example.com");
 
-        const ftStep = findTextStep(findStep(argumentStep("text", "Learn more")));
-        await storeFindText(context, ftStep, varName);
+        const textToFind = "Learn more";
+        const ftStep = findTextStep(findStep(argumentStep("text", textToFind)));
+        await exeStore(context, "FIND_TEXT", ftStep, varName);
 
         const storeResult = getVariableValue(varName);
         expect(storeResult).toEqual("Learn more");
@@ -49,8 +48,9 @@ describe('storeFindText', () => {
         await newTab(context);
         await exeUrlNav(context, "example.com");
 
-        const ftStep = findTextStep(findStep(argumentStep("text", "Learn")));
-        await storeFindText(context, ftStep, varName);
+        const textToFind = "Learn";
+        const ftStep = findTextStep(findStep(argumentStep("text", textToFind)));
+        await exeStore(context, "FIND_TEXT", ftStep, varName);
 
         const storeResult = getVariableValue(varName);
         expect(storeResult).toEqual("Learn more");
@@ -59,60 +59,68 @@ describe('storeFindText', () => {
 
 describe('storeInfo', () => {
     test('storeInfo: url', async () => {
+        const varName = "varName";
         await newTab(context);
         await exeUrlNav(context, "example.com");
 
         const iStep = infoStep(argumentStep("url", null));
-        await storeInfo(context, iStep, "name");
+        await exeStore(context, "INFO", iStep, varName);
 
-        const storeResult = getVariableValue("name");
+        const storeResult = getVariableValue(varName);
         expect(storeResult).toEqual("https://example.com/");
     });
 
     test('storeInfo: title', async () => {
+        const varName = "varName";
         await newTab(context);
         await exeUrlNav(context, "example.com");
 
         const iStep = infoStep(argumentStep("title", null));
-        await storeInfo(context, iStep, "name");
+        await exeStore(context, "INFO", iStep, varName);
 
-        const storeResult = getVariableValue("name");
+        const storeResult = getVariableValue(varName);
         expect(storeResult).toEqual("Example Domain");
     });
 });
 
 describe('storeCanFind', () => {
     test('storeCanFind: true', async () => {
+        const varName = "varName";
         await newTab(context);
         await exeUrlNav(context, "example.com");
 
-        const cStep = canFindStep(findStep(argumentStep("text", "Learn more")));
-        await storeCanFind(context, cStep, "canFind");
+        const textToFind = "Learn more";
+        const cStep = canFindStep(findStep(argumentStep("text", textToFind)));
+        await exeStore(context, "CAN_FIND", cStep, varName);
 
-        const storeResult = getVariableValue("canFind");
-        expect(storeResult).toEqual(true);
+        const storeResult = getVariableValue(varName);
+        expect(storeResult).toEqual("true");
     });
 
     test('storeCanFind: partial match true', async () => {
+        const varName = "varName";
         await newTab(context);
         await exeUrlNav(context, "example.com");
 
-        const cStep = canFindStep(findStep(argumentStep("text", "Learn")));
-        await storeCanFind(context, cStep, "canFind");
+        const textToFind = "Learn";
+        const cStep = canFindStep(findStep(argumentStep("text", textToFind)));
+        await exeStore(context, "CAN_FIND", cStep, varName);
 
-        const storeResult = getVariableValue("canFind");
-        expect(storeResult).toEqual(true);
+        const storeResult = getVariableValue(varName);
+        expect(storeResult).toEqual("true");
     });
 
     test('storeCanFind: false', async () => {
+        const varName = "varName";
         await newTab(context);
         await exeUrlNav(context, "example.com");
 
-        const cStep = canFindStep(findStep(argumentStep("text", "foobar")));
-        await storeCanFind(context, cStep, "canFind");
+        const textToFind = "foobar";
+        const cStep = canFindStep(findStep(argumentStep("text", textToFind)));
+        await exeStore(context, "CAN_FIND", cStep, varName);
 
-        const storeResult = getVariableValue("canFind");
-        expect(storeResult).toEqual(false);
+        const storeResult = getVariableValue(varName);
+        expect(storeResult).toEqual("false");
     });
 });
 
