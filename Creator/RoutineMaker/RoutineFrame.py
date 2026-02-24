@@ -79,13 +79,17 @@ class RoutineFrame():
         self.routine.saveRoutine(str(fullPath))
 
         # Resolve CLI path
-        cliPath = Path(__file__).resolve().parent.parent / "Interpreter" / "AppCLI.js"
+        cliPath = Path(__file__).resolve().parent.parent.parent / "Interpreter" / "AppCLI.js"
 
         # Run node CLI with routine path
         subprocess.run(
             ["node", str(cliPath), str(fullPath)],
             check=True
         )
+
+        # Clean up (remove file)
+        fullPath.unlink()
+
 
     def _buildSFContainer(self):
         """

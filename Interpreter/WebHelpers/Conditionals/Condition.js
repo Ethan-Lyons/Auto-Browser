@@ -1,5 +1,5 @@
 import { BrowserContext } from "puppeteer-core";
-import { resolveBoolean, assertStep, canFind } from "../WebHelpers";
+import { resolveBoolean, assertStep, canFind } from "../WebHelpers.js";
 
 /**
  * Parses a conditionStep and returns the result of the condition action.
@@ -11,7 +11,7 @@ import { resolveBoolean, assertStep, canFind } from "../WebHelpers";
 export async function condition(context, conditionStep) {
     const conditionSpec = parseCondition(conditionStep);
     const result = await exeCondition(context, conditionSpec.mode,
-        conditionSpec.step, conditionSpec.value);
+        conditionSpec.step);
     return result;
 }
 

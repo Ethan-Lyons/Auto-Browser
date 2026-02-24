@@ -174,11 +174,11 @@ class StepFrame:
             gFrame (Frame): The parent frame associated with the action group
             newStrSelection (str): The string name of the newly selected action in the dropdown menu
         """
-        newSelection = group.get(newSelectedName)
-        group.setSelected(newSelection)
+        oldFrame = self.groupFrames[group]  
+        oldFrame.destroy()  # Destroy old frame
 
-        oldFrame = self.groupFrames[group]   # Destroy old args subframe
-        oldFrame.destroy()
+        newSelection = group.get(newSelectedName)
+        group.setSelected(newSelection)  # Set new selection
 
         newFrame = self.buildSubStepFrame(group.getSelected(), gFrame)    # Build and grid new subframe
         newFrame.grid(row=0, column=1)

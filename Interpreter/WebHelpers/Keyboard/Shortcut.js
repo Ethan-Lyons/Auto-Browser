@@ -5,6 +5,7 @@ import { KEY_INPUT } from "./KeyInput.js";
 
 /**
  * Parses a shortcutStep and performs a shortcut action.
+ * @param {BrowserContext} context The browser context instance to use.
  * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object]}} scStep An object
  * containing the information for the shortcut action.
  * @returns {Promise<void>}

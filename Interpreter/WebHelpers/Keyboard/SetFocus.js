@@ -1,5 +1,5 @@
-import { BrowserContext, Locator } from "puppeteer-core";
-import { find, assertStep } from "../WebHelpers";
+import { BrowserContext, ElementHandle, Locator } from "puppeteer-core";
+import { find, assertStep } from "../WebHelpers.js";
 
 /**
  * Parses a setFocusStep and executes the setFocus action.
@@ -52,5 +52,10 @@ export function parseSetFocus(sfStep) {
  */
 export async function exeSetFocus(locator) {
     const element = await locator.waitHandle();
-    await element.focus();
+    if (element instanceof ElementHandle){
+        await element.focus();
+    }
+    else {
+        throw new Error("Unable to set focus on element: " + locator);
+    }
 }

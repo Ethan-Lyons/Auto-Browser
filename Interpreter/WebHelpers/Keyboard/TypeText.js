@@ -1,5 +1,5 @@
 import { BrowserContext } from "puppeteer-core";
-import { getActivePage, setFocus, assertStep, resolveNumber } from "../WebHelpers";
+import { getActivePage, setFocus, assertStep, resolveNumber } from "../WebHelpers.js";
 
 /**
  * Parses a typeTextStep and executes the typeText action.
