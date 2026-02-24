@@ -78,7 +78,8 @@ export function parseFindText(findTextStep) {
 /**
  * Performs a find action and returns the text content of the found element.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {{name: "FIND_TEXT", type: "Action", args: [Object]}} findStep 
+ * @param {{name: "FIND", type: "ActionGroup", selected: Object}} findStep An object
+ * containing the information for the find action.
  * @returns {Promise<string>} A promise that resolves with the text content of the found element
  */
 export async function exeFindText(context, findStep) {

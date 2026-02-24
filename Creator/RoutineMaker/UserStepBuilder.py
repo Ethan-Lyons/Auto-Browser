@@ -41,7 +41,7 @@ class UserActionBuilder:
         link = r.action("link", [text, strict])
         find = r.group(
             "Find",
-            [xpath, css, text, link, aria],
+            [text, link, aria, xpath, css],
             "Find an element and return locator"
         )
         info = r.group("info", [tabCount, url, title, currentIndex], "Return page or browser info")
@@ -90,7 +90,7 @@ class UserActionBuilder:
         canOutput = r.group("CAN_OUTPUT", [textFile, screenshot])
         output = r.userAction("OUTPUT", [canOutput])
 
-        typeText = r.group("TYPE_TEXT", [text, delayMs, setFocus])
+        typeText = r.action("TYPE_TEXT", [text, delayMs, setFocus])
 
         modKeys = r.arg("MOD_KEY(S)", "Modifier key(s), such as shift, ctrl, alt, or meta. Keys are separated by spaces or '+'s. For example: 'alt shift' or 'ctrl + alt'")
         shortcut = r.action("SHORTCUT", [modKeys, key, waitForNav, setFocus])

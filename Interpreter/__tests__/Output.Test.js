@@ -4,7 +4,7 @@ import { outputStep, textFileStep, writeStep, appendStep,
     screenShotStep } from '../StepFactory.js';
 
 import { getBrowser, getContext, browserDisconnect, newTab, output, parseOutput,
-    exeOutput, defaultOutputDir } from '../WebHelpers/WebHelpers.js';
+    exeOutput, OUTPUT_DIR } from '../WebHelpers/WebHelpers.js';
 
 import fs from 'fs';
 import path from 'path';
@@ -59,7 +59,7 @@ describe('exeOutput', () => {
         await exeOutput(context, subStep.name, subStep);
 
         // expect file path to exist
-        const filePath = path.join(defaultOutputDir, fileName);
+        const filePath = path.join(OUTPUT_DIR, fileName);
         expect(fs.existsSync(filePath)).toBe(true);
 
         // clean up
@@ -73,7 +73,7 @@ describe('exeOutput', () => {
         await exeOutput(context, subStep.name, subStep);
 
         // expect file path to exist
-        const filePath = path.join(defaultOutputDir, fileName);
+        const filePath = path.join(OUTPUT_DIR, fileName);
         expect(fs.existsSync(filePath)).toBe(true);
 
         // clean up
@@ -86,7 +86,7 @@ describe('exeOutput', () => {
         await exeOutput(context, subStep.name, subStep);
 
         // expect file path to exist
-        const filePath = path.join(defaultOutputDir, "AppendTest.txt");
+        const filePath = path.join(OUTPUT_DIR, "AppendTest.txt");
         expect(fs.existsSync(filePath)).toBe(true);
 
         // clean up
@@ -104,7 +104,7 @@ describe('output', () => {
         await output(context, oStep);
 
         // expect file path to exist
-        const filePath = path.join(defaultOutputDir, fileName);
+        const filePath = path.join(OUTPUT_DIR, fileName);
         expect(fs.existsSync(filePath)).toBe(true);
 
         // clean up
@@ -119,7 +119,7 @@ describe('output', () => {
         await output(context, oStep);
 
         // expect file path to exist
-        const filePath = path.join(defaultOutputDir, fileName);
+        const filePath = path.join(OUTPUT_DIR, fileName);
         expect(fs.existsSync(filePath)).toBe(true);
 
         // clean up
@@ -134,7 +134,7 @@ describe('output', () => {
         await output(context, oStep);
 
         // expect file path to exist
-        const filePath = path.join(defaultOutputDir, fileName);
+        const filePath = path.join(OUTPUT_DIR, fileName);
         expect(fs.existsSync(filePath)).toBe(true);
 
         // clean up

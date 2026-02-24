@@ -26,10 +26,8 @@ class ButtonFrame:
         moveFrame = tk.Frame(self.buttonFrame)
         self.ActionButton(buttonName="UP", text="↑", parent=moveFrame,
                                           onPressFunction=self.moveFunction, row=0, column=0)
-        self.ActionButton(buttonName="UP_DEEP", text="↑ (deep)", parent=moveFrame,
-                                              onPressFunction=self.moveFunction, row=0, column=1)
         self.ActionButton(buttonName="DOWN", text="↓", parent=moveFrame,
-                                            onPressFunction=self.moveFunction, row=0, column=2)
+                                            onPressFunction=self.moveFunction, row=0, column=1)
         return moveFrame
     
     def getManageFrame(self):

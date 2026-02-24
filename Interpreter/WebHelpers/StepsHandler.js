@@ -1,6 +1,6 @@
 import { BrowserContext } from 'puppeteer-core';
 import { routineIf, routineFor, routineWhile, store, click, urlNav,
-  tabNav, newTab, closeTab, wait, Routine, runRoutine, keyboard, history, output } from './WebHelpers.js';
+  tabNav, newTab, closeTab, wait, Routine, keyboard, history, output } from './WebHelpers.js';
 
 /**
  * Runs all steps in a given routine.
@@ -106,7 +106,7 @@ export async function handleAction(context, currentStep, routine) {
       break;
     
     case "CLOSE_TAB":
-      await closeTab(context);
+      await closeTab(context, currentStep);
       break;
     
     case "WAIT":
@@ -119,10 +119,6 @@ export async function handleAction(context, currentStep, routine) {
     
     case "OUTPUT":
       await output(context, currentStep);
-      break;
-    
-    case "RUN_ROUTINE":
-      await runRoutine(context, currentStep);
       break;
     
     case "KEYBOARD":

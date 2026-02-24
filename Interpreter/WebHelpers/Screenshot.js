@@ -1,5 +1,6 @@
 import { BrowserContext } from 'puppeteer-core';
-import { getActivePage, resolveString, assertStep } from './WebHelpers.js';
+import { getActivePage, resolveString, assertStep, OUTPUT_DIR } from './WebHelpers.js';
+
 import path from 'path';
 import fs from 'fs';
 
@@ -11,7 +12,7 @@ import fs from 'fs';
  * @param {string} outputDir Directory to output the screenshot to. Defaults to current directory.
  * @returns {Promise<void>} A promise that resolves when the screenshot action is completed.
  */
-export async function screenshot(context, scrStep, outputDir = "") {
+export async function screenshot(context, scrStep, outputDir = OUTPUT_DIR) {
     const scrSpec = parseScreenshot(scrStep);
     await exeScreenshot(context, outputDir, scrSpec.fileName);
 }

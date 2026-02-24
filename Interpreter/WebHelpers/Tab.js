@@ -43,7 +43,10 @@ export async function newTab(context) {
 
 /**
  * Parse a 'closeTabStep' input and closes a tab in the browser context.
- * @param {Page} tab The tab to close
+ * @param {BrowserContext} context The browser context instance to use.
+ * @param {{name: "CLOSE_TAB", type: "Action", args: [Object]}} closeTabStep An object
+ * containing the information for the closeTab action.
+ * @returns {Promise<void>} A promise that resolves when the tab is closed.
  */
 export async function closeTab(context, closeTabStep) {
     const closeTabSpec = parseCloseTab(closeTabStep);
@@ -52,7 +55,8 @@ export async function closeTab(context, closeTabStep) {
 
 /**
  * Obtains important values from a 'closeTabStep' input and returns them using an object.
- * @param {{name: "CLOSE_TAB", type: "Action", args: [Object]"}} closeTabStep 
+ * @param {{name: "CLOSE_TAB", type: "Action", args: [Object]}} closeTabStep An object
+ * containing the information for the closeTab action.
  * @returns {{tab: string}}
  */
 export function parseCloseTab(closeTabStep) {
@@ -64,17 +68,17 @@ export function parseCloseTab(closeTabStep) {
 /**
  * Performs the action of closing a tab in the browser context.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {Number} tab The index of the tab to close
+ * @param {string} tabStr The index of the tab to close
  * @returns {Promise<void>} A promise that resolves when the tab is closed.
  */
-export async function exeCloseTab(context, tab){
+export async function exeCloseTab(context, tabStr){
     // If there are no tabs, do nothing
     const tabs = await getTabs(context);
     const tabCount = tabs.length;
     if (tabCount === 0) return;
 
     const currIndex = await getActiveIndex(context);
-    const tabIndexSpec = resolveTabIndex(tab, currIndex, tabCount);
+    const tabIndexSpec = resolveTabIndex(tabStr, currIndex, tabCount);
 
     // If the tab index is out of range, do nothing
     if (tabIndexSpec.index < 0 || tabIndexSpec.index > tabCount - 1) return;
@@ -92,9 +96,9 @@ export async function exeCloseTab(context, tab){
  * - "first" for the first tab.
  * Note that strings are case insensitive and abbreviations
  *  are also allowed.
- * @param {string|Number} tabIndex The tab index to resolve.
- * @param {BrowserContext} context The browser context
- *  instance to use.
+ * @param {string} tabStr The string representation of the tab to navigate to.
+ * @param {Number} currIndex The index of the current tab.
+ * @param {Number} tabCount The total number of tabs.
  * @returns {{index: Number}} The resolved index value.
  * @throws {Error} If the tab string is invalid.
  */
@@ -140,7 +144,7 @@ export function resolveTabIndex(tabStr, currIndex, tabCount) {
 /**
  * Resolve an integer to a valid index value. Index values are
  *  in the range [0, tabCount - 1].
- * @param {Number} tabInt The integer to resolve.
+ * @param {Number} index The integer to resolve.
  * @param {Number} tabCount The Number of tabs.
  * @returns {Number} The resolved index value.
  */

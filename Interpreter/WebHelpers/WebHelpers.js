@@ -7,7 +7,6 @@ export * from './Info.js';
 export * from './Click.js';
 export * from './Tab.js';
 export * from './TabNav.js';
-export * from './Group.js';
 export * from './Browser.js';
 export * from './Ouput.js';
 
@@ -29,7 +28,6 @@ export * from './Assert.js'
 export * from './Screenshot.js'
 export * from './TextFile.js'
 
-export * from './RunRoutine.js'
 export * from './Keyboard/Keyboard.js'
 export * from './Keyboard/Shortcut.js'
 export * from './Keyboard/TypeText.js'

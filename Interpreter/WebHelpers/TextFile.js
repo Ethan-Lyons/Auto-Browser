@@ -1,4 +1,4 @@
-import { resolveString, assertStep } from './WebHelpers.js';
+import { resolveString, assertStep, OUTPUT_DIR } from './WebHelpers.js';
 
 import fs from 'fs';
 import path from 'path';
@@ -13,11 +13,8 @@ export function textFile(tfStep, outputDir) {
     const tfSpec = parseTextFile(tfStep);
 
     if (outputDir === "") {
-        outputDir = "./";
+        outputDir = OUTPUT_DIR;
     }
-
-    // If the output directory does not exist, create it
-    fs.mkdirSync(outputDir, { recursive: true });
 
     exeTextFile(tfSpec.text, outputDir, tfSpec.fileName, tfSpec.mode);
 }
@@ -51,6 +48,9 @@ export function parseTextFile(tfStep) {
  */
 export function exeTextFile(textContent, outputDir, fileName, mode) {
     const upMode = mode.toUpperCase();
+
+    // If the output directory does not exist, create it
+    fs.mkdirSync(outputDir, { recursive: true });
 
     const resolvedContent = resolveString(textContent);
     const filePath = resolveTextFilePath(outputDir, fileName);

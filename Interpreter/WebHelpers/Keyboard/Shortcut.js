@@ -6,7 +6,7 @@ import { KEY_INPUT } from "./KeyInput.js";
 /**
  * Parses a shortcutStep and performs a shortcut action.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object]}} scStep An object
+ * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object, Object]}} scStep An object
  * containing the information for the shortcut action.
  * @returns {Promise<void>}
  */
@@ -67,9 +67,10 @@ export function keyStrListMerge(keyStr="", mainKey="") {
 }
 
 /**
- * Presses down a list of keys and then releases them.
+ * Executes a shortcut by pressing a list of keys and releasing them.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {string[]} keyList A list of keys to press.
+ * @param {import("puppeteer-core").KeyInput[]} keyList A list of keys to press.
+ * @param {boolean} [waitForNav=false]
  */
 export async function exeShortcut(context, keyList, waitForNav = false) {
     // If there are no keys, do nothing
@@ -111,7 +112,7 @@ export async function exeShortcut(context, keyList, waitForNav = false) {
  * Changes the case of a key to match puppeteer style. Single letter keys maintain their
  * original case.
  * @param {string} checkKey The string for a single key to check.
- * @returns {string}
+ * @returns {import("puppeteer-core").KeyInput}
  * @throws {Error} If the key is found under the KEY_INPUT list.
  */
 function formatKey(checkKey){

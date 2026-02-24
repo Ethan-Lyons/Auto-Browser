@@ -240,7 +240,7 @@ export class Routine {
  * The formatted string is a snapshot of the current stack in the format of
  * "TOP → <step> | <step> | ...", where each step is represented by its name.
  * If the step does not have a name, it is represented by "<unknown>".
- * @returns {string} A formatted string representation of the stack.
+ * @returns {any[]} The formatted stack.
  */
   _formatStack() {
     return this.stack

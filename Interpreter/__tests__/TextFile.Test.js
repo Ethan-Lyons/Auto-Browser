@@ -3,7 +3,7 @@ import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } fr
 import { textFileStep, writeStep, appendStep } from '../StepFactory.js';
 
 import { getBrowser, getContext, browserDisconnect, exeTextFile, parseTextFile, textFile,
-    resolveTextFilePath, defaultOutputDir } from '../WebHelpers/WebHelpers.js';
+    resolveTextFilePath, OUTPUT_DIR } from '../WebHelpers/WebHelpers.js';
 
 import fs from 'fs';
 import path from 'path';
@@ -57,19 +57,19 @@ describe('parseTextFile', () => {
 describe('resolveTextFilePath', () => {
     test('valid path with extension', () => {
         const fileName = "test.txt";
-        const result = resolveTextFilePath(defaultOutputDir, fileName);
-        expect(result).toEqual(path.join(defaultOutputDir, fileName));
+        const result = resolveTextFilePath(OUTPUT_DIR, fileName);
+        expect(result).toEqual(path.join(OUTPUT_DIR, fileName));
     });
 
     test('valid path without extension', () => {
         const fileName = "test";
-        const result = resolveTextFilePath(defaultOutputDir, fileName);
-        expect(result).toEqual(path.join(defaultOutputDir, fileName + ".txt"));
+        const result = resolveTextFilePath(OUTPUT_DIR, fileName);
+        expect(result).toEqual(path.join(OUTPUT_DIR, fileName + ".txt"));
     });
 
     test('invalid file name', () => {
         const fileName = "???";
-        expect(() => resolveTextFilePath(defaultOutputDir, fileName)).toThrow();
+        expect(() => resolveTextFilePath(OUTPUT_DIR, fileName)).toThrow();
     });
 });
 
@@ -79,9 +79,9 @@ describe('exeTextFile', () => {
         const fileName = "WriteTest.txt";
 
         const textMode = writeStep();
-        exeTextFile(content, defaultOutputDir, fileName, textMode.name);
+        exeTextFile(content, OUTPUT_DIR, fileName, textMode.name);
 
-        const filePath = resolveTextFilePath(defaultOutputDir, fileName);
+        const filePath = resolveTextFilePath(OUTPUT_DIR, fileName);
 
         // expect path to exist
         expect(fs.existsSync(filePath)).toBe(true);
@@ -94,9 +94,9 @@ describe('exeTextFile', () => {
         const fileName = "AppendTest.txt";
 
         const textMode = appendStep();
-        exeTextFile(content, defaultOutputDir, fileName, textMode.name);
+        exeTextFile(content, OUTPUT_DIR, fileName, textMode.name);
 
-        const filePath = resolveTextFilePath(defaultOutputDir, fileName);
+        const filePath = resolveTextFilePath(OUTPUT_DIR, fileName);
         
         // expect path to exist
         expect(fs.existsSync(filePath)).toBe(true);
@@ -109,10 +109,10 @@ describe('exeTextFile', () => {
         const fileName = "AppendTest2.txt";
 
         const textMode = appendStep();
-        exeTextFile(content, defaultOutputDir, fileName, textMode.name);
-        exeTextFile(content, defaultOutputDir, fileName, textMode.name);
+        exeTextFile(content, OUTPUT_DIR, fileName, textMode.name);
+        exeTextFile(content, OUTPUT_DIR, fileName, textMode.name);
 
-        const filePath = resolveTextFilePath(defaultOutputDir, fileName);
+        const filePath = resolveTextFilePath(OUTPUT_DIR, fileName);
         
         // expect path to exist
         expect(fs.existsSync(filePath)).toBe(true);
@@ -128,10 +128,10 @@ describe('textFile', () => {
         const textMode = writeStep();
         const tfStep = textFileStep("write content", "WriteTest.txt", textMode);
 
-        textFile(tfStep, defaultOutputDir);
+        textFile(tfStep, OUTPUT_DIR);
 
         // outputs to default directory
-        const filePath = resolveTextFilePath(defaultOutputDir, fileName);
+        const filePath = resolveTextFilePath(OUTPUT_DIR, fileName);
         
         // expect path to exist
         expect(fs.existsSync(filePath)).toBe(true);
@@ -145,10 +145,10 @@ describe('textFile', () => {
         const textMode = appendStep();
         const tfStep = textFileStep("append content", "AppendTest.txt", textMode);
 
-        textFile(tfStep, defaultOutputDir);
+        textFile(tfStep, OUTPUT_DIR);
 
         // outputs to default directory
-        const filePath = resolveTextFilePath(defaultOutputDir, fileName);
+        const filePath = resolveTextFilePath(OUTPUT_DIR, fileName);
         
         // expect path to exist
         expect(fs.existsSync(filePath)).toBe(true);

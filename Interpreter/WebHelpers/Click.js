@@ -6,7 +6,7 @@ import { getActivePage, resolveBoolean, find, assertStep } from './WebHelpers.js
  * @param {BrowserContext} context The browser
  *  context instance to use.
  * @param {{name: "CLICK", type: "Action", args: [Object, Object]}} clickStep An object
- * for a click action.
+ * containing the information for the click action.
  */
 export async function click(context, clickStep) {
     let waitBool = false;
@@ -24,7 +24,7 @@ export async function click(context, clickStep) {
  * Obtains important values from a 'clickStep' input and returns them using an object
  * @param {{name: "CLICK", type: "Action", args: [Object, Object]}} clickStep The object
  * containing the click action data.
- * @returns {{findStep: findStep, waitForNav: string}} An object containing containing a 'findStep' entry.
+ * @returns {{findStep: findStep, waitForNav: string}}
  */
 export function parseClick(clickStep) {
     assertStep(clickStep, 'CLICK', 'parseClick');

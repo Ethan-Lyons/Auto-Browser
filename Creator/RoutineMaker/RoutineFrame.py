@@ -45,11 +45,11 @@ class RoutineFrame():
 
 
         # Arrange frame and buttons
-        self.stepFrameContainer.grid(row=0, column=0)
-        self.addButton.grid(row=0, column=1)
-        self.saveButton.grid(row=1, column=0)
-        self.loadButton.grid(row=1, column=1)
-        self.runButton.grid(row=1, column=2)
+        self.stepFrameContainer.grid(row=0, column=0, columnspan=4)
+        self.addButton.grid(row=1, column=0)
+        self.saveButton.grid(row=1, column=1)
+        self.loadButton.grid(row=1, column=2)
+        self.runButton.grid(row=1, column=3)
 
     def frameSave(self, filePath=None):
         """Saves the routine to a file."""
