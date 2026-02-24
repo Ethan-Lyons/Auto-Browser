@@ -1,4 +1,7 @@
 import tkinter as tk
+import subprocess
+from pathlib import Path
+
 from Creator.RoutineMaker.StepFrame import StepFrame
 from Creator.RoutineMaker.Routine import Routine
 from Creator.RoutineMaker.Steps import Action
@@ -22,24 +25,31 @@ class RoutineFrame():
     def _buildFrame(self):
         """
         Builds and places the save, load, and add buttons, as well as the
-        container for the action frames. Also adds a default branch to the routine object if empty.
+        container for the step frames. Also adds a default step to the routine object if empty.
         """
-        # Create frames
+        # Add a new step if routine is empty
         if len(self.routine.getSteps()) == 0:
             self.routine.createDefStep()
+        
+        # Create step frame container
         self.stepFrameContainer = self._buildSFContainer()
 
-        # Create buttons
+        # Create management buttons
         self.addButton = tk.Button(self.frame, text="+",
-                                        command=self.addStepFrame)
+                                        command=lambda: self.addStepFrame())
         self.saveButton = tk.Button(self.frame, text="Save", command=lambda: self.frameSave())
         self.loadButton = tk.Button(self.frame, text="Load", command=lambda: self.frameLoad())
-        
+
+        self.runButton = tk.Button(self.frame, text="Run", command=lambda: self.runRoutine())
+
+
+
         # Arrange frame and buttons
         self.stepFrameContainer.grid(row=0, column=0)
         self.addButton.grid(row=0, column=1)
         self.saveButton.grid(row=1, column=0)
         self.loadButton.grid(row=1, column=1)
+        self.runButton.grid(row=1, column=2)
 
     def frameSave(self, filePath=None):
         """Saves the routine to a file."""
@@ -57,6 +67,25 @@ class RoutineFrame():
 
             self.stepFrameContainer = self._buildSFContainer()   # re-build the frame
             self.stepFrameContainer.grid(row=0, column=0)
+    
+
+    def runRoutine(self):
+        # Ensure tmp dir exists
+        tmpDir = Path(__file__).resolve().parent / "tmp"
+        tmpDir.mkdir(exist_ok=True)
+
+        # Save routine JSON
+        fullPath = tmpDir / "RunningRoutine.json"
+        self.routine.saveRoutine(str(fullPath))
+
+        # Resolve CLI path
+        cliPath = Path(__file__).resolve().parent.parent / "Interpreter" / "AppCLI.js"
+
+        # Run node CLI with routine path
+        subprocess.run(
+            ["node", str(cliPath), str(fullPath)],
+            check=True
+        )
 
     def _buildSFContainer(self):
         """
@@ -84,20 +113,20 @@ class RoutineFrame():
         self.stepFrames.append(newFrame)
         return newFrame
 
-    def _createStepFrame(self, action: Action | ActionGroup | Argument, parent: tk.Frame):
+    def _createStepFrame(self, step: Action | ActionGroup | Argument, parent: tk.Frame):
         """
         Creates a new StepFrame for the given action and adds it to the container frame under the routine frame.
         
         Args:
-            action (Action): The action for which to create the action frame
-            parent (Frame): The parent frame in which to place the action frame
+            step (Action or ActionGroup or Argument): The action or action group or argument for the new step frame
+            parent (Frame): The parent frame in which to place the step frame
         Returns:
-            The new ActionFrame object.
+            The new StepFrame object.
         """
-        actionFrame = StepFrame(routineFrame=self, step=action, parent=parent)
-        frame = actionFrame.getFrame()
+        stepFrame = StepFrame(routineFrame=self, step=step, parent=parent)
+        frame = stepFrame.getFrame()
         frame.grid(row=len(self.stepFrames), column=0)
-        return actionFrame
+        return stepFrame
 
     def moveStep(self, stepFrame: StepFrame, offset: int):
         """

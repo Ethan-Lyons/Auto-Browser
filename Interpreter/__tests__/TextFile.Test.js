@@ -34,7 +34,7 @@ afterAll(async () => {
 
 describe('parseTextFile', () => {
     test('invalid step', () => {
-        fakeStep = { name: "FOO", args: [null] };
+        const fakeStep = { name: "FOO", args: [null] };
         expect(() => parseTextFile(fakeStep)).toThrow();
     });
 

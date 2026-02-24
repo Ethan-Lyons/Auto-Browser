@@ -26,7 +26,7 @@ class Routine:
         Save a routine to a file using the InputOutput class.
 
         Args:
-            fileName (str): The name of the file to save the routine to. Defaults to None.
+            filePath (str): The path of the file to save the routine to. Defaults to None.
         """
         self.inputOutput.saveRoutine(self, filePath)
     

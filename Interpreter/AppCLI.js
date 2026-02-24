@@ -1,4 +1,4 @@
-import { main } from './RoutineInterpreter.js';
+import { main } from './InterpreterApp.js';
 
 // Manual execution example:  node ./Interpreter/CLI.js ./TestData/test_for_loop.json
 

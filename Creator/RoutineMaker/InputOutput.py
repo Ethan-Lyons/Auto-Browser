@@ -16,11 +16,10 @@ def saveRoutine(routine, filePath=None):
 
     Args:
         routine (Routine): Routine to be saved.
-        fileName (str): String with the address and name of the file to save the routine to.
-            Defaults to None.
+        filePath (str): The path of the file (directory + file name) to save the routine to. Defaults to None.
     """
     if not filePath:    # Prompt the user to select file output
-        routineDir = os.path.join(os.path.dirname(__file__), "../Routines")
+        routineDir = os.path.join(os.path.dirname(__file__), "../Routines") # Open to default directory
         routineDir = os.path.normpath(routineDir)
 
         os.makedirs(routineDir, exist_ok=True)
@@ -36,18 +35,18 @@ def saveRoutine(routine, filePath=None):
         outputRoutine(rTD, filePath)
         print("Saved routine to " + filePath)
 
-def outputRoutine(routineData: dict, addr: str):
+def outputRoutine(routineData: dict, fullPath: str):
     """
     Outputs a routine as a JSON file to the address provided.
     
     Args:
         routineData (dict): The data dictionary of a Routine to be saved.
-        addr (str): The address of the file to save to.
+        fullPath (str): The path of the file (directory + file name) to save the routine to.
     """
-    path = Path(addr)
+    path = Path(fullPath)
     path.parent.mkdir(parents=True, exist_ok=True)
 
-    with path.open('w') as outfile:
+    with path.open('w', encoding='utf-8') as outfile:
         json.dump(routineData, outfile, indent=4)
 
 def loadRoutine(filePath=None):
@@ -85,7 +84,7 @@ def actionsToDict(entry: Action | ActionGroup | Argument):
     Recursively converts an Action, ActionGroup, or Argument into a dictionary.
     
     Args:
-        entry (Action or ActionGroup): The object to be converted.
+        entry (Action or ActionGroup or Argument): The object to be converted.
     
     Returns:
         dict: The dictionary representation of the action or action group.

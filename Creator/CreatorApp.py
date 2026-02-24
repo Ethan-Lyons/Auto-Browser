@@ -17,8 +17,3 @@ def createWindow():
     
     root.routineFrame = RoutineFrame(parent=root, routine=routine)
     return root
-
-if __name__ == "__main__":
-    root = createWindow()
-    routineName = 'placeholder.json'
-    root.mainloop()

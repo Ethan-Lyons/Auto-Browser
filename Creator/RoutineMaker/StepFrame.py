@@ -3,10 +3,11 @@ from Creator.RoutineMaker.ButtonFrame import ButtonFrame
 from Creator.RoutineMaker.Steps import Action
 from Creator.RoutineMaker.Steps import ActionGroup
 from Creator.RoutineMaker.Steps import Argument
+from Creator.RoutineMaker import RoutineFrame
 
 class StepFrame:
     """Represents a frame for a step inside a routine frame"""
-    def __init__(self, routineFrame, step: Action | ActionGroup | Argument, parent: tk.Frame):
+    def __init__(self, routineFrame: RoutineFrame, step: Action | ActionGroup | Argument, parent: tk.Frame):
         """
         Initializes an ActionFrame object.
 
@@ -22,7 +23,7 @@ class StepFrame:
         self.buttonFrame = None
         self.groupFrames = {}
 
-        self.frame = tk.Frame(self.parent)
+        self.rootContainer = tk.Frame(self.parent)
         self._buildFrame()
     
     def __str__(self):
@@ -30,7 +31,7 @@ class StepFrame:
     
     def getFrame(self):
         """Returns the tkinter frame associated with this step frame"""
-        return self.frame
+        return self.rootContainer
 
     def getStep(self):
         """Returns the step associated with this step frame"""
@@ -38,14 +39,14 @@ class StepFrame:
 
     def _buildFrame(self):
         """Builds and places the argument frame and button frame"""
-        self.argsF = self.getStepFrame(self.step, self.frame)
+        self.subStepFrame = self.buildSubStepFrame(self.step, self.rootContainer)
         self.buttonFrame = self.getButtonFrame()
         
-        self.argsF.grid(row=0, column=0, columnspan=2)
+        self.subStepFrame.grid(row=0, column=0)
         self.buttonFrame.grid(row=0, column=2)
     
-    def getStepFrame(self, currentAction: Argument | Action | ActionGroup, parent: tk.Frame):
-        """Builds and returns a frame containing the sub-entries for the given action.
+    def buildSubStepFrame(self, currentStep: Argument | Action | ActionGroup, parent: tk.Frame):
+        """Builds and returns a frame containing the sub-entries for the given step.
 
         Args:
             currentAction (Argument or Action or ActionGroup): The action for which to build the argument frame
@@ -54,25 +55,28 @@ class StepFrame:
         Returns:
             A frame containing the argument entries for the given action
         """
-        argsFrame = tk.Frame(parent)
+        subStepFrame = tk.Frame(parent)
         currentColumn = 0
 
-        if isinstance(currentAction, Argument):         # Argument
-            sFrame = self.buildArgumentFrame(argsFrame, currentAction)
-            sFrame.grid(row=0, column=currentColumn)
+        if isinstance(currentStep, Argument):         # Argument
+            argFrame = self.buildArgumentFrame(subStepFrame, currentStep)
+            argFrame.grid(row=0, column=currentColumn)
             currentColumn += 1
-        elif isinstance(currentAction, Action):         # Action
-            aFrame = self.buildStepFrame(argsFrame, currentAction)
+
+        elif isinstance(currentStep, Action):         # Action
+            aFrame = self.buildActionFrame(subStepFrame, currentStep)
             aFrame.grid(row=0, column=currentColumn)
             currentColumn += 1
-        elif isinstance(currentAction, ActionGroup):    # ActionGroup
-            gFrame = self.buildGroupFrame(argsFrame, currentAction)
+
+        elif isinstance(currentStep, ActionGroup):    # ActionGroup
+            gFrame = self.buildGroupFrame(subStepFrame, currentStep)
             gFrame.grid(row=0, column=currentColumn)
             currentColumn += 1
+
         else:                                           # Unknown
-            print("Unknown input type for getArgsFrame: " + str(currentAction) + ", Type: " + str(type(currentAction)))
+            print("Unknown input type for getArgsFrame: " + str(currentStep) + ", Type: " + str(type(currentStep)))
         
-        return argsFrame
+        return subStepFrame
     
     def buildArgumentFrame(self, parentFrame: tk.Frame, argument: Argument):
         """Builds and returns a frame containing a single entry for the given argument.
@@ -91,17 +95,18 @@ class StepFrame:
         var.trace_add("write", lambda name, index, mode, a=argument, v=var: a.setValue(v.get()))
         argEntry = tk.Entry(sFrame, textvariable=var)
         
-        tk.Label(sFrame, text=argument).grid(row=0, column=0)
+        labelText = argument.getName()
+        tk.Label(sFrame, text=labelText).grid(row=0, column=0)
         argEntry.grid(row=0, column=1)
 
         argValue = argument.getValue()
         if argValue:    #restore arg value if already set
-            argEntry.insert(0, argValue)
+            var.set(argValue)
 
         return sFrame
 
 
-    def buildStepFrame(self, parentFrame: tk.Frame, actionArg: Action | ActionGroup):
+    def buildActionFrame(self, parentFrame: tk.Frame, action: Action):
         
         """Builds and returns a frame containing a label with the action name and associated sub-frames for the action's arguments.
 
@@ -113,13 +118,14 @@ class StepFrame:
             A frame containing the action name and associated sub-frames.
         """
         aFrame = tk.Frame(parentFrame)
-        tk.Label(aFrame, text=str(actionArg)).grid(row=0, column=0)
+        labelText = action.getName()
+        tk.Label(aFrame, text=labelText).grid(row=0, column=0)
 
-        argList = actionArg.getArgs()
+        argList = action.getArgs()
         column = 1
         if argList is not None:
             for subArg in argList:
-                subFrame = self.getStepFrame(subArg, aFrame)
+                subFrame = self.buildSubStepFrame(subArg, aFrame)
                 subFrame.grid(row=0, column=column)
                 column += 1
 
@@ -137,26 +143,28 @@ class StepFrame:
         Returns:
             A frame containing a dropdown menu and a subframe for the currently selected action
         """
-        gFrame = tk.Frame(pFrame)
-        actionStrList = [str(a) for a in group.getArgs()]
-        initial = str(group.getSelected())
+        newFrame = tk.Frame(pFrame)
+        stepStrList = [a.getName() for a in group.getArgs()]
+        initial = group.getSelected().getName()
 
-        groupDD = self.getDropDown(entryList=actionStrList, pFrame=gFrame,
-                                    name=str(group),
+        labelText = group.getName()
+        dropDown = self.getDropDown(entryList=stepStrList,
+                                    pFrame=newFrame,
+                                    name=labelText,
                                     callback=lambda selectedName:
-                                        self.updateActionGroupFrame(group=group, gFrame=gFrame, newStrSelection=selectedName),
+                                        self.updateActionGroupFrame(group=group, gFrame=newFrame, newSelectedName=selectedName),
                                     initial=initial)
-        groupDD.grid(row=0, column=0)
+        dropDown.grid(row=0, column=0)
 
-        subFrame = self.getStepFrame(group.getSelected(), gFrame)
+        subFrame = self.buildSubStepFrame(group.getSelected(), newFrame)
         subFrame.grid(row=0, column=1)
 
         self.groupFrames[group] = subFrame
 
-        return gFrame
+        return newFrame
 
     
-    def updateActionGroupFrame(self, group: ActionGroup, gFrame: tk.Frame, newStrSelection: str):
+    def updateActionGroupFrame(self, group: ActionGroup, gFrame: tk.Frame, newSelectedName: str):
         """
         Updates the frame associated with a given action group when a
         new action is selected in the dropdown menu.
@@ -166,19 +174,18 @@ class StepFrame:
             gFrame (Frame): The parent frame associated with the action group
             newStrSelection (str): The string name of the newly selected action in the dropdown menu
         """
-        newSelection = group.get(actionName=newStrSelection)
+        newSelection = group.get(newSelectedName)
         group.setSelected(newSelection)
 
         oldFrame = self.groupFrames[group]   # Destroy old args subframe
         oldFrame.destroy()
 
-        newFrame = self.getStepFrame(group.getSelected(), gFrame)    # Build and grid new subframe
+        newFrame = self.buildSubStepFrame(group.getSelected(), gFrame)    # Build and grid new subframe
         newFrame.grid(row=0, column=1)
 
         self.groupFrames[group] = newFrame  # Store frame reference for deletion operation
-
     
-    def getDropDown(self, entryList: list, pFrame: tk.Frame, name="Type", callback=lambda: print("Default dropdown callback"), initial=None):
+    def getDropDown(self, entryList: list, pFrame: tk.Frame, name="Type", callback=lambda x: print("Default callback called"), initial=None):
         """
         Builds and returns a frame containing a dropdown menu (OptionMenu) and a label.
 
@@ -193,11 +200,10 @@ class StepFrame:
             A frame containing a dropdown menu and a label
         """
         dropDownFrame = tk.Frame(pFrame)
-        entryList = [str(e) for e in entryList]
+
+        # Already using names here, no need to convert again
         if initial is None:
-            initial = str(entryList[0])
-        else:
-            initial = str(initial)
+            initial = entryList[0]
 
         initialValue = tk.StringVar(value=initial)
         dropBox = tk.OptionMenu(
@@ -213,11 +219,10 @@ class StepFrame:
 
     def getButtonFrame(self):
         """Returns the frame containing the move and manage buttons for this action frame"""
-        if not self.buttonFrame:
-            newFrame = ButtonFrame(parent=self.frame, moveFunction=self.buttonMove, manageFunction=self.buttonManage)
-            return newFrame.getFrame()
-        else:
-            return self.buttonFrame
+        if self.buttonFrame is None:
+            bf = ButtonFrame(parent=self.rootContainer, moveFunction=self.buttonMove, manageFunction=self.buttonManage)
+            self.buttonFrame = bf.getFrame()
+        return self.buttonFrame
 
     def buttonMove(self, moveType: str):
         """Handles the result of pressing a move button for this action frame"""
@@ -244,4 +249,4 @@ class StepFrame:
 
     def destroy(self):
         """Destroys the tkinter frame associated with this action frame"""
-        self.frame.destroy()
+        self.rootContainer.destroy()

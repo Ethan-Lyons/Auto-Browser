@@ -1,3 +1,4 @@
+import { Browser } from 'puppeteer-core';
 import { getContext, closeContext, browserDisconnect, handleRoutine,
   getBrowser, Routine } from './WebHelpers/WebHelpers.js';
 

@@ -10,10 +10,9 @@
 
 Website-Interact is a custom-built automation framework designed to:
 
-- Programmatically define structured web interaction routines
-- Serialize routines into an executable format
-- Interpret and execute those routines inside a browser context
-- Provide modular, extensible step logic
+- Programmatically define structured web interactions into a formalized routine
+- Interpret and execute those routines inside a live browser context
+- Provide modular, extensible step logic structures
 - Support automated testing in both Python and JavaScript environments
 
 This project was fully designed and implemented by me as a portfolio demonstration of:
@@ -21,6 +20,7 @@ This project was fully designed and implemented by me as a portfolio demonstrati
 - Software architecture design
 - Factory and Interpreter patterns
 - Cross-language system integration
+- Cross-system compatability
 - Test-driven development
 - Modular automation tooling
 
@@ -30,6 +30,8 @@ This project was fully designed and implemented by me as a portfolio demonstrati
 
 The system is intentionally divided into two layers:
 
+---
+
 ### 1. Creator (Python)
 
 Responsible for building structured routines.
@@ -37,19 +39,22 @@ Responsible for building structured routines.
 Key characteristics:
 - Modular step definitions
 - Factory-based step creation
-- GUI components for structured routine building
-- Strong pytest coverage
-- Separation of step metadata from execution logic
+- GUI components for user-friendly and structured routine building
+- Separate visualization and data modification functionality
+- Creator-wide extensive pytest coverage
 
 Core responsibilities:
 - Define steps
 - Validate arguments
 - Construct routine objects
 - Export structured routine data
+- Create interactive GUI components
+- Sync data between visual elements and back-end data
 
-Testing:
-pytest Creator/pytests
-
+### Testing:
+pytest Creator
+or
+npm run test:py
 
 ---
 
@@ -58,7 +63,6 @@ pytest Creator/pytests
 Responsible for executing routines in a browser environment.
 
 Key characteristics:
-- StepFactory pattern
 - Interpreter-style execution flow
 - Modular WebHelpers
 - Conditional execution support (If / For / While)
@@ -75,32 +79,25 @@ Core execution modules include:
 - Tab and navigation management
 - Conditional logic blocks
 
-Run tests:
-npm test
-
+### Testing:
+npm run test:js
 
 ---
 
-## Design Patterns Used
-
-- Factory Pattern (StepFactory implementations)
-- Interpreter Pattern (RoutineInterpreter)
-- Modular Command-like step execution
-- Separation of construction and execution layers
-- Structured test architecture in both runtimes
+### Testing (Both Layers):
+npm run test
 
 ---
 
 ## Technology Stack
 
 **Python (Creator Layer)**
-- Python 3.11+
+- Python (3.11+)
 - pytest
 
 **JavaScript (Interpreter Layer)**
 - Node.js
 - Jest
-- Modular CommonJS architecture
 
 ---
 
@@ -109,9 +106,8 @@ npm test
 ### Python Environment
 pip install -r requirements.txt
 
-### Node Environment
+### NodeJS Environment
 npm install
-
 
 ---
 
@@ -155,4 +151,4 @@ Actively developed and structured for extensibility.
 
 ## Author
 
-Built and maintained by [Your Name]
+Built and maintained by Ethan Lyons

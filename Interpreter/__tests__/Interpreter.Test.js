@@ -1,5 +1,5 @@
 import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } from '@jest/globals';
-import { getPath } from '../RoutineInterpreter.js';
+import { getPath } from '../InterpreterApp.js';
 
 describe('getPath', () => {
   test('returns first CLI argument', () => {
