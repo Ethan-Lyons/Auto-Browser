@@ -9,6 +9,10 @@ from Creator.RoutineMaker.Steps import Action
 from Creator.RoutineMaker.Steps import ActionGroup
 from Creator.RoutineMaker.Steps import Argument
 
+ROUTINE_DIR = os.path.normpath(
+    os.path.join(os.path.dirname(__file__), "../../Routines")
+    )
+
 def saveRoutine(routine, filePath=None):
     """
     Save a routine to a file.
@@ -19,13 +23,10 @@ def saveRoutine(routine, filePath=None):
         filePath (str): The path of the file (directory + file name) to save the routine to. Defaults to None.
     """
     if not filePath:    # Prompt the user to select file output
-        routineDir = os.path.join(os.path.dirname(__file__), "../Routines") # Open to default directory
-        routineDir = os.path.normpath(routineDir)
-
-        os.makedirs(routineDir, exist_ok=True)
+        os.makedirs(ROUTINE_DIR, exist_ok=True)
 
         filePath = tkinter.filedialog.asksaveasfilename(
-            initialdir = routineDir,
+            initialdir = ROUTINE_DIR,
             title = "Select file",
             filetypes = (("json files", "*.json"), ("all files", "*.*")),
             defaultextension = ".json"
@@ -61,8 +62,10 @@ def loadRoutine(filePath=None):
         Routine: The loaded routine.
     """
     if not filePath:    # Prompt the user to select file
+        os.makedirs(ROUTINE_DIR, exist_ok=True)
+        
         filePath = tkinter.filedialog.askopenfilename(
-            initialdir = os.path.join(os.path.dirname(__file__), "Routines"),
+            initialdir = ROUTINE_DIR,
             title = "Select file",
             filetypes = (("json files", "*.json"), ("all files", "*.*")),
             defaultextension = ".json"

@@ -1,10 +1,10 @@
 import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } from '@jest/globals';
 
-import { argumentStep, keyStep, shortcutStep, setFocusStep, findStep, modKeyStep,
+import { argumentStep, shortcutStep, setFocusStep, findStep, keysStep,
     skipStep, waitNavStep, trueStep, falseStep} from '../../StepFactory.js';
 
 import { getBrowser, getContext, browserDisconnect, newTab, setFocus, exeUrlNav,
-    shortcut, exeInfo, getTabCount, keyStrListMerge, parseShortcut,
+    shortcut, exeInfo, getTabCount, keyStrToList, parseShortcut,
     exeShortcut } from '../../WebHelpers/WebHelpers.js';
 
 let browser;
@@ -34,37 +34,23 @@ afterAll(async () => {
 
 describe('keyStrListMerge', () => {
     test('valid merge simple plus', async () => {
-        expect(keyStrListMerge("a+b+c", "d")).toEqual(["a", "b", "c", "d"]);
+        expect(keyStrToList("a+b+c")).toEqual(["a", "b", "c"]);
     });
 
     test('valid merge simple space', async () => {
-        expect(keyStrListMerge("a b c", "d")).toEqual(["a", "b", "c", "d"]);
+        expect(keyStrToList("a b c")).toEqual(["a", "b", "c"]);
     });
 
     test('valid merge single modifier', async () => {
-        expect(keyStrListMerge("Control", "d")).toEqual(["Control", "d"]);
+        expect(keyStrToList("Control d")).toEqual(["Control", "d"]);
     });
 
     test('valid merge multiple modifiers', async () => {
-        expect(keyStrListMerge("Control+Shift", "d")).toEqual(["Control", "Shift", "d"]);
+        expect(keyStrToList("Control+Shift+d")).toEqual(["Control", "Shift", "d"]);
     });
 
-    test('valid merge no main key', async () => {
-        expect(keyStrListMerge("a+b+c+d", "")).toEqual(["a", "b", "c", "d"]);
-    });
-
-    test('valid merge no modifier', async () => {
-        expect(keyStrListMerge("", "a")).toEqual(["a"]);
-    });
-
-    test('invalid merge empty', async () => {
-        expect(() => keyStrListMerge("", "")).toThrow();
-    });
-
-    test('valid merge multiple main keys', async () => {
-        /* Note: multiple main keys is not supported and won't be split but
-        this is only caught during the execution of the shortcut */
-        expect(keyStrListMerge("a+b", "e+f")).toEqual(["a", "b", "e+f"]);
+    test('valid merge no keys', async () => {
+        expect(keyStrToList("")).toEqual([]);
     });
 });
 
@@ -75,8 +61,8 @@ describe('parseShortcut', () => {
     })
 
     test('valid key step', async () => {
-        const scStep = shortcutStep(modKeyStep("Control"), keyStep("t"), waitNavStep(falseStep()), skipStep());
-        expect(parseShortcut(scStep)).toEqual({ modKeyStr: "Control", mainKey: "t", waitForNav: "FALSE", setFocusStep: setFocusStep(skipStep()) });
+        const scStep = shortcutStep(keysStep("Control+t"), waitNavStep(falseStep()), skipStep());
+        expect(parseShortcut(scStep)).toEqual({ keysStr: "Control+t", waitForNav: "FALSE", setFocusStep: setFocusStep(skipStep()) });
     });
 });
 
@@ -133,7 +119,7 @@ describe('exeShortcut', () => {
 
 describe('shortcut', () => {
     test('shortcut: browser', async () => {
-        const scStep = shortcutStep(modKeyStep("Control"), keyStep("t"), waitNavStep(falseStep()), skipStep());
+        const scStep = shortcutStep(keysStep("Control+t"), waitNavStep(falseStep()), skipStep());
         await shortcut(context, scStep);
         const tabCount = await getTabCount(context);
         expect(tabCount).toEqual(1);
@@ -142,7 +128,7 @@ describe('shortcut', () => {
     test('shortcut: enter navigation', async () => {
         await exeUrlNav(context, "https://www.scrapethissite.com/pages/forms/");
         const fs = findStep(argumentStep('aria', '[role="textbox"]'));
-        const scStep = shortcutStep(modKeyStep(""), keyStep("Enter"), waitNavStep(trueStep()), fs);
+        const scStep = shortcutStep(keysStep("Enter"), waitNavStep(trueStep()), fs);
 
         await shortcut(context, scStep);
 

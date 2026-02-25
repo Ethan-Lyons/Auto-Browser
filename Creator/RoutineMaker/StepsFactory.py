@@ -30,15 +30,16 @@ def createActionGroup(name: str, actions=[], description=""):
     newActionGroup = ActionGroup(name=name, args=actions, description=description)
     return newActionGroup
     
-def createArgument(name: str, description=""):
+def createArgument(name: str, description="", hasValue=True):
     """Creates a new argument object
 
     Args:
         name (str): The name of the argument
         description (str): A description of the argument
+        hasValue (bool): Whether the argument has a value
 
     Returns:
         Argument: The newly created argument
     """
-    newArgument = Argument(name=name, description=description)
+    newArgument = Argument(name=name, description=description, hasValue=hasValue)
     return newArgument

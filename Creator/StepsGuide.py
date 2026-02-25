@@ -33,13 +33,17 @@ class StepsGuide():
 
     def createWindow(self):
         """
-        Entry point for creating the root tkinter window.
+        Creates the main window for the step viewer.
 
         Returns:
-            tkinter.Tk: The root of the window.
+            root (tk.Tk): The root of the window.
         """
         root = tk.Tk()
         root.title("Action Viewer")
+
+        # Allow resizing behavior
+        root.rowconfigure(0, weight=1)
+        root.columnconfigure(0, weight=1)
 
         return root
     
@@ -51,7 +55,11 @@ class StepsGuide():
             sContainer (tk.Frame): The parent container for the step tree
         """
         sContainer = tk.Frame(parent)
-        sContainer.grid(row=0, column=0)
+        sContainer.grid(row=0, column=0, sticky="nsew")
+
+        # Allow the container to expand
+        sContainer.rowconfigure(0, weight=1)
+        sContainer.columnconfigure(0, weight=1)
 
         return sContainer
         
@@ -89,7 +97,7 @@ class StepsGuide():
             initialChildIDs = tree.get_children(treeRoot)
             self.jsUpdate(tree, initialChildIDs)
 
-        tree.grid(row=0, column=0)
+        tree.grid(row=0, column=0, sticky="nsew")
 
         return tree
     

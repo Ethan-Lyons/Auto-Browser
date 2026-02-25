@@ -62,16 +62,16 @@ export function typeTextStep(textVal, delayVal, subFocusStep) {
         [textStep(textVal), delayStep(delayVal), setFocusStep(subFocusStep)] };
 }
 
-export function modKeyStep(modKeyString) {
-    return { name: "MOD_KEYS", type: "Argument", value: modKeyString };
+export function keysStep(keysStr) {
+    return { name: "KEYS", type: "Argument", value: keysStr };
 }
 
 export function keyStep(keyString) {
     return { name: "KEY", type: "Argument", value: keyString };
 }
 
-export function shortcutStep(modKeyStep, keyStep, waitNavStep, subFocusStep) {
-    return { name: "SHORTCUT", type: "Action", args: [modKeyStep, keyStep, waitNavStep, setFocusStep(subFocusStep)] };
+export function shortcutStep(keysStep, waitNavStep, subFocusStep) {
+    return { name: "SHORTCUT", type: "Action", args: [keysStep, waitNavStep, setFocusStep(subFocusStep)] };
 }
 
 export function keyboardStep(selectedKeyModeStep) {

@@ -6,13 +6,13 @@ import { KEY_INPUT } from "./KeyInput.js";
 /**
  * Parses a shortcutStep and performs a shortcut action.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object, Object]}} scStep An object
+ * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object]}} scStep An object
  * containing the information for the shortcut action.
  * @returns {Promise<void>}
  */
 export async function shortcut(context, scStep) {
     const shortcutSpec = parseShortcut(scStep);
-    const keyList = keyStrListMerge(shortcutSpec.modKeyStr, shortcutSpec.mainKey)
+    const keyList = keyStrToList(shortcutSpec.keysStr)
 
     const waitNavBool = resolveBoolean(shortcutSpec.waitForNav);
 
@@ -23,44 +23,40 @@ export async function shortcut(context, scStep) {
 
 /**
  * Obtains the information from a 'shortcutStep' input and returns them using an object.
- * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object, Object]}} scStep An object
+ * @param {{name: "SHORTCUT", type: "Action", args: [Object, Object, Object]}} scStep An object
  * containing the information for the shortcut action.
- * @returns {{ modKeyStr: string, mainKey: string, waitForNav: string, setFocusStep: Object }}
+ * @returns {{ keysStr: string, waitForNav: string, setFocusStep: Object }}
  */
 export function parseShortcut(scStep) {
     assertStep(scStep, "SHORTCUT", "parseShortcut");
 
     // Ensure argument structure is correct
-    const [modKeyStr, mainKey, waitNavStep, setFocusStep] = scStep.args;
-    assertStep(modKeyStr, "MOD_KEYS", "parseShortcut");
-    assertStep(mainKey, "KEY", "parseShortcut");
+    const [keyStr, waitNavStep, setFocusStep] = scStep.args;
+    assertStep(keyStr, "KEYS", "parseShortcut");
     assertStep(waitNavStep, "WAIT_FOR_NAV", "parseShortcut");
     assertStep(setFocusStep, "SET_FOCUS", "parseShortcut");
 
-    return { modKeyStr: modKeyStr.value, mainKey: mainKey.value,
-        waitForNav: waitNavStep.selected.name, setFocusStep: setFocusStep };
+    return { keysStr: keyStr.value,
+        waitForNav: waitNavStep.selected.name,
+        setFocusStep: setFocusStep };
 }
 
 /**
  * Turns a string of keys and a main key into a list of keys.
  * @param {string} keyStr A string containing a key or a list of keys separated by
- * spaces or plus signs. Optional if mainKey is provided.
- * @param {string} mainKey A string containing a key. Optional if keyStr is provided.
+ * spaces or plus signs.
  * @returns {string[]}
  */
-export function keyStrListMerge(keyStr="", mainKey="") {
+export function keyStrToList(keyStr="") {
     let keyStrList = [];
-    if (keyStr == "" && mainKey == "") {
-        throw new Error("Error (keyStrListMerge): No keys in shortcut.");
+    if (keyStr == "") {
+        console.warn("Warning (keyStrToList): No keys in shortcut.");
+        return [];
     }
 
     // If there are no keys, do nothing, else split list by spaces and/or plus signs
     if (keyStr !== "") {
         keyStrList = keyStr.split(/[\s+]/);
-    }
-    // If there is a main key, add it
-    if (mainKey !== "") {
-        keyStrList.push(mainKey);
     }
 
     return keyStrList

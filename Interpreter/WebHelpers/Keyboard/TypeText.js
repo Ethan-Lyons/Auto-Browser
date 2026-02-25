@@ -9,7 +9,9 @@ import { getActivePage, setFocus, assertStep, resolveNumber } from "../WebHelper
  */
 export async function typeText(context, typeTextStep) {
     const spec = parseTypeText(typeTextStep);
-    const delayNum = resolveNumber(spec.delay);
+    let delayNum = 0;
+    if (spec.delay != null)
+        delayNum = resolveNumber(spec.delay);
 
     await setFocus(context, spec.setFocusStep);
     await exeTypeText(context, spec.text, delayNum);

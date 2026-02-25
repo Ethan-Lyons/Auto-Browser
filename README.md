@@ -1,4 +1,4 @@
-# Website-Interact
+# Auto-Browser
 
 > A modular, full-stack web automation framework built from scratch.
 >
@@ -145,10 +145,8 @@ Add this flag to your browser shortcut:
 ### Command Line Launch (Example: Chrome)
 
 ```bash
-"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\tempUser"
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222
 ```
-
-> The `--user-data-dir` prevents interference with your main browser profile.
 
 ---
 
@@ -190,7 +188,7 @@ The GUI allows you to:
 
 ### GUI Example
 
-![Creator GUI Screenshot Placeholder](docs/images/creator_gui.png)
+![Creator GUI Screenshot](/docs/images/creator_gui.png)
 
 ---
 
@@ -230,7 +228,7 @@ StepsGuide provides:
 - Required arguments for each step
 - Detailed descriptions of step behavior
 
-![Steps Guide Placeholder](docs/images/steps_guide.png)
+![Steps Guide Placeholder](/docs/images/steps_guide.png)
 
 ---
 
@@ -249,10 +247,11 @@ After routine execution:
 ---
 
 # Example 1: Basic Search Automation
+[Example Routine JSON](/docs/routines/example_1.json)
 
 **Goal:** Open Google and perform a search.
 
-![Example Routine Screenshot Placeholder](docs/images/example_basic.png)
+![Example Routine Screenshot](/docs/images/example_1.png)
 
 ### Routine Steps
 
@@ -263,7 +262,7 @@ After routine execution:
    - delay_ms: `(optional)`
    - `SET_FOCUS` → `FIND`
      - selector mode: `aria`
-     - value: `[role="textbox"]`
+     - value: `[role="combobox"]`
 4. `KEYBOARD` → `SHORTCUT`
    - key: `Enter`
    - `WAIT_FOR_NAV` → `True`
@@ -357,13 +356,6 @@ It is designed as a reusable automation framework — not a single-use script.
 Actively developed and structured for extensibility.
 
 ---
-
-# License
-
-MIT License
-
----
-
 
 # Author
 

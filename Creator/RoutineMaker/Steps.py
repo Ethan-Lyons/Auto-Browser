@@ -136,9 +136,10 @@ class Argument:
     The Argument class represents an argument that can be passed to an action or action group.
     It has a name, a value, and a description.
     """
-    def __init__(self, name: str, value=None, description=""):
+    def __init__(self, name: str, value=None, description="", hasValue=True):
         self.name = name
         self.value = value
+        self.hasValue = hasValue
         self.description = description or ""
 
     def __eq__(self, other):
@@ -151,14 +152,15 @@ class Argument:
             and self.name == other.name
             and self.value == other.value
             and self.description == other.description
+            and self.hasValue == other.hasValue
         )
     
     def __hash__ (self):
         """Returns a hash of the argument"""
-        return hash((self.name, self.value, self.description))
+        return hash((self.name, self.value, self.description, self.hasValue))
 
     def __str__(self):
-        return "Argument: " + str(self.name) + "\nValue: " + str(self.value) + "\nDescription: " + str(self.description)
+        return "Argument: " + str(self.name) + "\nValue: " + str(self.value) + "\nDescription: " + str(self.description) + "\nHasValue: " + str(self.hasValue)
 
     def setName(self, newName: str):
         """Sets the name of the argument"""
@@ -173,17 +175,25 @@ class Argument:
     def getDescription(self):
         """Returns the description of the argument"""
         return self.description
+    
+    def setHasValue(self, newValue: bool):
+        """Sets the hasValue of the argument"""
+        self.hasValue = newValue
+    def getHasValue(self):
+        """Returns the hasValue of the argument"""
+        return self.hasValue
 
     def setValue(self, newValue: str):
         """Sets the value of the argument"""
         self.value = newValue
+
     def getValue(self):
         """Returns the value of the argument"""
         return self.value
 
     def copy(self):
         """Returns a deep copy of the argument"""
-        return Argument(self.name, self.value, self.description)
+        return Argument(self.name, self.value, self.description, self.hasValue)
 
 
 def fullCopy(step):

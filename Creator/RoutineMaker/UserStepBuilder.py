@@ -8,59 +8,58 @@ class UserActionBuilder:
         r = ActionRegistry()
 
         # ---------- Arguments ----------
-        variable = r.arg("variable")
-        text = r.arg("text")
-        key = r.arg("key")
-        fileName = r.arg("file_name")
-        url = r.arg("url")
-        tab = r.arg("tab")
-        delayMs = r.arg("delay_ms")
-        start = r.arg("start")
-        end = r.arg("end")
+        variable = r.arg("VARIABLE")
+        text = r.arg("TEXT")
+        fileName = r.arg("FILE_NAME")
+        url = r.arg("URL")
+        tab = r.arg("TAB")
+        delayMs = r.arg("DELAY_MS")
+        start = r.arg("START")
+        end = r.arg("END")
         write = r.arg("WRITE")
         append = r.arg("APPEND")
-        skipArg = r.arg("SKIP")
+        skipArg = r.arg("SKIP", "Does nothing", False)
 
         # Selector types
-        xpath = r.arg("xpath")
-        css = r.arg("css")
-        aria = r.arg("aria")
+        xpath = r.arg("XPATH")
+        css = r.arg("CSS")
+        aria = r.arg("ARIA")
 
         # Bool
-        true = r.arg("true")
-        false = r.arg("false")
+        true = r.arg("TRUE", "", False)
+        false = r.arg("FALSE", "", False)
 
         # Tab info
-        tabCount = r.arg("tab_count")
-        title = r.arg("title")
-        currentIndex = r.arg("current_index")
+        tabCount = r.arg("TAB_COUNT")
+        title = r.arg("TITLE")
+        currentIndex = r.arg("CURRENT_INDEX")
 
         # ---------- Groups ----------
-        strict = r.group("strict", [true, false], "Strict or non-strict search")
+        strict = r.group("STRICT", [true, false], "Strict or non-strict search")
 
-        link = r.action("link", [text, strict])
+        link = r.action("LINK", [text, strict])
         find = r.group(
-            "Find",
+            "FIND",
             [text, link, aria, xpath, css],
             "Find an element and return locator"
         )
-        info = r.group("info", [tabCount, url, title, currentIndex], "Return page or browser info")
+        info = r.group("INFO", [tabCount, url, title, currentIndex], "Return page or browser info")
 
         canFind = r.action(
-            "can_find",
+            "CAN_FIND",
             [find],
             "If an element can be found, return true, else false"
         )
-        condition = r.group("condition", [canFind, text], "Able to return either value true or false")
+        condition = r.group("CONDITION", [canFind, text], "Able to return either value true or false")
 
         # ---------- Actions ----------
         findText = r.action(
-            "find_text",
+            "FIND_TEXT",
             [find],
             "Find an element and return its text content"
         )
         storable = r.group(
-            "storable",
+            "STORABLE",
             [findText, text, info, canFind]
         )
         store = r.userAction(
@@ -92,8 +91,8 @@ class UserActionBuilder:
 
         typeText = r.action("TYPE_TEXT", [text, delayMs, setFocus])
 
-        modKeys = r.arg("MOD_KEY(S)", "Modifier key(s), such as shift, ctrl, alt, or meta. Keys are separated by spaces or '+'s. For example: 'alt shift' or 'ctrl + alt'")
-        shortcut = r.action("SHORTCUT", [modKeys, key, waitForNav, setFocus])
+        keys = r.arg("KEYS", "Any keys (including modifier key(s), such as shift, ctrl, alt, or meta.) Keys are separated by spaces or '+'s. For example: 'alt shift' or 'ctrl + alt + a'")
+        shortcut = r.action("SHORTCUT", [keys, waitForNav, setFocus])
 
         keyMode = r.group("KEY_MODE", [typeText, shortcut])
         keyboard = r.userAction("KEYBOARD", [keyMode])
@@ -143,9 +142,9 @@ class ActionRegistry:
         self.actions = {}
         self.userSteps = []
 
-    def arg(self, name: str, description=""):
+    def arg(self, name: str, description="", hasValue=True):
         """Creates and returns an argument object with the given name and description."""
-        argObj = StepsFactory.createArgument(name, description)
+        argObj = StepsFactory.createArgument(name, description, hasValue)
         self.arguments[name] = argObj
         return argObj
 

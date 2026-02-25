@@ -90,18 +90,23 @@ class StepFrame:
             A frame containing a single entry for the given argument
         """
         sFrame = tk.Frame(parentFrame)
-        
-        var = tk.StringVar()    # tracks inputs and updates argument value to match
-        var.trace_add("write", lambda name, index, mode, a=argument, v=var: a.setValue(v.get()))
-        argEntry = tk.Entry(sFrame, textvariable=var)
-        
+
+        # Label
         labelText = argument.getName()
         tk.Label(sFrame, text=labelText).grid(row=0, column=0)
-        argEntry.grid(row=0, column=1)
+        
+        # Check if argument has a value that can be set (requires an entry box)
+        if argument.getHasValue():
+            var = tk.StringVar()    # tracks inputs and updates argument value to match
+            var.trace_add("write", lambda name, index, mode, a=argument, v=var: a.setValue(v.get()))
+            argEntry = tk.Entry(sFrame, textvariable=var)
 
-        argValue = argument.getValue()
-        if argValue:    #restore arg value if already set
-            var.set(argValue)
+            argEntry.grid(row=0, column=1)
+
+            # restore arg value if already set
+            argValue = argument.getValue()
+            if argValue:    
+                var.set(argValue)
 
         return sFrame
 
