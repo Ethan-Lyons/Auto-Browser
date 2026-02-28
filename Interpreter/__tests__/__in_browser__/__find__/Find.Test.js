@@ -1,10 +1,10 @@
 import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } from '@jest/globals';
 
 import { findStep, argumentStep, blankStep, textStep, linkStep, trueStep,
-    falseStep } from '../../StepFactory.js';
+    falseStep } from '../../../StepFactory.js';
 
 import { getBrowser, getContext, browserDisconnect, newTab, exeUrlNav,
-    parseFind, exeFind, find } from '../../WebHelpers/WebHelpers.js';
+    parseFind, exeFind, find } from '../../../WebHelpers/WebHelpers.js';
 
 let browser;
 let context;
@@ -34,7 +34,7 @@ afterAll(async () => {
 
 describe("parseFind", () => {
     test("parseFind: invalid action", async () => {
-        const fakeStep = { name: "FOO", args: [null] };
+        const fakeStep = { name: "FOO", type: "FOO", args: [null] };
         expect(() =>parseFind(fakeStep)).toThrow();
     });
 

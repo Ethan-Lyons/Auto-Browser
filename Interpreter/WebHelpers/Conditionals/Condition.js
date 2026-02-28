@@ -1,5 +1,7 @@
 import { BrowserContext } from "puppeteer-core";
-import { resolveBoolean, assertStep, canFind } from "../WebHelpers.js";
+import { resolveBoolean, assertStep, canFind, TEXT_NAME, CAN_FIND_NAME } from "../WebHelpers.js";
+
+export const CONDITION_NAME = "CONDITION";
 
 /**
  * Parses a conditionStep and returns the result of the condition action.
@@ -22,7 +24,7 @@ export async function condition(context, conditionStep) {
  * @returns {{ mode: string, step: Object }}
  */
 export function parseCondition(conditionStep) {
-    assertStep(conditionStep, "CONDITION", "parseCondition");
+    assertStep(conditionStep, CONDITION_NAME, "parseCondition");
 
     // check for a selected mode
     const modeStep = conditionStep.selected
@@ -53,11 +55,11 @@ export async function exeCondition(context, mode, modeStep) {
     mode = mode.toUpperCase();
     
     switch (mode) {
-        case "TEXT":
+        case TEXT_NAME:
             const value = modeStep.value;
             return resolveBoolean(value);
 
-        case "CAN_FIND":
+        case CAN_FIND_NAME:
             return (await canFind(context, modeStep));
                 
         default:

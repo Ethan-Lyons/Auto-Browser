@@ -1,5 +1,7 @@
 import { BrowserContext } from 'puppeteer-core';
-import { getActivePage, resolveString, assertStep, OUTPUT_DIR } from './WebHelpers.js';
+
+import { getActivePage, resolveString, assertStep, OUTPUT_DIR,
+    SCREENSHOT_NAME, FILE_NAME_NAME } from '../WebHelpers.js';
 
 import path from 'path';
 import fs from 'fs';
@@ -24,9 +26,10 @@ export async function screenshot(context, scrStep, outputDir = OUTPUT_DIR) {
  * @returns {{fileName: string}}
  */
 export function parseScreenshot(scrStep) {
-    assertStep(scrStep, "SCREENSHOT", "parseScreenshot");
+    assertStep(scrStep, SCREENSHOT_NAME, "parseScreenshot");
 
     const [fileNameStep] = scrStep.args;
+    assertStep(fileNameStep, FILE_NAME_NAME, "parseScreenshot");
     const fileName = fileNameStep.value;
 
     return { fileName: fileName };

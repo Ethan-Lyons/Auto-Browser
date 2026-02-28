@@ -1,6 +1,10 @@
 import { BrowserContext } from "puppeteer-core";
 import { condition, Routine, assertStep } from "../WebHelpers.js";
 
+export const IF_NAME = "IF";
+export const ELSE_NAME = "ELSE";
+export const END_IF_NAME = "END_IF";
+
 /**
  * Parses an ifStep and pushes a routine block if the condition is true or discards it if false.
  * @param {BrowserContext} context The browser context instance to use.
@@ -20,7 +24,7 @@ export async function routineIf(context, ifStep, routine) {
  * @returns {{name: string, condition: Object}}
  */
 export function parseIf(ifStep) {
-    assertStep(ifStep, "IF", "parseIf");
+    assertStep(ifStep, IF_NAME, "parseIf");
 
     const [conditionStep] = ifStep.args;
     const ifName = ifStep.name;

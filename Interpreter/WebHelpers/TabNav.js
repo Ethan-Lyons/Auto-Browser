@@ -2,6 +2,8 @@ import { BrowserContext } from "puppeteer-core";
 import { setActivePage, getTabs, getActiveIndex, assertStep,
     resolveTabIndex } from "./WebHelpers.js";
 
+export const TAB_NAV_NAME = "TAB_NAV";
+
 /**
  * Parses a 'tabNavStep' input and performs a tab navigation action.
  * @param {BrowserContext} context The browser context
@@ -23,7 +25,7 @@ export async function tabNav(context, navStep) {
  * @returns {{ tab: string }}
  */
 export function parseTabNav(navStep) {
-    assertStep(navStep, "TAB_NAV", "parseTabNav");
+    assertStep(navStep, TAB_NAV_NAME, "parseTabNav");
 
     const [tabStep] = navStep.args;
 

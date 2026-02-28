@@ -1,5 +1,7 @@
 import { BrowserContext, Locator } from 'puppeteer-core';
-import { getActivePage, resolveBoolean, find, assertStep } from './WebHelpers.js';
+import { getActivePage, resolveBoolean, find, assertStep, WAIT_FOR_NAV_NAME } from './WebHelpers.js';
+
+export const CLICK_NAME = 'CLICK';
 
 /**
  * Parses a clickStep and performs a click action.
@@ -27,10 +29,10 @@ export async function click(context, clickStep) {
  * @returns {{findStep: findStep, waitForNav: string}}
  */
 export function parseClick(clickStep) {
-    assertStep(clickStep, 'CLICK', 'parseClick');
+    assertStep(clickStep, CLICK_NAME, 'parseClick');
 
     const [findStep, waitNavStep] = clickStep.args;
-    assertStep(waitNavStep, 'WAIT_FOR_NAV', 'parseClick');
+    assertStep(waitNavStep, WAIT_FOR_NAV_NAME, 'parseClick');
     // findStep will be asserted once the find function is called
 
     const waitVal = waitNavStep.selected.name;

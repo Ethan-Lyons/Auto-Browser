@@ -1,7 +1,12 @@
-import { resolveString, assertStep, OUTPUT_DIR } from './WebHelpers.js';
+import { resolveString, assertStep, OUTPUT_DIR, TEXT_NAME,
+    FILE_NAME_NAME, TEXT_FILE_NAME } from '../WebHelpers.js';
 
 import fs from 'fs';
 import path from 'path';
+
+export const TEXT_MODE_NAME = "TEXT_MODE";
+export const WRITE_NAME = "WRITE";
+export const APPEND_NAME = "APPEND";
 
 /**
  * Parses and executes a text file output action.
@@ -25,15 +30,15 @@ export function textFile(tfStep, outputDir) {
  * @returns {{text: string, fileName: string, mode: string}}
  */
 export function parseTextFile(tfStep) {
-    assertStep(tfStep, "TEXT_FILE", "parseTextFile");
+    assertStep(tfStep, TEXT_FILE_NAME, "parseTextFile");
     const [textStep, fileStep, modeStep] = tfStep.args;
 
     const text = textStep.value;
     const fileName = fileStep.value;
     const mode = modeStep.selected.name;
-    assertStep(textStep, "TEXT", "parseTextFile");
-    assertStep(fileStep, "FILE_NAME", "parseTextFile");
-    assertStep(modeStep, "TEXT_MODE", "parseTextFile");
+    assertStep(textStep, TEXT_NAME, "parseTextFile");
+    assertStep(fileStep, FILE_NAME_NAME, "parseTextFile");
+    assertStep(modeStep, TEXT_MODE_NAME, "parseTextFile");
 
     return { text: text, fileName: fileName, mode: mode };
 }
@@ -56,11 +61,11 @@ export function exeTextFile(textContent, outputDir, fileName, mode) {
     const filePath = resolveTextFilePath(outputDir, fileName);
 
     switch (upMode) {
-        case "WRITE":
+        case WRITE_NAME:
             fs.writeFileSync(filePath, resolvedContent);
             break;
 
-        case "APPEND":
+        case APPEND_NAME:
             fs.appendFileSync(filePath, resolvedContent);
             break;
 

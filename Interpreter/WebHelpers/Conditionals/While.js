@@ -1,6 +1,9 @@
 import { BrowserContext } from "puppeteer-core";
 import { condition, Routine, assertStep } from "../WebHelpers.js";
 
+export const WHILE_NAME = "WHILE";
+export const END_WHILE_NAME = "END_WHILE";
+
 /**
  * Parses a whileStep and repeatedly pushes a routine block while the condition
  * is true and discards it if it becomes false.
@@ -21,7 +24,7 @@ export async function routineWhile(context, whileStep, routine) {
  * @returns {{name: string, condition: Object}}
  */
 export function parseWhile(whileStep) {
-    assertStep(whileStep, "WHILE", "parseWhile");
+    assertStep(whileStep, WHILE_NAME, "parseWhile");
 
     const [condition] = whileStep.args;
     const whileName = whileStep.name;

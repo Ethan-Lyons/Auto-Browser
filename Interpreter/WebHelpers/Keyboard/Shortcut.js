@@ -1,7 +1,10 @@
 import { BrowserContext} from "puppeteer-core";
-import { getActivePage, setFocus, resolveBoolean, assertStep } from "../WebHelpers.js";
+
+import { getActivePage, setFocus, resolveBoolean, assertStep,
+    SHORTCUT_NAME, SET_FOCUS_NAME, WAIT_FOR_NAV_NAME } from "../WebHelpers.js";
 import { KEY_INPUT } from "./KeyInput.js";
 
+export const KEYS_NAME = "KEYS";
 
 /**
  * Parses a shortcutStep and performs a shortcut action.
@@ -28,13 +31,13 @@ export async function shortcut(context, scStep) {
  * @returns {{ keysStr: string, waitForNav: string, setFocusStep: Object }}
  */
 export function parseShortcut(scStep) {
-    assertStep(scStep, "SHORTCUT", "parseShortcut");
+    assertStep(scStep, SHORTCUT_NAME, "parseShortcut");
 
     // Ensure argument structure is correct
     const [keyStr, waitNavStep, setFocusStep] = scStep.args;
-    assertStep(keyStr, "KEYS", "parseShortcut");
-    assertStep(waitNavStep, "WAIT_FOR_NAV", "parseShortcut");
-    assertStep(setFocusStep, "SET_FOCUS", "parseShortcut");
+    assertStep(keyStr, KEYS_NAME, "parseShortcut");
+    assertStep(waitNavStep, WAIT_FOR_NAV_NAME, "parseShortcut");
+    assertStep(setFocusStep, SET_FOCUS_NAME, "parseShortcut");
 
     return { keysStr: keyStr.value,
         waitForNav: waitNavStep.selected.name,
@@ -65,7 +68,7 @@ export function keyStrToList(keyStr="") {
 /**
  * Executes a shortcut by pressing a list of keys and releasing them.
  * @param {BrowserContext} context The browser context instance to use.
- * @param {import("puppeteer-core").KeyInput[]} keyList A list of keys to press.
+ * @param {string[]} keyList A list of keys to press.
  * @param {boolean} [waitForNav=false]
  */
 export async function exeShortcut(context, keyList, waitForNav = false) {

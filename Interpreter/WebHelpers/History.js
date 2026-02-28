@@ -1,6 +1,11 @@
 import { BrowserContext } from 'puppeteer-core';
 import { getActivePage, assertStep } from './WebHelpers.js';
 
+export const HISTORY_NAME = "HISTORY";
+export const HISTORY_MODE_NAME = "HISTORY_MODE";
+export const GO_FORWARD_NAME = "GO_FORWARD";
+export const GO_BACK_NAME = "GO_BACK";
+
 /**
  * Parses a historyStep and performs a history action.
  * @param {BrowserContext} context 
@@ -19,9 +24,11 @@ export async function history(context, historyStep) {
  * @returns {{ mode: string }}
  */
 export function parseHistory(historyStep) {
-    assertStep(historyStep, "HISTORY", "parseHistory");
+    assertStep(historyStep, HISTORY_NAME, "parseHistory");
 
     const [historyMode] = historyStep.args;
+    assertStep(historyMode, HISTORY_MODE_NAME, "parseHistory");
+    
     const selectedMode = historyMode.selected;
     const name = selectedMode.name;
     
@@ -38,10 +45,10 @@ export async function exeHistory(context, mode) {
     const page = await getActivePage(context);
 
     switch (upMode) {
-        case "GO_FORWARD":
+        case GO_FORWARD_NAME:
             await page.goForward();
             break;
-        case "GO_BACK":
+        case GO_BACK_NAME:
             await page.goBack();
             break;
         default:

@@ -1,10 +1,10 @@
 import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } from '@jest/globals';
 
 import { outputStep, textFileStep, writeStep, appendStep,
-    screenShotStep } from '../StepFactory.js';
+    screenShotStep } from '../../../StepFactory.js';
 
 import { getBrowser, getContext, browserDisconnect, newTab, output, parseOutput,
-    exeOutput, OUTPUT_DIR } from '../WebHelpers/WebHelpers.js';
+    exeOutput, OUTPUT_DIR } from '../../../WebHelpers/WebHelpers.js';
 
 import fs from 'fs';
 import path from 'path';

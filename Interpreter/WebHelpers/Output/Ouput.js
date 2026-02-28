@@ -1,8 +1,14 @@
 import { BrowserContext } from 'puppeteer-core';
-import { assertStep, screenshot, textFile } from './WebHelpers.js';
+import { assertStep, screenshot, textFile } from '../WebHelpers.js';
 
 import path from "path";
 import process from 'process';
+
+export const OUTPUT_NAME = "OUTPUT";
+export const CAN_OUTPUT_NAME = "CAN_OUTPUT";
+export const SCREENSHOT_NAME = "SCREENSHOT";
+export const TEXT_FILE_NAME = "TEXT_FILE";
+export const FILE_NAME_NAME = "FILE_NAME";
 
 // Default directory for output actions
 export const OUTPUT_DIR = path.resolve(process.cwd(), "OutputFiles");
@@ -25,10 +31,10 @@ export async function output(context, outputStep) {
  * @returns {{ name: string, step: Object }}
  */
 export function parseOutput(outputStep) {
-    assertStep(outputStep, "OUTPUT", "parseOutput");
+    assertStep(outputStep, OUTPUT_NAME, "parseOutput");
 
     const [canOutput] = outputStep.args;
-    assertStep(canOutput, "CAN_OUTPUT", "parseOutput");
+    assertStep(canOutput, CAN_OUTPUT_NAME, "parseOutput");
     const subOutput = canOutput.selected;
 
     return {
@@ -48,9 +54,9 @@ export async function exeOutput(context, mode, subStep) {
     const upMode = mode.toUpperCase();
 
     switch (upMode) {
-        case "SCREENSHOT":
+        case SCREENSHOT_NAME:
             return await screenshot(context, subStep, OUTPUT_DIR);
-        case "TEXT_FILE":
+        case TEXT_FILE_NAME:
             return textFile(subStep, OUTPUT_DIR);
         default:
             throw new Error(`exeOutput: unsupported output mode: ${mode}`);

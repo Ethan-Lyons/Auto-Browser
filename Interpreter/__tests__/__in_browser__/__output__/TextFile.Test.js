@@ -1,9 +1,9 @@
 import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } from '@jest/globals';
 
-import { textFileStep, writeStep, appendStep } from '../StepFactory.js';
+import { textFileStep, writeStep, appendStep } from '../../../StepFactory.js';
 
 import { getBrowser, getContext, browserDisconnect, exeTextFile, parseTextFile, textFile,
-    resolveTextFilePath, OUTPUT_DIR } from '../WebHelpers/WebHelpers.js';
+    resolveTextFilePath, OUTPUT_DIR } from '../../../WebHelpers/WebHelpers.js';
 
 import fs from 'fs';
 import path from 'path';

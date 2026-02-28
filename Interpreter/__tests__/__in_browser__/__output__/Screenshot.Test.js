@@ -1,10 +1,10 @@
 import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } from '@jest/globals';
 
-import { screenshotStep } from '../StepFactory.js';
+import { screenshotStep } from '../../../StepFactory.js';
 
 import { getBrowser, getContext, browserDisconnect,
     newTab, screenshot, parseScreenshot, exeScreenshot,
-    resolveScrFilePath } from '../WebHelpers/WebHelpers.js';
+    resolveScrFilePath } from '../../../WebHelpers/WebHelpers.js';
 
 import fs from 'fs';
 import path from 'path';

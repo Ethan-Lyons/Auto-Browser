@@ -1,5 +1,13 @@
 import { BrowserContext, Locator, Page } from 'puppeteer-core';
-import { getActivePage, resolveBoolean, assertStep } from "./WebHelpers.js";
+import { getActivePage, resolveBoolean, assertStep } from "../WebHelpers.js";
+
+export const FIND_NAME = "FIND";
+export const XPATH_NAME = "XPATH";
+export const TEXT_NAME = "TEXT";
+export const ARIA_NAME = "ARIA";
+export const CSS_NAME = "CSS";
+export const LINK_NAME = "LINK";
+export const STRICT_NAME = "STRICT";
 
 /**
  * Parses a findStep and returns the element locator found.
@@ -21,7 +29,7 @@ export async function find(context, findStep) {
  * @returns {{ mode: string, step: Object }} An object containing containing a 'mode' and 'step' entry.
  */
 export function parseFind(findStep) {
-    assertStep(findStep, "FIND", "parseFind");
+    assertStep(findStep, FIND_NAME, "parseFind");
 
     const modeStep = findStep.selected;
 
@@ -44,24 +52,24 @@ export async function exeFind(context, mode, subStep) {
     const modeName = mode.toUpperCase();
 
     switch (modeName) {
-        case "XPATH":
+        case XPATH_NAME:
             const xpathSpec = parseXpath(subStep);
             return findByXPath(page, xpathSpec.value);
 
-        case "TEXT":
+        case TEXT_NAME:
             const textSpec = parseText(subStep);
             return findByText(page, textSpec.value);
 
-        case "ARIA":
+        case ARIA_NAME:
             const ariaSpec = parseAria(subStep);
             return findByAria(page, ariaSpec.value);
 
-        case "CSS":
+        case CSS_NAME:
             const cssSpec = parseCSS(subStep);
             const locator = page.locator(cssSpec.value);
             return locator;
 
-        case "LINK":
+        case LINK_NAME:
             const linkSpec = parseLink(subStep);
             return findByLinkAddress(page, linkSpec.text, linkSpec.strict);
 
@@ -72,56 +80,56 @@ export async function exeFind(context, mode, subStep) {
 
 /**
  * Obtains important values from a 'xpathStep' input and returns them using an object.
- * @param {{name: "XPATH", type: "Argument", value: string}} xpathStep The step to parse.
+ * @param {{name: string, type: string, value: string}} xpathStep The step to parse.
  * @returns {{value: string}}
  */
 function parseXpath(xpathStep) {
-    assertStep(xpathStep, "XPATH", "parseXpath");
+    assertStep(xpathStep, XPATH_NAME, "parseXpath");
     return {value: xpathStep.value};
 }
 
 /**
  * Obtains important values from a 'textStep' input and returns them using an object.
- * @param {{name: "TEXT", type: "Argument", value: string}} textStep The step to parse.
+ * @param {{name: string, type: string, value: string}} textStep The step to parse.
  * @returns {{value: string}}
  */
 function parseText(textStep) {
-    assertStep(textStep, "TEXT", "parseText");
+    assertStep(textStep, TEXT_NAME, "parseText");
     return {value: textStep.value};
 }
 
 /**
  * Obtains important values from a 'ariaStep' input and returns them using an object.
- * @param {{name: "ARIA", type: "Argument", value: string}} ariaStep The step to parse.
+ * @param {{name: string, type: string, value: string}} ariaStep The step to parse.
  * @returns {{value: string}}
  */
 function parseAria(ariaStep) {
-    assertStep(ariaStep, "ARIA", "parseAria");
+    assertStep(ariaStep, ARIA_NAME, "parseAria");
     return {value: ariaStep.value};
 }
 
 /**
  * Obtains important values from a 'cssStep' input and returns them using an object.
- * @param {{name: "CSS", type: "Argument", value: string}} cssStep The step to parse.
+ * @param {{name: string, type: string, value: string}} cssStep The step to parse.
  * @returns {{value: string}}
  */
 function parseCSS(cssStep) {
-    assertStep(cssStep, "CSS", "parseCSS");
+    assertStep(cssStep, CSS_NAME, "parseCSS");
     return {value: cssStep.value};
 }
 
 /**
  * Obtains important values from a 'linkStep' input and returns them using an object
- * @param {{ name: "LINK", type: "Action", args: [Object, Object] }} linkStep 
+ * @param {{ name: string, type: string, args: [Object, Object] }} linkStep 
  * @returns {{ text: string, strict: Boolean }}
  */
 function parseLink(linkStep) {
-    assertStep(linkStep, "LINK", "parseLink");
+    assertStep(linkStep, LINK_NAME, "parseLink");
 
     // Parse and validate arguments
     const [textArg, strictGroup] = linkStep.args;
-    assertStep(textArg, "TEXT", "parseLink");
-    assertStep(strictGroup, "STRICT", "parseLink");
+    assertStep(textArg, TEXT_NAME, "parseLink");
+    assertStep(strictGroup, STRICT_NAME, "parseLink");
 
     // Check that text value is present and valid
     let textValue = textArg.value;

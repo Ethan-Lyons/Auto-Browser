@@ -1,5 +1,5 @@
 import puppeteer, { Browser, BrowserContext } from 'puppeteer-core';
-import { contextToPage } from './WebHelpers.js';
+import { contextToPage } from '../WebHelpers.js';
 
 const DEBUG_PORT = 9222; // port used for browser connection
 export const DEFAULT_TIMEOUT = 7500;    // Default timeout for pages

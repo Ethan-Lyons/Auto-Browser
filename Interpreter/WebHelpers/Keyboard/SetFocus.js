@@ -1,6 +1,8 @@
 import { BrowserContext, ElementHandle, Locator } from "puppeteer-core";
 import { find, assertStep } from "../WebHelpers.js";
 
+export const SET_FOCUS_NAME = "SET_FOCUS";
+
 /**
  * Parses a setFocusStep and executes the setFocus action.
  * @param {BrowserContext} context The browser context instance to use.
@@ -29,7 +31,7 @@ export async function setFocus(context, setFocusStep) {
  * @throws {Error} If the step mode is not supported.
  */
 export function parseSetFocus(sfStep) {
-    assertStep(sfStep, "SET_FOCUS", "parseSetFocus");
+    assertStep(sfStep, SET_FOCUS_NAME, "parseSetFocus");
 
     const subFocus = sfStep.selected;
     const mode = subFocus.name.toUpperCase();

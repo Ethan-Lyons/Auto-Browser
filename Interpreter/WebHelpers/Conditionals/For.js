@@ -1,5 +1,8 @@
 import { resolveNumber, Routine, assertStep } from "../WebHelpers.js";
 
+export const FOR_NAME = "FOR";
+export const END_FOR_NAME = "END_FOR";
+
 /**
  * Repeats a block of actions n times, where n is the difference between
  * the end and start index of a FOR loop.
@@ -26,7 +29,7 @@ export function routineFor(forStep, routine) {
  * @returns {{name: string, start: string, end: string}}
  */
 export function parseFor(forStep) {
-  assertStep(forStep, "FOR", "parseFor");
+  assertStep(forStep, FOR_NAME, "parseFor");
   
   let [start, end] = forStep.args;
   const forName = forStep.name;

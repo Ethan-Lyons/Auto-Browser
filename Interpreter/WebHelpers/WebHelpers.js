@@ -1,32 +1,36 @@
 import { BrowserContext, Page } from 'puppeteer-core';
-import { resolveNumber } from './StoreVariables.js';
+import { resolveNumber } from './Store/StoreVariables.js';
 
-export * from './Find.js';
-export * from './FindAlt.js';
+export const WAIT_FOR_NAV_NAME = 'WAIT_FOR_NAV';
+export const WAIT_NAME = 'WAIT';
+
+export * from './Find/Find.js';
+export * from './Find/FindAlt.js';
 export * from './Info.js';
 export * from './Click.js';
 export * from './Tab.js';
 export * from './TabNav.js';
-export * from './Browser.js';
-export * from './Ouput.js';
+export * from './General/Browser.js';
 
-export * from './Store.js'
-export * from './StoreVariables.js'
+export * from './Store/Store.js'
+export * from './Store/StoreVariables.js'
 
-export * from './Routine.js'
-export * from './StepsHandler.js'
+export * from './General/Routine.js'
+export * from './General/StepsHandler.js'
 
 export * from './Conditionals/If.js'
 export * from './Conditionals/While.js'
 export * from './Conditionals/For.js'
 export * from './Conditionals/Condition.js'
 
-export * from './Browser.js'
+export * from './General/Browser.js'
 export * from './UrlNav.js'
 
-export * from './Assert.js'
-export * from './Screenshot.js'
-export * from './TextFile.js'
+export * from './General/Assert.js'
+
+export * from './Output/Ouput.js';
+export * from './Output/Screenshot.js'
+export * from './Output/TextFile.js'
 
 export * from './Keyboard/Keyboard.js'
 export * from './Keyboard/Shortcut.js'

@@ -1,5 +1,7 @@
 import { BrowserContext } from 'puppeteer-core';
-import { getActivePage, assertStep } from './WebHelpers.js';
+import { getActivePage, assertStep, URL_NAME } from './WebHelpers.js';
+
+export const URL_NAV_NAME = "URL_NAV";
 
 /**
  * Parses a urlNavStep and performs a urlNav action.
@@ -19,7 +21,7 @@ export async function urlNav(context, navStep) {
  * @returns {{url: string}}
  */
 export function parseUrlNav(navStep) {
-    assertStep(navStep, "URL_NAV", "urlNavParse");
+    assertStep(navStep, URL_NAV_NAME, "urlNavParse");
 
     const [urlStep] = navStep.args;
     const urlSpec = parseUrl(urlStep);
@@ -55,7 +57,7 @@ export async function exeUrlNav(context, url) {
  * @returns {{url: string}}
  */
 export function parseUrl(urlStep) {
-    assertStep(urlStep, "URL", "urlParse");
+    assertStep(urlStep, URL_NAME, "urlParse");
     let url = urlStep.value;
 
     return { url : url }

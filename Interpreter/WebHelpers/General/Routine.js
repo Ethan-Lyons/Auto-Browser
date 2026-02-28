@@ -1,3 +1,6 @@
+import { FOR_NAME, END_FOR_NAME, IF_NAME, END_IF_NAME, ELSE_NAME,
+  WHILE_NAME, END_WHILE_NAME } from "../WebHelpers";
+  
 import fs from "fs";
 
 /**
@@ -113,9 +116,9 @@ export class Routine {
 
     // Matches starting marker with ending marker to find routine blocks
     switch (typeName) { 
-      case "FOR": return this.popBlock("FOR", "END_FOR");
-      case "IF": return this.popBlock("IF", "END_IF", "ELSE");
-      case "WHILE": return this.popBlock("WHILE", "END_WHILE");
+      case "FOR": return this.popBlock(FOR_NAME, END_FOR_NAME);
+      case "IF": return this.popBlock(IF_NAME, END_IF_NAME, ELSE_NAME);
+      case "WHILE": return this.popBlock(WHILE_NAME, END_WHILE_NAME);
       default:
         throw new Error(`popControlBlock: unsupported control block type: ${type}`);
     }

@@ -1,6 +1,13 @@
 import { BrowserContext } from 'puppeteer-core';
-import { canFind, findText, info, assertStep } from './WebHelpers.js';
+
+import { canFind, findText, info, assertStep, TEXT_NAME,
+    FIND_TEXT_NAME, CAN_FIND_NAME, INFO_NAME } from '../WebHelpers.js';
+    
 import * as Variables from './StoreVariables.js';
+
+export const STORE_NAME = "STORE";
+export const STOREABLE_NAME = "STORABLE";
+export const VARIABLE_NAME = "VARIABLE";
 
 /**
  * Parses a storeStep and performs a store action.
@@ -21,7 +28,7 @@ export async function store(context, storeStep) {
  * @returns {{ mode: string, step: Object, storeName: string }}
  */
 export function parseStore(storeStep) {
-    assertStep(storeStep, "STORE", "parseStore");
+    assertStep(storeStep, STORE_NAME, "parseStore");
 
     const [storableStep, varNameStep] = storeStep.args;
 
@@ -49,26 +56,18 @@ export async function exeStore(context, mode, step, storeName) {
     let result = "";
 
     switch (upMode) {
-        case "TEXT":
-            //return storeText(step, storeName);
+        case TEXT_NAME:
             result = Variables.resolveString(step.value);
-            //Variables.set(storeName, result);
             break;
-        case "FIND_TEXT":
+        case FIND_TEXT_NAME:
             result = await findText(context, step);
-            //Variables.set(storeName, result);
             break;
-            //return await storeFindText(context, step, storeName);
-        case "CAN_FIND":
+        case CAN_FIND_NAME:
             result = String(await canFind(context, step));
-            //Variables.set(storeName, result);
             break;
-            //return await storeCanFind(context, step, storeName);
-        case "INFO":
+        case INFO_NAME:
             result = String(await info(context, step));
-            //Variables.set(storeName, result);
             break;
-            //return await storeInfo(context, step, storeName);
         default:
             throw new Error(`exeStore: unsupported store mode: ${mode}`);
     }
@@ -82,7 +81,7 @@ export async function exeStore(context, mode, step, storeName) {
  * @returns {{mode: string, step: Object}}
  */
 export function parseStorable(storableStep) {
-    assertStep(storableStep, "STORABLE", "parseStorable");
+    assertStep(storableStep, STOREABLE_NAME, "parseStorable");
 
     const selected = storableStep.selected;
     return { mode: selected.name, step: selected };
@@ -95,7 +94,7 @@ export function parseStorable(storableStep) {
  * @returns {{ value: string }}
  */
 export function parseVar(varNameStep) {
-    assertStep(varNameStep, "VARIABLE", "parseVar");
+    assertStep(varNameStep, VARIABLE_NAME, "parseVar");
 
     return { value: varNameStep.value };
 }

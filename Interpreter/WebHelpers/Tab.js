@@ -2,6 +2,9 @@ import { BrowserContext, Page } from "puppeteer-core";
 import { setActivePage, getActiveIndex, assertStep, resolveString,
     DEFAULT_TIMEOUT } from "./WebHelpers.js";
 
+export const NEW_TAB_NAME = "NEW_TAB";
+export const CLOSE_TAB_NAME = "CLOSE_TAB";
+
 /**
  * Returns all tabs in the browser context.
  * @param {BrowserContext} context The browser context
@@ -60,7 +63,7 @@ export async function closeTab(context, closeTabStep) {
  * @returns {{tab: string}}
  */
 export function parseCloseTab(closeTabStep) {
-    assertStep(closeTabStep, "CLOSE_TAB", "parseCloseTab");
+    assertStep(closeTabStep, CLOSE_TAB_NAME, "parseCloseTab");
     const [tabStep] = closeTabStep.args;
     return { tab: tabStep.value };
 }

@@ -1,5 +1,8 @@
 import { BrowserContext } from "puppeteer-core";
-import { getActivePage, setFocus, assertStep, resolveNumber } from "../WebHelpers.js";
+import { getActivePage, setFocus, assertStep, resolveNumber,
+    TYPE_TEXT_NAME, TEXT_NAME, SET_FOCUS_NAME } from "../WebHelpers.js";
+
+export const DELAY_MS_NAME = "DELAY_MS";
 
 /**
  * Parses a typeTextStep and executes the typeText action.
@@ -24,13 +27,13 @@ export async function typeText(context, typeTextStep) {
  * @returns {{ text: string, delay: string, setFocusStep: Object }}
  */
 export function parseTypeText(typeTextStep) {
-    assertStep(typeTextStep, "TYPE_TEXT", "parseTypeText");
+    assertStep(typeTextStep, TYPE_TEXT_NAME, "parseTypeText");
 
     // Ensure argument structure is correct
     const [textStep, delayStep, setFocusStep] = typeTextStep.args;
-    assertStep(textStep, "TEXT", "parseTypeText");
-    assertStep(delayStep, "DELAY_MS", "parseTypeText");
-    assertStep(setFocusStep, "SET_FOCUS", "parseTypeText");
+    assertStep(textStep, TEXT_NAME, "parseTypeText");
+    assertStep(delayStep, DELAY_MS_NAME, "parseTypeText");
+    assertStep(setFocusStep, SET_FOCUS_NAME, "parseTypeText");
 
     const text = textStep.value;
     const delay = delayStep.value;

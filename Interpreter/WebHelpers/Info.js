@@ -1,6 +1,12 @@
 import { BrowserContext } from 'puppeteer-core';
 import { getActivePage, getActiveIndex, getTabCount, assertStep } from './WebHelpers.js';
 
+export const INFO_NAME = "INFO";
+export const URL_NAME = "URL";
+export const TITLE_NAME = "TITLE";
+export const TAB_COUNT_NAME = "TAB_COUNT";
+export const CURRENT_INDEX_NAME = "CURRENT_INDEX";
+
 /**
  * Parses an infoStep and returns the result of the info action.
  * @param {BrowserContext} context The browser context instance to use.
@@ -18,7 +24,7 @@ export async function info(context, infoStep) {
  * @returns {{ mode: string }}
  */
 export function parseInfo(infoStep) {
-    assertStep(infoStep, "INFO", "parseInfo");
+    assertStep(infoStep, INFO_NAME, "parseInfo");
 
     const selected = infoStep.selected;
     const name = selected.name;
@@ -37,16 +43,16 @@ export async function exeInfo(context, mode) {
     const upMode = mode.toUpperCase();
 
     switch (upMode) {
-        case "URL":
+        case URL_NAME:
             return await getUrl(context);
 
-        case "TITLE":
+        case TITLE_NAME:
             return await getTitle(context);
 
-        case "TAB_COUNT":
+        case TAB_COUNT_NAME:
             return await getTabCount(context);
 
-        case "CURRENT_INDEX":
+        case CURRENT_INDEX_NAME:
             return await getActiveIndex(context);
 
         default:

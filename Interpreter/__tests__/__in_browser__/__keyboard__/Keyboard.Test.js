@@ -2,11 +2,11 @@ import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } fr
 
 import { argumentStep, keyStep, keyboardStep, shortcutStep, typeTextStep, delayStep,
     textStep, findStep, canFindStep, waitNavStep, falseStep, trueStep, keysStep,
-    skipStep, setFocusStep} from '../../StepFactory.js';
+    skipStep, setFocusStep} from '../../../StepFactory.js';
 
 import { getBrowser, getContext, browserDisconnect, newTab, exeUrlNav, canFind,
     parseKeyboard, exeKeyboard, keyboard, exeCanFind, exeInfo,
-    getTabCount } from '../../WebHelpers/WebHelpers.js';
+    getTabCount } from '../../../WebHelpers/WebHelpers.js';
 
 let browser;
 let context;

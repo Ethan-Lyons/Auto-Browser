@@ -1,11 +1,11 @@
 import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } from '@jest/globals';
 
 import { argumentStep, typeTextStep, delayStep, textStep, findStep, canFindStep,
-    setFocusStep, skipStep } from '../../StepFactory.js';
+    setFocusStep, skipStep } from '../../../StepFactory.js';
 
 import { getBrowser, getContext, browserDisconnect, newTab, exeUrlNav,
     canFind, find, parseTypeText, exeTypeText, typeText,
-    exeSetFocus } from '../../WebHelpers/WebHelpers.js';
+    exeSetFocus } from '../../../WebHelpers/WebHelpers.js';
 
 let browser;
 let context;

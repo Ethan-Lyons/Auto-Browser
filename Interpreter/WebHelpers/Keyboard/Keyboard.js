@@ -1,6 +1,10 @@
 import { BrowserContext } from "puppeteer-core";
 import { typeText, shortcut, assertStep } from "../WebHelpers.js";
 
+export const KEYBOARD_NAME = "KEYBOARD";
+export const TYPE_TEXT_NAME = "TYPE_TEXT";
+export const SHORTCUT_NAME = "SHORTCUT";
+
 /**
  * Parses and executes a keyboard action.
  * @param {BrowserContext} context The browser context instance to use.
@@ -20,7 +24,7 @@ export async function keyboard(context, kbStep) {
  * @returns {{ modeStep: Object }}
  */
 export function parseKeyboard(kbStep) {
-    assertStep(kbStep, "KEYBOARD", "parseKeyboard");
+    assertStep(kbStep, KEYBOARD_NAME, "parseKeyboard");
 
     const [keyMode] = kbStep.args;
     return { modeStep: keyMode.selected };
@@ -35,10 +39,10 @@ export function parseKeyboard(kbStep) {
 export async function exeKeyboard(context, subKeyStep) {
     const upMode = subKeyStep.name.toUpperCase();
     switch (upMode) {
-        case "TYPE_TEXT":
+        case TYPE_TEXT_NAME:
             await typeText(context, subKeyStep);
             break;
-        case "SHORTCUT":
+        case SHORTCUT_NAME:
             await shortcut(context, subKeyStep);
             break;
         default:

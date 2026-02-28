@@ -1,6 +1,6 @@
 import { test, expect, describe, beforeAll, beforeEach, afterEach, afterAll } from '@jest/globals';
 
-import * as WebHelpers from '../WebHelpers/WebHelpers.js'; 
+import * as WebHelpers from '../../WebHelpers/WebHelpers.js'; 
 
 /*
     npm run test:js -- --runTestsByPath Interpreter/__tests__/
