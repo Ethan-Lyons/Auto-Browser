@@ -88,7 +88,7 @@ class ActionGroup:
         return hash((self.name, self.selected or None, tuple(self.args), self.description))
 
     def __str__(self):
-        return "ActionGroup: " + str(self.name) + "\nSelected: " + str(self.selected) + "\nArgs: " + str(self.args) + "\nDescription: " + str(self.description)
+        return "ActionGroup: " + str(self.name) + "\nSelected: " + str(self.selected) + "\nArgs: " + str(list(self.args)) + "\nDescription: " + str(self.description)
 
     def setName(self, newName: str):
         """Sets the name of the action group"""
@@ -112,14 +112,14 @@ class ActionGroup:
         return self.args
     
     def getSelected(self):
-        """Returns the selected action from the action group"""
+        """Returns the selected step from the action group"""
         return self.selected
     def setSelected(self, action: Action):
-        """Sets the selected action for the action group"""
+        """Sets the selected step for the action group"""
         self.selected = action
     
     def get(self, stepName: str):
-        """Finds and returns an arg (action, actionGroup, or argument) in the
+        """Finds and returns a step (action, actionGroup, or argument) in the
         action group by its name string. Returns None if no action found"""
         for step in self.args:
             if step.getName().upper() == stepName.upper():

@@ -43,7 +43,8 @@ class Routine:
         """
         newRoutine = self.inputOutput.loadRoutine(filePath)
         if newRoutine:
-            self.steps = newRoutine.getSteps()
+            self.steps.clear()
+            self.steps.extend(newRoutine.getSteps())
             return True
         return False
 
@@ -85,10 +86,12 @@ class Routine:
         """Removes the action at the given index from the routine."""
         return self.steps.pop(index)
     
-    def moveAction(self, actionIndex: int, toIndex: int):
-        """Move an action from one index to another in the routine."""
-        moved_action = self.steps.pop(actionIndex)
-        self.steps.insert(toIndex, moved_action)
+    def moveStep(self, stepIndex: int, toIndex: int):
+        """Move a step from one index to another in the routine."""
+        if stepIndex < 0 or stepIndex >= len(self.steps) or toIndex < 0 or toIndex >= len(self.steps):
+            raise ValueError("Invalid step index. " + str(stepIndex) + " to " + str(toIndex))
+        movedAction = self.steps.pop(stepIndex)
+        self.steps.insert(toIndex, movedAction)
 
     def replaceStep(self, oldStep: Action | ActionGroup | Argument, newStep: Action | ActionGroup | Argument):
         """Replace a step in the routine with a new step."""

@@ -33,5 +33,5 @@ def test_move_step():
     routine = Routine()
     action1 = routine.createDefStep()
     action2 = routine.createDefStep()
-    routine.moveAction(0, 1)
+    routine.moveStep(0, 1)
     assert routine.getSteps() == [action2, action1]

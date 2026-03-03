@@ -68,8 +68,8 @@ class UserActionBuilder:
             "Store a value under a custom variable name"
         )
 
-        goForward = r.arg("GO_FORWARD")
-        goBackward = r.arg("GO_BACKWARD")
+        goForward = r.arg("GO_FORWARD", "Move forward in the page history", False)
+        goBackward = r.arg("GO_BACKWARD", "Move backward in the page history", False)
         historyMode = r.group(
             "HISTORY_MODE",
             [goForward, goBackward]

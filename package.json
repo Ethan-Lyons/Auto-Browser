@@ -4,7 +4,7 @@
   "description": "",
   "main": "RunCreatorApp.py",
   "scripts": {
-    "test:py": "pytest Creator",
+    "test:py": "python -m pytest Creator",
     "test:js": "python3 ./RunJSTestData.py && cross-env NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles",
     "test": "npm run test:py && npm run test:js"
   },
