@@ -109,6 +109,7 @@ class RoutineFrame:
             removeStepCall=lambda step: self.routine.removeStep(step),
             moveStepCall=lambda stepIndex, toIndex: self.routine.moveStep(stepIndex, toIndex),
         )
+
         return sfContainer
 
     def getSteps(self):
@@ -117,7 +118,10 @@ class RoutineFrame:
 
     def getStepFrames(self):
         """Returns the list of action frames under the routine frame."""
-        return self.stepFrames
+        return self.sfContainer.getStepFrames()
+    
+    def getStepFrameContainer(self):
+        return self.sfContainer
 
     def getFrame(self):
         """Returns the tkinter frame associated with this routine frame."""

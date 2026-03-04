@@ -64,6 +64,9 @@ class StepFrameContainer:
 
     def _remove(self, stepFrame: StepFrame):
         """Removes a step frame from the container and destroys it."""
+        if stepFrame not in self.stepFrames:
+            raise ValueError("StepFrame not found in container. stepFrame: " + str(stepFrame) + ", stepFrames: " + str(self.stepFrames))
+        
         self.stepFrames.remove(stepFrame)
         stepFrame.destroy()
 
@@ -121,3 +124,6 @@ class StepFrameContainer:
         """Clears the container and rebuilds it from the routine object."""
         self.clear()
         self._build()
+    
+    def getStepFrames(self):
+        return self.stepFrames
