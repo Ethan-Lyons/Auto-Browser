@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path
 
 from Creator.RoutineMaker.StepFrameContainer import StepFrameContainer
+from Creator.RoutineMaker.ButtonFrameFactory import horizontalButtonFrame, verticalButtonFrame, ButtonInfo
 from Creator.RoutineMaker.Routine import Routine
 from Creator.RoutineMaker.Steps import Action, ActionGroup, Argument
 
@@ -33,34 +34,32 @@ class RoutineFrame:
             self.routine.createDefStep()
             self.sfContainer.rebuild()
 
-        # Create management buttons
-        self.addButton = tk.Button(self.frame, text="+",
-                                        command=lambda: self.sfContainer.addStepFrame())
-        
-        rManageFrame = self._buildRManageFrame(self.frame)
+        # Build sidebar and toolbar
+        sidebarFrame = self._buildSidebar(self.frame)
+        toolbarFrame = self._buildToolbar(self.frame)
         
         # Arrange frame and buttons
-        rManageFrame.grid(row=0, column=0, columnspan=4, pady=[0, 15], sticky="NSEW")
+        toolbarFrame.grid(row=0, column=0, columnspan=4, pady=[0, 15], sticky="NSEW")
         self.sfContainer.grid(row=1, column=0, columnspan=4, sticky="NSEW")
-        self.addButton.grid(row=2, column=0, sticky="NSEW")
+        sidebarFrame.grid(row=2, column=0, sticky="NSEW")
+
+    def _buildSidebar(self, parentFrame):
+        buttonList = [ButtonInfo("+", lambda: self.sfContainer.addStepFrame())]
+        
+        sidebarFrame = verticalButtonFrame(parentFrame, buttonList)
+        return sidebarFrame
         
     
-    def _buildRManageFrame(self, parentFrame):
-        rManageFrame = tk.Frame(parentFrame)
+    def _buildToolbar(self, parentFrame):
+        buttonList = [
+            ButtonInfo("Save", lambda: self.frameSave()),
+            ButtonInfo("Load", lambda: self.frameLoad()),
+            ButtonInfo("Run", lambda: self.runRoutine())
+        ]
 
-        saveButton = tk.Button(rManageFrame, text="Save", command=lambda: self.frameSave())
-        loadButton = tk.Button(rManageFrame, text="Load", command=lambda: self.frameLoad())
+        toolbarFrame = horizontalButtonFrame(parentFrame, buttonList)
 
-        runButton = tk.Button(rManageFrame, text="Run", command=lambda: self.runRoutine())
-
-        rManageFrame.rowconfigure(0, weight=1)
-        rManageFrame.columnconfigure(0, weight=1)
-
-        saveButton.grid(row=0, column=0, sticky="NSEW")
-        loadButton.grid(row=0, column=1, sticky="NSEW")
-        runButton.grid(row=0, column=2, sticky="NSEW")
-
-        return rManageFrame
+        return toolbarFrame
 
     def frameSave(self, filePath=None):
         """Saves the routine to a file."""
@@ -71,7 +70,9 @@ class RoutineFrame:
         Loads a routine from a file and rebuilds the action frames accordingly.
         This function will destroy the existing action frames and rebuild the list from the loaded routine.
         """
-        needUpdate = self.routine.loadRoutine(filePath)  # load the routine from file and remove previous frames
+        needUpdate = self.routine.loadRoutine(filePath)
+
+        # Avoids error if window is closed without selecting a file
         if needUpdate:
             self.sfContainer.rebuild()
     
