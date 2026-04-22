@@ -1,9 +1,6 @@
-# TODO: move action step frame, action group step frame / dropdown, argument step frame creation to here
-
 import tkinter as tk
 from Creator.RoutineMaker.Steps import Action, ActionGroup, Argument
 from typing import Callable
-
 
 def buildSubStepFrame(step, parent, onGroupChange: Callable[[ActionGroup, tk.Frame, str], None], storeSubFrame: Callable[[ActionGroup, tk.Frame], None]):
     # Create the frame

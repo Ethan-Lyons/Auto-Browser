@@ -20,9 +20,12 @@ def verticalButtonFrame(parent: tk.Frame, buttonList: list[ButtonInfo]):
     bFrame = tk.Frame(parent)
     tkList = infoToTkList(buttonList, bFrame)
 
+    bFrame.columnconfigure(0, weight=1)
+
     row = 0
     for button in tkList:
         button.grid(row=row, column=0, sticky="NSEW")
+        bFrame.rowconfigure(row, weight=1)
         row += 1
 
     return bFrame
@@ -31,9 +34,12 @@ def horizontalButtonFrame(parent: tk.Frame, buttonList: list[ButtonInfo]):
     bFrame = tk.Frame(parent)
     tkList = infoToTkList(buttonList, bFrame)
 
+    bFrame.rowconfigure(0, weight=1)
+
     column = 0
     for button in tkList:
         button.grid(row=0, column=column, sticky="NSEW")
+        bFrame.columnconfigure(column, weight=1)
         column += 1
 
     return bFrame

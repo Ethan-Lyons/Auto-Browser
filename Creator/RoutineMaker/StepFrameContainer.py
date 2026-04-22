@@ -14,7 +14,8 @@ class StepFrameContainer:
         getStepsCall: Callable [[], list[Action | ActionGroup | Argument]],
         createStepCall: Callable [[], Action | ActionGroup | Argument],
         removeStepCall: Callable [[Action | ActionGroup | Argument], None],
-        moveStepCall: Callable [[int, int], None]
+        moveStepCall: Callable [[int, int], None],
+        updateHelpFrame: Callable[[Action | ActionGroup | Argument], None]
     ):
         # Create the frame
         self.frame = tk.Frame(parent)
@@ -24,6 +25,7 @@ class StepFrameContainer:
         self.routineCreateStep = createStepCall
         self.routineRemoveStep = removeStepCall
         self.routineMoveStep = moveStepCall
+        self.updateHelpFrame = updateHelpFrame
 
         # mutable values
         self.stepFrames = []
@@ -32,6 +34,8 @@ class StepFrameContainer:
 
     def _build(self):
         """Build initial step frames from routine."""
+        self.frame.grid_columnconfigure(0, weight=1)
+
         for step in self.routineGetSteps():
             self._createStepFrame(step)
 
@@ -45,11 +49,15 @@ class StepFrameContainer:
             parent=self.frame,
             step=step,
             removeStepFrame=self.removeStepFrame,
-            moveStepFrame=self.moveStepFrame
+            moveStepFrame=self.moveStepFrame,
+            updateHelpFrame=self.updateHelpFrame
         )
         
-        stepFrame.getFrame().grid(row=len(self.stepFrames), column=0, sticky="NSEW")
+        curr = len(self.stepFrames)
+        stepFrame.getFrame().grid(row=curr, column=0, sticky="NSEW")
 
+        self.frame.grid_rowconfigure(curr, weight=1)
+        
         self.stepFrames.append(stepFrame)
 
     def addStepFrame(self):

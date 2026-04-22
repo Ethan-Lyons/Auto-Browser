@@ -4,8 +4,10 @@ from pathlib import Path
 
 from Creator.RoutineMaker.StepFrameContainer import StepFrameContainer
 from Creator.RoutineMaker.ButtonFrameFactory import horizontalButtonFrame, verticalButtonFrame, ButtonInfo
+from Creator.RoutineMaker.HelpFrame import HelpFrame
 from Creator.RoutineMaker.Routine import Routine
 from Creator.RoutineMaker.Steps import Action, ActionGroup, Argument
+
 
 class RoutineFrame:
     """Class representing a frame for a routine. Manages the step frames for the routine."""
@@ -16,6 +18,8 @@ class RoutineFrame:
         self.frame = tk.Frame(parent)
         self.sfContainer = self._buildSFContainer()
         self.stepFrames = []
+
+        self.helpFrame = HelpFrame(self.frame, None)
 
         self.frame.rowconfigure(0, weight=1)
         self.frame.columnconfigure(0, weight=1)
@@ -39,27 +43,34 @@ class RoutineFrame:
         toolbarFrame = self._buildToolbar(self.frame)
         
         # Arrange frame and buttons
-        toolbarFrame.grid(row=0, column=0, columnspan=4, pady=[0, 15], sticky="NSEW")
-        self.sfContainer.grid(row=1, column=0, columnspan=4, sticky="NSEW")
+        toolbarFrame.grid(row=0, column=0, pady=[0, 15], sticky="NSEW")
+        self.sfContainer.grid(row=1, column=0, columnspan=1, sticky="NSEW")
         sidebarFrame.grid(row=2, column=0, sticky="NSEW")
+        self.helpFrame.getFrame().grid(row=0, column=1, rowspan=3, sticky="NSEW")
 
-    def _buildSidebar(self, parentFrame):
+    def _buildSidebar(self, parent):
         buttonList = [ButtonInfo("+", lambda: self.sfContainer.addStepFrame())]
         
-        sidebarFrame = verticalButtonFrame(parentFrame, buttonList)
+        sidebarFrame = verticalButtonFrame(parent, buttonList)
         return sidebarFrame
         
     
-    def _buildToolbar(self, parentFrame):
+    def _buildToolbar(self, parent):
         buttonList = [
             ButtonInfo("Save", lambda: self.frameSave()),
             ButtonInfo("Load", lambda: self.frameLoad()),
             ButtonInfo("Run", lambda: self.runRoutine())
         ]
 
-        toolbarFrame = horizontalButtonFrame(parentFrame, buttonList)
+        toolbarFrame = horizontalButtonFrame(parent, buttonList)
 
         return toolbarFrame
+    
+    def updateHelpFrame(self, step):
+        if not isinstance(self.helpFrame, HelpFrame):
+            raise TypeError(f"Cannot update, unexpected helpFrame type: {type(self.helpFrame)}")
+        self.helpFrame.updateHelp(step)
+
 
     def frameSave(self, filePath=None):
         """Saves the routine to a file."""
@@ -109,6 +120,7 @@ class RoutineFrame:
             createStepCall=lambda: self.routine.createDefStep(),
             removeStepCall=lambda step: self.routine.removeStep(step),
             moveStepCall=lambda stepIndex, toIndex: self.routine.moveStep(stepIndex, toIndex),
+            updateHelpFrame=lambda step: self.updateHelpFrame(step)
         )
 
         return sfContainer

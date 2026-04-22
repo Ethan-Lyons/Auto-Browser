@@ -13,8 +13,9 @@ class StepFrame:
         self,
         parent: tk.Frame,
         step: Action | ActionGroup | Argument,
-        removeStepFrame: Callable[[StepFrame], None],
-        moveStepFrame: Callable[[StepFrame, int], None]
+        removeStepFrame: Callable [[StepFrame], None],
+        moveStepFrame: Callable [[StepFrame, int], None],
+        updateHelpFrame: Callable[[Action | ActionGroup | Argument], None]
     ):
         # Create the frame
         self.frame = tk.Frame(parent)
@@ -22,6 +23,7 @@ class StepFrame:
         # injected behavior
         self.removeStepFrame = removeStepFrame
         self.moveStepFrame = moveStepFrame
+        self.updateHelpFrame = updateHelpFrame
         
         # set argument values
         self.parent = parent
@@ -57,7 +59,10 @@ class StepFrame:
         self.buttonFrame = self.buildButtonFrame(self.frame)
         
         self.subStepFrame.grid(row=0, column=0, sticky="NSEW")
-        self.buttonFrame.grid(row=0, column=2, sticky="NSEW")
+        self.buttonFrame.grid(row=0, column=1, sticky="NSEW")
+        
+        self.frame.grid_rowconfigure(0, weight=1)
+        self.frame.grid_columnconfigure((0, 1), weight=1)
 
     def onGroupChange(self, group: ActionGroup, groupFrame: tk.Frame, selectStepStr: str):
         oldSubFrame = self.groupSubFrames.get(group)
@@ -73,7 +78,7 @@ class StepFrame:
             self.onGroupChange,
             self.storeGroupSubFrame
         )
-        newSub.grid(row=0, column=2)
+        newSub.grid(row=0, column=2, sticky="NSEW")
 
         self.groupSubFrames[group] = newSub
     
@@ -89,6 +94,8 @@ class StepFrame:
         upButtonInfo = ButtonInfo("↑", lambda: self.moveStepFrame(self, -1))
         downButtonInfo = ButtonInfo("↓", lambda: self.moveStepFrame(self, 1))
         removeButtonInfo = ButtonInfo("X", lambda: self.removeStepFrame(self))
+        helpButtonInfo = ButtonInfo("?", lambda: self.updateHelpFrame(self.getStep()))
 
-        bFrame = horizontalButtonFrame(parentFrame, [upButtonInfo, downButtonInfo, removeButtonInfo])
+        bFrame = horizontalButtonFrame(parentFrame, [upButtonInfo, downButtonInfo,
+                                                     removeButtonInfo, helpButtonInfo])
         return bFrame
