@@ -1,7 +1,11 @@
 class Action:
     """
     The Action class represents an action that can be performed in a routine.
-    It has a name, a list of arguments, and a description.
+    
+    Attributes:
+        name (str): The name of the action
+        args (list): A list of arguments for the action
+        description (str): A description of the action
     """
     def __init__(self, name: str, args=[], description=""):
         self.name = name
@@ -59,7 +63,11 @@ class Action:
 class ActionGroup:
     """
     The ActionGroup class represents a group of actions where only one action can be selected at a time.
-    It has a name, a selected action, a list of arguments, and a description.
+    
+    Attributes:
+        name (str): The name of the action group
+        args (list): A list of actions for the action group args
+        description (str): A description of the action group
     """
     def __init__(self, name: str, args=[], description=""):
         self.name = name
@@ -134,7 +142,12 @@ class ActionGroup:
 class Argument:
     """
     The Argument class represents an argument that can be passed to an action or action group.
-    It has a name, a value, and a description.
+    
+    Attributes:
+        name (str): The name of the argument
+        value (any): The value of the argument
+        hasValue (bool): Whether the argument has a value
+        description (str): A description of the argument
     """
     def __init__(self, name: str, value=None, description="", hasValue=True):
         self.name = name

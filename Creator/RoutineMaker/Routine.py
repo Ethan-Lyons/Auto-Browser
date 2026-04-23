@@ -4,7 +4,13 @@ from Creator.RoutineMaker.Steps import ActionGroup
 from Creator.RoutineMaker.Steps import Argument
 
 class Routine:
-    """A class for creating and editing a series of steps composed into a routine."""
+    """A class for creating and editing a series of steps composed into a routine.
+    
+    Attributes:
+        inputOutput (InputOutput): An instance of the InputOutput class used for saving and loading routines.
+        UAB (UserActionBuilder): An instance of the UserActionBuilder class used to build user actions.
+        steps (list): A list of steps in the routine.
+    """
     def __init__(self, inputOutput=None):
         self.inputOutput = inputOutput  # gives access to the InputOutput class functions
         self.UAB = UserActionBuilder()

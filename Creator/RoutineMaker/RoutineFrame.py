@@ -6,11 +6,14 @@ from Creator.RoutineMaker.StepFrameContainer import StepFrameContainer
 from Creator.RoutineMaker.ButtonFrameFactory import horizontalButtonFrame, verticalButtonFrame, ButtonInfo
 from Creator.RoutineMaker.HelpFrame import HelpFrame
 from Creator.RoutineMaker.Routine import Routine
-from Creator.RoutineMaker.Steps import Action, ActionGroup, Argument
-
 
 class RoutineFrame:
-    """Class representing a frame for a routine. Manages the step frames for the routine."""
+    """Class representing a frame for a routine. Manages the step frames for the routine.
+    
+    Attributes:
+        parent (tk.Frame): The parent frame to add the frame to
+        routine (Routine): The routine to build a frame for
+    """
     def __init__(self, parent: tk.Frame, routine: Routine):
         self.parent = parent
         self.routine = routine
@@ -49,6 +52,7 @@ class RoutineFrame:
         self.helpFrame.getFrame().grid(row=0, column=1, rowspan=3, sticky="NSEW")
 
     def _buildSidebar(self, parent):
+        """Builds and places the sidebar buttons"""
         buttonList = [ButtonInfo("+", lambda: self.sfContainer.addStepFrame())]
         
         sidebarFrame = verticalButtonFrame(parent, buttonList)
@@ -56,6 +60,7 @@ class RoutineFrame:
         
     
     def _buildToolbar(self, parent):
+        """Builds and places the toolbar buttons"""
         buttonList = [
             ButtonInfo("Save", lambda: self.frameSave()),
             ButtonInfo("Load", lambda: self.frameLoad()),
@@ -67,10 +72,10 @@ class RoutineFrame:
         return toolbarFrame
     
     def updateHelpFrame(self, step):
+        """Updates the help frame to display help for the given step"""
         if not isinstance(self.helpFrame, HelpFrame):
             raise TypeError(f"Cannot update, unexpected helpFrame type: {type(self.helpFrame)}")
         self.helpFrame.updateHelp(step)
-
 
     def frameSave(self, filePath=None):
         """Saves the routine to a file."""
@@ -89,6 +94,7 @@ class RoutineFrame:
     
 
     def runRoutine(self):
+        """Runs the routine using the CLI interface."""
         # Ensure tmp dir exists
         tmpDir = Path(__file__).resolve().parent / "tmp"
         tmpDir.mkdir(exist_ok=True)
