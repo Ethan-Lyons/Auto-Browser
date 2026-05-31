@@ -1,3 +1,72 @@
+class Argument:
+    """
+    The Argument class represents an argument that can be passed to an action or action group.
+    
+    Attributes:
+        name (str): The name of the argument
+        value (any): The value of the argument
+        hasValue (bool): Whether the argument has a value
+        description (str): A description of the argument
+    """
+    def __init__(self, name: str, value=None, description="", hasValue=True):
+        self.name = name
+        self.value = value
+        self.hasValue = hasValue
+        self.description = description or ""
+
+    def __eq__(self, other):
+        """
+        Compares two Argument objects for equality.
+        Two Argument objects are considered equal if they have the same name, value, and description.
+        """
+        return (
+            isinstance(other, Argument)
+            and self.name == other.name
+            and self.value == other.value
+            and self.description == other.description
+            and self.hasValue == other.hasValue
+        )
+    
+    def __hash__ (self):
+        """Returns a hash of the argument"""
+        return hash((self.name, self.value, self.description, self.hasValue))
+
+    def __str__(self):
+        return "Argument: " + str(self.name) + "\nValue: " + str(self.value) + "\nDescription: " + str(self.description) + "\nHasValue: " + str(self.hasValue)
+
+    def setName(self, newName: str):
+        """Sets the name of the argument"""
+        self.name = newName
+    def getName(self):
+        """Returns the name of the argument"""
+        return self.name
+
+    def setDescription(self, newDesc: str):
+        """Sets the description of the argument"""
+        self.description = newDesc or ""
+    def getDescription(self) -> str:
+        """Returns the description of the argument"""
+        return self.description
+    
+    def setHasValue(self, newValue: bool):
+        """Sets the hasValue of the argument"""
+        self.hasValue = newValue
+    def getHasValue(self) -> bool:
+        """Returns the hasValue of the argument"""
+        return self.hasValue
+
+    def setValue(self, newValue: str):
+        """Sets the value of the argument"""
+        self.value = newValue
+
+    def getValue(self):
+        """Returns the value of the argument"""
+        return self.value
+
+    def copy(self):
+        """Returns a deep copy of the argument"""
+        return Argument(self.name, self.value, self.description, self.hasValue)
+
 class Action:
     """
     The Action class represents an action that can be performed in a routine.
@@ -58,7 +127,6 @@ class Action:
     def copy(self):
         """Returns a deep copy of the action"""
         return fullCopy(self)
-
 
 class ActionGroup:
     """
@@ -122,9 +190,10 @@ class ActionGroup:
     def getSelected(self):
         """Returns the selected step from the action group"""
         return self.selected
-    def setSelected(self, action: Action):
+    def setSelected(self, action):
         """Sets the selected step for the action group"""
-        self.selected = action
+        if action is not None:
+            self.selected = action
     
     def get(self, stepName: str):
         """Finds and returns a step (action, actionGroup, or argument) in the
@@ -138,78 +207,7 @@ class ActionGroup:
         """Returns a deep copy of the action group"""
         return fullCopy(self)
 
-
-class Argument:
-    """
-    The Argument class represents an argument that can be passed to an action or action group.
-    
-    Attributes:
-        name (str): The name of the argument
-        value (any): The value of the argument
-        hasValue (bool): Whether the argument has a value
-        description (str): A description of the argument
-    """
-    def __init__(self, name: str, value=None, description="", hasValue=True):
-        self.name = name
-        self.value = value
-        self.hasValue = hasValue
-        self.description = description or ""
-
-    def __eq__(self, other):
-        """
-        Compares two Argument objects for equality.
-        Two Argument objects are considered equal if they have the same name, value, and description.
-        """
-        return (
-            isinstance(other, Argument)
-            and self.name == other.name
-            and self.value == other.value
-            and self.description == other.description
-            and self.hasValue == other.hasValue
-        )
-    
-    def __hash__ (self):
-        """Returns a hash of the argument"""
-        return hash((self.name, self.value, self.description, self.hasValue))
-
-    def __str__(self):
-        return "Argument: " + str(self.name) + "\nValue: " + str(self.value) + "\nDescription: " + str(self.description) + "\nHasValue: " + str(self.hasValue)
-
-    def setName(self, newName: str):
-        """Sets the name of the argument"""
-        self.name = newName
-    def getName(self):
-        """Returns the name of the argument"""
-        return self.name
-
-    def setDescription(self, newDesc: str):
-        """Sets the description of the argument"""
-        self.description = newDesc or ""
-    def getDescription(self):
-        """Returns the description of the argument"""
-        return self.description
-    
-    def setHasValue(self, newValue: bool):
-        """Sets the hasValue of the argument"""
-        self.hasValue = newValue
-    def getHasValue(self):
-        """Returns the hasValue of the argument"""
-        return self.hasValue
-
-    def setValue(self, newValue: str):
-        """Sets the value of the argument"""
-        self.value = newValue
-
-    def getValue(self):
-        """Returns the value of the argument"""
-        return self.value
-
-    def copy(self):
-        """Returns a deep copy of the argument"""
-        return Argument(self.name, self.value, self.description, self.hasValue)
-
-
-def fullCopy(step):
+def fullCopy(step) -> Action | ActionGroup | Argument:
     """Returns a deep copy of the given Action, ActionGroup, or Argument.
 
     This function uses recursion to copy all the arguments of an Action,
@@ -235,4 +233,5 @@ def fullCopy(step):
         return step.copy()
     
     else:                               # Unknown
-        print("Unknown action type in fullCopy: " + str(type(step)))
+        raise TypeError("Unknown action type in fullCopy: " + str(type(step)))
+        #print("Unknown action type in fullCopy: " + str(type(step)))

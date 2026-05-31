@@ -2,7 +2,7 @@ import tkinter as tk
 from Creator.RoutineMaker.Steps import Action, ActionGroup, Argument
 from typing import Callable
 
-def buildSubStepFrame(step, parent, onGroupChange: Callable[[ActionGroup, tk.Frame, str], None], storeSubFrame: Callable[[ActionGroup, tk.Frame], None]):
+def buildSubStepFrame(step, parent, onGroupChange: Callable[[ActionGroup, tk.Frame, str], None], storeSubFrame: Callable[[ActionGroup, tk.Frame], None]) -> tk.Frame:
     """Builds a subframe for the given step
 
     Args:
@@ -36,7 +36,7 @@ def buildSubStepFrame(step, parent, onGroupChange: Callable[[ActionGroup, tk.Fra
     return frame
 
 
-def buildArgumentFrame(parent, argument):
+def buildArgumentFrame(parent, argument) -> tk.Frame:
     """Builds a frame for the given argument
 
     Args:
@@ -73,7 +73,7 @@ def buildArgumentFrame(parent, argument):
     return frame
 
 
-def buildActionFrame(parent, action, onGroupChange: Callable[[ActionGroup, tk.Frame, str], None], storeSubFrame: Callable[[ActionGroup, tk.Frame], None]):
+def buildActionFrame(parent, action, onGroupChange: Callable[[ActionGroup, tk.Frame, str], None], storeSubFrame: Callable[[ActionGroup, tk.Frame], None]) -> tk.Frame:
     """Builds a frame for the given action
 
     Args:
@@ -103,7 +103,7 @@ def buildActionFrame(parent, action, onGroupChange: Callable[[ActionGroup, tk.Fr
 
     return frame
 
-def buildGroupFrame(parent, group, onGroupChange: Callable[[ActionGroup, tk.Frame, str, bool], None], storeSubFrame: Callable[[ActionGroup, tk.Frame], None]):
+def buildGroupFrame(parent, group, onGroupChange: Callable[[ActionGroup, tk.Frame, str], None], storeSubFrame: Callable[[ActionGroup, tk.Frame], None]) -> tk.Frame:
     # Create the frame
     frame = tk.Frame(parent)
 
@@ -120,7 +120,7 @@ def buildGroupFrame(parent, group, onGroupChange: Callable[[ActionGroup, tk.Fram
         selected,
         *options,
         command=lambda name:
-            onGroupChange(group, frame, name)
+            onGroupChange(group, frame, str(name))
     )
 
     # Add dropdown

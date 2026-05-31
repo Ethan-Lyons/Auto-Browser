@@ -1,21 +1,22 @@
 import tkinter as tk
+from typing import Callable
 
 class ButtonInfo:
     """Object to hold information about a button to be created"""
-    def __init__(self, text, onPressFunction):
+    def __init__(self, text: str, onPressFunction: Callable[[], None]):
         """Initializes the ButtonInfo object with the given text and onPressFunction"""
         self.text = text
         self.onPressFunction = onPressFunction
 
-    def getText(self):
+    def getText(self) -> str:
         """Returns the text to display on the button"""
         return self.text
 
-    def getOnPressFunction(self):
+    def getOnPressFunction(self) -> Callable[[], None]:
         """Returns the function to call when the button is pressed"""
         return self.onPressFunction
 
-def createButton(parent: tk.Frame, text: str, onPressFunction: callable):
+def createButton(parent: tk.Frame, text: str, onPressFunction: Callable[[], None]) -> tk.Button:
     """Creates a button with the given text and onPressFunction
 
     Args:
@@ -30,7 +31,7 @@ def createButton(parent: tk.Frame, text: str, onPressFunction: callable):
                      text=text,
                      command=lambda: onPressFunction())
 
-def verticalButtonFrame(parent: tk.Frame, buttonList: list[ButtonInfo]):
+def verticalButtonFrame(parent: tk.Frame, buttonList: list[ButtonInfo]) -> tk.Frame:
     """Creates a frame with buttons in a vertical layout
     
     Args:
@@ -56,7 +57,7 @@ def verticalButtonFrame(parent: tk.Frame, buttonList: list[ButtonInfo]):
 
     return bFrame
 
-def horizontalButtonFrame(parent: tk.Frame, buttonList: list[ButtonInfo]):
+def horizontalButtonFrame(parent: tk.Frame, buttonList: list[ButtonInfo]) -> tk.Frame:
     """Creates a frame with buttons in a horizontal layout
 
     Args:

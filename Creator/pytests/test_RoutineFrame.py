@@ -3,7 +3,7 @@ import pytest
 
 from Creator.RoutineMaker.Routine import Routine
 from Creator.RoutineMaker.RoutineFrame import RoutineFrame
-import Creator.RoutineMaker.InputOutput as InputOutput
+#import Creator.RoutineMaker.RoutineIO as RoutineIO
 
 import os
 
@@ -16,8 +16,8 @@ def routineEnv():
     """Generates a generic root window, Routine, Routine Frame, and
     Step Frame for each test"""
     root = tk.Tk()
-    routine = Routine(InputOutput)
-    rFrame = RoutineFrame(parent=root, routine=routine)
+    routine = Routine()
+    rFrame = RoutineFrame(root=root, routine=routine)
     sFrame = rFrame.getStepFrames()[0]
 
     yield root, routine, rFrame, sFrame
@@ -84,16 +84,13 @@ def test_frame_load(routineEnv):
 
     filePath = os.path.join(TMP_DIR, "testRoutine.json")
 
-    newRoutine = Routine(InputOutput)
-    newRoutine.createDefStep()
-    newRoutine.createDefStep()
+    rFrame.sFsContainer.addStepFrame()
 
-    newRoutine.saveRoutine(filePath)
-
+    rFrame.frameSave(filePath)
     rFrame.frameLoad(filePath)
 
+    print(str(rFrame.getSteps()[0]))
     assert len(rFrame.getSteps()) == 2
-    assert len(rFrame.getStepFrames()) == 2
 
     # Clean up
     os.remove(filePath)

@@ -1,13 +1,16 @@
-import Creator.RoutineMaker.InputOutput as InputOutput
+#import Creator.RoutineMaker.RoutineIO as RoutineIO
 from Creator.RoutineMaker.Routine import Routine
+from Creator.RoutineMaker.RoutineIO import saveRoutine, loadRoutine
 
 TEST_OUTPUT_DIR = "./TestData"
 
-def saveRoutine(routine: Routine, name: str):
-    routine.saveRoutine(filePath=f"{TEST_OUTPUT_DIR}/{name}.json")
+def saveTestRoutine(routine: Routine, name: str):
+    #routine.save(filePath=f"{TEST_OUTPUT_DIR}/{name}.json")
+    saveRoutine(routine, filePath=f"{TEST_OUTPUT_DIR}/{name}.json")
+
 
 def newRoutine():
-    return Routine(inputOutput=InputOutput)
+    return Routine()
 
 def openPage(routine: Routine, urlValue: str):
     addNewTabStep(routine)
@@ -83,12 +86,12 @@ def addStoreTextAction(routine: Routine, storeName: str, varValue: str):
 def testBlank():
     routine = newRoutine()
     routine.createDefStep()
-    saveRoutine(routine, "test_blank")
+    saveTestRoutine(routine, "test_blank")
 
 def testNav():
     routine = newRoutine()
     openPage(routine, "https://www.google.com")
-    saveRoutine(routine, "test_nav")
+    saveTestRoutine(routine, "test_nav")
 
 def testClick():
     routine = newRoutine()
@@ -100,12 +103,12 @@ def testClick():
         '//a[@href="https://policies.google.com/privacy?hl=en&fg=1"]'
     )
 
-    saveRoutine(routine, "test_click")
+    saveTestRoutine(routine, "test_click")
 
 def testNewTab():
     routine = newRoutine()
     addNewTabStep(routine)
-    saveRoutine(routine, "test_new_tab")
+    saveTestRoutine(routine, "test_new_tab")
 
 def testForLoop():
     routine = newRoutine()
@@ -130,7 +133,7 @@ def testForLoop():
     endforAction = endAG.get("END_FOR")
     endAG.setSelected(endforAction)
 
-    saveRoutine(routine, "test_for_loop")
+    saveTestRoutine(routine, "test_for_loop")
 
 def testForLoopWithStore():
     routine = newRoutine()
@@ -162,7 +165,7 @@ def testForLoopWithStore():
     endforAction = endAG.get("END_FOR")
     endAG.setSelected(endforAction)
 
-    saveRoutine(routine, "test_for_loop_store")
+    saveTestRoutine(routine, "test_for_loop_store")
 # -----------------------------
 # IF tests using literal values
 # -----------------------------
@@ -191,7 +194,7 @@ def testIfTrue():
     endifAction = endAG.get("END_IF")
     endAG.setSelected(endifAction)
 
-    saveRoutine(routine, "test_if_true")
+    saveTestRoutine(routine, "test_if_true")
 
 def testIfFalse():
     routine = newRoutine()
@@ -218,7 +221,7 @@ def testIfFalse():
     endifAction = endAG.get("END_IF")
     endAG.setSelected(endifAction)
 
-    saveRoutine(routine, "test_if_false")
+    saveTestRoutine(routine, "test_if_false")
 
 
 # -----------------------------
@@ -253,7 +256,7 @@ def testIfTrueStore():
     endifAction = endAG.get("END_IF")
     endAG.setSelected(endifAction)
 
-    saveRoutine(routine, "test_if_true_store")
+    saveTestRoutine(routine, "test_if_true_store")
 
 
 def testIfFalseStore():
@@ -285,7 +288,7 @@ def testIfFalseStore():
     endifAction = endAG.get("END_IF")
     endAG.setSelected(endifAction)
 
-    saveRoutine(routine, "test_if_false_store")
+    saveTestRoutine(routine, "test_if_false_store")
 
 
 def testWhileFalse():
@@ -317,7 +320,7 @@ def testWhileFalse():
     endifAction = endAG.get("END_WHILE")
     endAG.setSelected(endifAction)
 
-    saveRoutine(routine, "test_while_false")
+    saveTestRoutine(routine, "test_while_false")
 
 def testWhileFalseStore():
     routine = newRoutine()
@@ -345,7 +348,7 @@ def testWhileFalseStore():
     endwhileAction = endAG.get("END_WHILE")
     endAG.setSelected(endwhileAction)
 
-    saveRoutine(routine, "test_while_false_store")
+    saveTestRoutine(routine, "test_while_false_store")
 
 def testHistoryBackward():
     routine = newRoutine()
@@ -362,7 +365,7 @@ def testHistoryBackward():
     backward = mode.get("go_backward")
     mode.setSelected(backward)
 
-    saveRoutine(routine, "test_history_backward")
+    saveTestRoutine(routine, "test_history_backward")
 
 def testHistoryForward():
     routine = newRoutine()
@@ -385,7 +388,7 @@ def testHistoryForward():
     mode2 = history2.get("history_mode")
     mode2.setSelected(mode2.get("go_forward"))
 
-    saveRoutine(routine, "test_history_forward")
+    saveTestRoutine(routine, "test_history_forward")
 
 def generate_test_data():
     testBlank()

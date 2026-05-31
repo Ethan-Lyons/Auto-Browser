@@ -1,8 +1,6 @@
-from Creator.RoutineMaker.Steps import Action
-from Creator.RoutineMaker.Steps import ActionGroup
-from Creator.RoutineMaker.Steps import Argument
+from Creator.RoutineMaker.Steps import Action, ActionGroup, Argument
 
-def createAction(name: str, args=[], description=""):
+def createAction(name: str, args=[], description="") -> Action:
     """Creates a new action object and adds it to the list of actions
 
     Args:
@@ -16,7 +14,7 @@ def createAction(name: str, args=[], description=""):
     newAction = Action(name=name, args=args, description=description)
     return newAction
     
-def createActionGroup(name: str, actions=[], description=""):
+def createActionGroup(name: str, actions=[], description="") -> ActionGroup:
     """Creates a new action group object and adds it to the list of actions
 
     Args:
@@ -30,7 +28,7 @@ def createActionGroup(name: str, actions=[], description=""):
     newActionGroup = ActionGroup(name=name, args=actions, description=description)
     return newActionGroup
     
-def createArgument(name: str, description="", hasValue=True):
+def createArgument(name: str, description="", hasValue=True) -> Argument:
     """Creates a new argument object
 
     Args:

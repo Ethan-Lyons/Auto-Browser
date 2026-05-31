@@ -133,5 +133,5 @@ class StepFrameContainer:
         self.clear()
         self._build()
     
-    def getStepFrames(self):
+    def getStepFrames(self) -> list[StepFrame]:
         return self.stepFrames

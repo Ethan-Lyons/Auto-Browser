@@ -119,7 +119,7 @@ class StepFrame:
         """Destroys the tkinter frame associated with this action frame"""
         self.frame.destroy()
     
-    def buildButtonFrame(self, parentFrame: tk.Frame):
+    def buildButtonFrame(self, parentFrame: tk.Frame) -> tk.Frame:
         """Builds and returns a frame containing buttons for moving and managing a step frame
 
         Args:

@@ -1,7 +1,7 @@
 from Creator.RoutineMaker.UserStepBuilder import UserActionBuilder
-from Creator.RoutineMaker.Steps import Action
-from Creator.RoutineMaker.Steps import ActionGroup
-from Creator.RoutineMaker.Steps import Argument
+from Creator.RoutineMaker.Steps import Action, ActionGroup, Argument
+#from Creator.RoutineMaker.InputOutput import saveRoutine, outputRoutine, loadRoutine
+from typing import Callable
 
 class Routine:
     """A class for creating and editing a series of steps composed into a routine.
@@ -11,10 +11,10 @@ class Routine:
         UAB (UserActionBuilder): An instance of the UserActionBuilder class used to build user actions.
         steps (list): A list of steps in the routine.
     """
-    def __init__(self, inputOutput=None):
-        self.inputOutput = inputOutput  # gives access to the InputOutput class functions
+    def __init__(self):
+        #self.inputOutput = inputOutput  # gives access to the InputOutput class functions
         self.UAB = UserActionBuilder()
-        self.userActionGroup = self.UAB.getUserActionGroup()
+        self.userActionGroup = self.UAB.getUserStepsActionGroup()
         self.steps = []
     
     def __eq__(self, other):
@@ -24,21 +24,20 @@ class Routine:
         )
 
     def __str__(self):
-        routineDict = {"actions": [self.inputOutput.actionsToDict(b) for b in self.steps]}
-        return "[Routine: " + str(routineDict) + "]"
+        return f"Routine(steps={self.steps})"
     
-    def saveRoutine(self, filePath=None):
-        """
+    """def save(self, filePath=None):
+        ""
         Save a routine to a file using the InputOutput class.
 
         Args:
             filePath (str): The path of the file to save the routine to. Defaults to None.
-        """
-        self.inputOutput.saveRoutine(self, filePath)
+        ""
+        saveRoutine(self, filePath)
     
     # Returns a bool indicating if the routine has been updated
-    def loadRoutine(self, filePath=None):
-        """
+    def load(self, filePath=None):
+        ""
         Load a routine from a JSON file using the InputOutput class.
 
         Args:
@@ -46,13 +45,13 @@ class Routine:
         
         Returns:
             bool: True if the routine has been updated, False otherwise.
-        """
-        newRoutine = self.inputOutput.loadRoutine(filePath)
+        ""
+        newRoutine = loadRoutine(filePath)
         if newRoutine:
             self.steps.clear()
             self.steps.extend(newRoutine.getSteps())
             return True
-        return False
+        return False"""
 
     def addStep(self, step: Action | ActionGroup | Argument):
         """Adds a step to the routine step list."""
@@ -63,33 +62,37 @@ class Routine:
         if step in self.steps:
             self.steps.remove(step)
 
-    def createDefStep(self):
+    def createDefStep(self) -> ActionGroup:
         """
         Creates a new ActionGroup in the routine by copying the default ActionGroup and adding it to the actions list.
         
         Returns:
-            The newly created step in the ActionGroup.
+            ActionGroup: The newly created ActionGroup.
         """
         defaultCopy = self._createUserAGCopy()
         self.steps.append(defaultCopy)
         return defaultCopy
     
-    def _createUserAGCopy(self):
+    def _createUserAGCopy(self) -> ActionGroup:
         """Creates a copy of the default ActionGroup and returns it."""
         defaultType = self.userActionGroup.copy()
+
+        if not isinstance(defaultType, ActionGroup):
+            raise TypeError("Default user action group is not of type ActionGroup.")
+        
         return defaultType
 
-    def getSteps(self):
+    def getSteps(self) -> list[Action | ActionGroup | Argument]:
         """Returns the list of steps in the routine."""
         return self.steps
     
-    def getIndex(self, step: Action | ActionGroup | Argument):
+    def getIndex(self, step: Action | ActionGroup | Argument) -> int:
         if step in self.steps:
             return self.steps.index(step)
         raise ValueError(f"Step \'{step}\' not found in routine.")
     
-    def removeByIndex(self, index: int):
-        """Removes the action at the given index from the routine."""
+    def removeByIndex(self, index: int) -> Action | ActionGroup | Argument:
+        """Removes the step at the given index from the routine."""
         return self.steps.pop(index)
     
     def moveStep(self, stepIndex: int, toIndex: int):

@@ -22,8 +22,8 @@ class StepsGuide():
     A class for creating a window that displays a list of steps along with their types and descriptions.
     Steps are arranged in a hierarchical tree structure.
     """
-    def __init__(self, stepTypes: list = None):
-        self.stepTypes = stepTypes or []  # All steps that can be performed.
+    def __init__(self, stepTypes: list = []):
+        self.stepTypes = stepTypes  # All steps that can be performed.
         self.root = self.createWindow()
         self.container = self.createContainer(self.root)
         self.tree = self.createTree(self.container)
@@ -31,7 +31,7 @@ class StepsGuide():
     def run(self):
         self.root.mainloop()
 
-    def createWindow(self):
+    def createWindow(self) -> tk.Tk:
         """
         Creates the main window for the step viewer.
 
@@ -47,7 +47,7 @@ class StepsGuide():
 
         return root
     
-    def createContainer(self, parent: tk.Frame):
+    def createContainer(self, parent: tk.Tk) -> tk.Frame:
         """
         Handles the layout of the main window including the step container and the step tree.
         
@@ -139,13 +139,13 @@ class StepsGuide():
                 f"addTreeSteps: Unknown step type {currStep} ({type(currStep)})"
             )
         
-    def jsUpdate(self, tree: ttk.Treeview, entries: list, filePath: str = jsHandlerPath):
+    def jsUpdate(self, tree: ttk.Treeview, entries: tuple, filePath: str = jsHandlerPath):
         """
         Updates the JS handler column for the given tree entries.
 
         Args:
             tree (ttk.Treeview): The tree to update.
-            entries (list): A list of tree entry IDs.
+            entries (tuple): A tuple of tree entry IDs.
         """
         searchText = self.getFileContents(filePath)
 

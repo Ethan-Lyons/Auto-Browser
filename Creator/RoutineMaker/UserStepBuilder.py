@@ -4,8 +4,10 @@ class UserActionBuilder:
     def __init__(self):
         self.userActionGroup = None
 
-    def _buildUserActions(self):
-        r = ActionRegistry()
+    def _buildUserSteps(self) -> StepsFactory.ActionGroup:
+        """Defines the set of steps available to the user, along with definitions of their substeps,
+        and returns the user steps as an ActionGroup."""
+        r = StepsRegistry()
 
         # ---------- Arguments ----------
         variable = r.arg("VARIABLE")
@@ -120,18 +122,13 @@ class UserActionBuilder:
 
         return StepsFactory.createActionGroup("USER_ACTIONS", r.userSteps)
     
-    def createUserAction(self, name: str, args=[], description=""):
-        newAction = StepsFactory.createAction(name, args, description)
-        self.userSteps.append(newAction)
-        return newAction
-    
-    def getUserActionGroup(self):
+    def getUserStepsActionGroup(self) -> StepsFactory.ActionGroup:
         """Returns the list of initial actions available to the user."""
         if self.userActionGroup is None:
-            self.userActionGroup = self._buildUserActions()
+            self.userActionGroup = self._buildUserSteps()
         return self.userActionGroup
 
-class ActionRegistry:
+class StepsRegistry:
     """A class for registering and retrieving all configured step types."""
     def __init__(self):
         """
@@ -142,25 +139,25 @@ class ActionRegistry:
         self.actions = {}
         self.userSteps = []
 
-    def arg(self, name: str, description="", hasValue=True):
+    def arg(self, name: str, description="", hasValue=True) -> StepsFactory.Argument:
         """Creates and returns an argument object with the given name and description."""
         argObj = StepsFactory.createArgument(name, description, hasValue)
         self.arguments[name] = argObj
         return argObj
 
-    def group(self, name: str, args, description=""):
+    def group(self, name: str, args, description="") -> StepsFactory.ActionGroup:
         """Creates and returns an action group object with the given name, arguments, and description."""
         actionGroup = StepsFactory.createActionGroup(name, args, description)
         self.groups[name] = actionGroup
         return actionGroup
 
-    def action(self, name: str, args, description=""):
+    def action(self, name: str, args, description="") -> StepsFactory.Action:
         """Creates and returns an action object with the given name, arguments, and description."""
         action = StepsFactory.createAction(name, args, description)
         self.actions[name] = action
         return action
     
-    def userAction(self, name: str, args: list, description: str = ""):
+    def userAction(self, name: str, args: list, description: str = "") -> StepsFactory.Action:
         """Creates and returns a user action object with the given name, arguments, and description."""
         userAction = StepsFactory.createAction(name, args, description)
         self.actions[name] = userAction

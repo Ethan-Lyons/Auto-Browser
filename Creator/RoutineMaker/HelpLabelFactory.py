@@ -1,7 +1,9 @@
 import tkinter as tk
 from Creator.RoutineMaker.Steps import Action, ActionGroup, Argument
 
-def createDefLabel(parent: tk.Frame, text: str):
+"""Factory for creating step labels for the help frame"""
+
+def createDefLabel(parent: tk.Frame, text: str) -> tk.Label:
     """Creates a label with the given text
 
     Args:
@@ -14,12 +16,12 @@ def createDefLabel(parent: tk.Frame, text: str):
     label = tk.Label(parent, text=text, justify="left", anchor="w", wraplength=400, font=("Arial", 12, "normal"))
     return label
 
-def buildFrameList(parent: tk.Frame, step: Action | ActionGroup | Argument):
+def buildFrameList(parent: tk.Frame, step: Action | ActionGroup | Argument | None) -> list[tk.Frame]:
         """Builds a list of frames for the given step and its substeps
 
         Args:
             parent (tk.Frame): The parent frame to add the frames to
-            step (Action | ActionGroup | Argument): The step to build frames for
+            step (Action | ActionGroup | Argument | None): The step to build frames for or None
 
         Returns:
             List[tk.Frame]: A list of frames for the given step and its substeps
@@ -27,38 +29,36 @@ def buildFrameList(parent: tk.Frame, step: Action | ActionGroup | Argument):
         frameList = []
 
         # Base case
-        if step is None:
-            return []
-        
-        elif isinstance(step, Argument):
-            # Create argument frame and add to list
-            argFrame = argumentHelpFrame(parent, step)
-            frameList.append(argFrame)
+        if step is not None:
+            if isinstance(step, Argument):
+                # Create argument frame and add to list
+                argFrame = argumentHelpFrame(parent, step)
+                frameList.append(argFrame)
 
-        elif isinstance(step, Action):
-            # Create action frame and add to list
-            actFrame = actionHelpFrame(parent, step)
-            frameList.append(actFrame)
+            elif isinstance(step, Action):
+                # Create action frame and add to list
+                actFrame = actionHelpFrame(parent, step)
+                frameList.append(actFrame)
 
-            # Create frames for each substep and add to list
-            for entry in step.getArgs():
-                frameList.extend(buildFrameList(actFrame, entry))
+                # Create frames for each substep and add to list
+                for entry in step.getArgs():
+                    frameList.extend(buildFrameList(actFrame, entry))
 
-        elif isinstance(step, ActionGroup):
-            # Create group frame and add to list
-            groupFrame = groupHelpFrame(parent, step)
-            frameList.append(groupFrame)
+            elif isinstance(step, ActionGroup):
+                # Create group frame and add to list
+                groupFrame = groupHelpFrame(parent, step)
+                frameList.append(groupFrame)
 
-            # Create frames for each substep and add to list
-            selectFrameList = buildFrameList(parent, step.getSelected())
-            frameList.extend(selectFrameList)
+                # Create frames for each substep and add to list
+                selectFrameList = buildFrameList(parent, step.getSelected())
+                frameList.extend(selectFrameList)
 
-        else:
-            raise TypeError(f"Unsupported step type: {type(step)}")
-        
+            else:
+                raise TypeError(f"Unsupported step type: {type(step)}")
+            
         return frameList
 
-def argumentHelpFrame(parent: tk.Frame, argStep: Argument):
+def argumentHelpFrame(parent: tk.Frame, argStep: Argument) -> tk.Frame:
     """Builds a frame for the given argument step
 
     Args:
@@ -88,7 +88,7 @@ def argumentHelpFrame(parent: tk.Frame, argStep: Argument):
 
     return argFrame
 
-def actionHelpFrame(parent: tk.Frame, actStep: Action):
+def actionHelpFrame(parent: tk.Frame, actStep: Action) -> tk.Frame:
     """Builds a frame for the given action step
 
     Args:
@@ -119,7 +119,7 @@ def actionHelpFrame(parent: tk.Frame, actStep: Action):
 
     return actFrame
 
-def groupHelpFrame(parent: tk.Frame, groupStep: ActionGroup):
+def groupHelpFrame(parent: tk.Frame, groupStep: ActionGroup) -> tk.Frame:
     """Builds a frame for the given group step
 
     Args:
@@ -135,7 +135,12 @@ def groupHelpFrame(parent: tk.Frame, groupStep: ActionGroup):
     # Create display strings
     name = "Name: " + str(groupStep.getName())
     desc = "Description: \"" + str(groupStep.getDescription()) + "\""
-    selected = "Selected: " + str(groupStep.getSelected().getName())
+
+    groupSelect = groupStep.getSelected()
+    selected = "Selected: "
+    if groupSelect is not None:
+        selected += str(groupSelect.getName())
+
     argNames = [a.getName() for a in groupStep.getArgs()]
     args = "Modes: " + str(argNames)
 
